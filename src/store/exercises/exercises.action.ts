@@ -1,30 +1,30 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { createClient } from "@supabase/supabase-js";
-import type { Exercise } from "./types";
+import type { AddExercisePayload, Exercise } from "./types";
+import { supabase } from "../supabaseClient";
 
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
-
-const fetchAllExercises = createAsyncThunk(
-  "data/fetchAllExercises",
-  async (_arg, thunkAPI) => {
-    try {
-      const { data } = await supabase.from("exercises").select();
-      if (!data) {
-        return thunkAPI.rejectWithValue("No data found");
-      }
-      return data as Exercise[];
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.message);
-    }
+const fetchAllExercises = createAsyncThunk("data/fetchAllExercises", async (_arg, thunkAPI) => {
+  try {
+    const { data } = await supabase.from("exercises").select();
+    return data as Exercise[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error.message);
   }
-);
+});
+
+const addExercise = createAsyncThunk("data/addExercise", async (exercise: AddExercisePayload, thunkAPI) => {
+  try {
+    const { data } = await supabase.from("exercises").insert([exercise]).select();
+    return data as Exercise[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error.message);
+  }
+});
 
 const exercisesActions = {
   fetchAllExercises,
+  addExercise,
 };
 
 export { exercisesActions };

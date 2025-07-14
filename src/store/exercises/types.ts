@@ -9,3 +9,8 @@ export interface Exercise {
   created_at: number;
   name: string;
 }
+
+export interface AddExercisePayload {
+  name: string;
+  create: number;
+}
