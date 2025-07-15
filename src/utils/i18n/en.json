@@ -1,0 +1,10 @@
+{
+    "common": {
+        "back_btn": "Back"
+    },
+    "exercises": {
+        "category_placeholder": "Select a category",
+        "name_placeholder": "Add a new exercise",
+        "add_exercise_btn": "Add"
+    }
+}

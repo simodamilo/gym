@@ -4,6 +4,7 @@ import { Homepage } from "./pages/homepage/Homepage";
 import { Exercises } from "./pages/exercises/Exercises";
 import { Provider } from "react-redux";
 import store from "./store/store.config";
+import "./utils/i18n/i18n";
 
 function App() {
   return (

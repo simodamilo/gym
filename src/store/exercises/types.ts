@@ -6,11 +6,13 @@ export type ExercisesState = {
 
 export interface Exercise {
   id: number;
-  created_at: number;
   name: string;
+  created: number;
+  category_id: number;
 }
 
 export interface AddExercisePayload {
   name: string;
-  create: number;
+  created: number;
+  category_id: number;
 }
