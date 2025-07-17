@@ -6,5 +6,9 @@
         "category_placeholder": "Select a category",
         "name_placeholder": "Add a new exercise",
         "add_exercise_btn": "Add"
+    },
+    "workouts": {
+        "current_tab": "Current",
+        "history_tab": "History"
     }
 }
