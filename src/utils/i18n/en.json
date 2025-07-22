@@ -9,6 +9,11 @@
     },
     "workouts": {
         "current_tab": "Current",
-        "history_tab": "History"
+        "history_tab": "History",
+        "create_workout": {
+            "title": "Days",
+            "add_day_btn": "Add Day",
+            "day_name_placeholder": "Day Name"
+        }
     }
 }
