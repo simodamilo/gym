@@ -13,7 +13,11 @@
         "create_workout": {
             "title": "Days",
             "add_day_btn": "Add Day",
+            "publish_btn": "Publish",
             "day_name_placeholder": "Day Name"
+        },
+        "exercises": {
+            "add_exercise_btn": "Add Exercise"
         }
     }
 }
