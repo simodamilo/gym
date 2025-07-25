@@ -1,10 +1,33 @@
 import { LeftOutlined } from "@ant-design/icons";
-import { Collapse, type CollapseProps } from "antd";
 import { draftSelectors } from "../../../../store/draft/draft.selectors";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../../store";
 import { useEffect, useState } from "react";
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import type { CollapseProps } from "antd";
 import { ExerciseContent } from "../exercisesContent/ExerciseContent";
+
+const SortableItem = ({ id }: { id: string }) => {
+    const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
+
+    const style = {
+        transform: transform ? CSS.Transform.toString(transform) : undefined,
+        transition,
+        padding: 16,
+        margin: "8px 0",
+        background: "#f2f2f2",
+        borderRadius: 8,
+        touchAction: "none",
+    };
+
+    return (
+        <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+            {id}
+        </div>
+    );
+};
 
 interface ExercisesProps {
     dayId: number;
@@ -15,7 +38,26 @@ export const Exercises = (props: ExercisesProps) => {
     const [items, setItems] = useState<CollapseProps["items"]>([]);
 
     const day_exercises = useSelector((state: RootState) => draftSelectors.getDraftExercisesByDayId(state, props.dayId));
-    console.log("Exercises for Day ID:", props.dayId, day_exercises);
+
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 5,
+            },
+        })
+    );
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleDragEnd = (event: any) => {
+        const { active, over } = event;
+
+        if (active.id !== over.id) {
+            const oldIndex = items!.indexOf(active.id);
+            const newIndex = items!.indexOf(over.id);
+
+            setItems((items) => arrayMove(items!, oldIndex, newIndex));
+        }
+    };
 
     useEffect(() => {
         const newItems = day_exercises.map((day_exercise) => ({
@@ -27,6 +69,8 @@ export const Exercises = (props: ExercisesProps) => {
                 </div>
             ),
         }));
+
+        // Add a new item for creating a new exercise
         const highestId = Math.max(...day_exercises.map((day_exercise) => day_exercise.id), 0) + 1;
         newItems.push({
             key: highestId.toString(),
@@ -37,7 +81,7 @@ export const Exercises = (props: ExercisesProps) => {
                 </div>
             ),
         });
-        console.log("New items for Exercises:", newItems);
+
         setItems(newItems);
     }, [day_exercises, props.dayId]);
 
@@ -47,9 +91,17 @@ export const Exercises = (props: ExercisesProps) => {
                 <LeftOutlined onClick={() => props.setOpenExercisesId()} />
             </div>
 
-            <div className="flex-1 overflow-y-auto flex flex-col gap-2">
+            {/*<div className="flex-1 overflow-y-auto flex flex-col gap-2">
                 <Collapse items={items} defaultActiveKey={["1"]} onChange={() => console.log("TEST")} />
-            </div>
+            </div>*/}
+
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                <SortableContext items={items} strategy={verticalListSortingStrategy}>
+                    {items.map((id) => (
+                        <SortableItem key={id} id={id} />
+                    ))}
+                </SortableContext>
+            </DndContext>
         </>
     );
 };
