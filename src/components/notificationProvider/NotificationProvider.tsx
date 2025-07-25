@@ -8,7 +8,6 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
     React.useEffect(() => {
         const wrapWithClass = (fn: (args: any) => void) => (args: any) => {
-            console.log("NOTIFICATION CLASS:", args.className);
             fn({
                 className: "custom-notification",
                 placement: "topRight",

@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { supabase } from "../supabaseClient";
 import type { RootState } from "../reducer.config";
 import { getNotificationApi } from "../../utils/notificationService";
-import type { AddDayPayload, Workout } from "./types";
+import type { AddDayExercisePayload, AddDayPayload, Workout } from "./types";
 
 const fetchDraftWorkout = createAsyncThunk("data/fetchDraftWorkout", async (_arg, thunkAPI) => {
     try {
@@ -83,11 +83,31 @@ const deleteDay = createAsyncThunk("data/deleteDay", async (dayId: number, thunk
     }
 });
 
+const upsertExercise = createAsyncThunk("data/upsertExercise", async (exercise: AddDayExercisePayload, thunkAPI) => {
+    try {
+        const { data } = await supabase
+            .from("day_exercises")
+            .upsert([exercise], {
+                onConflict: "id",
+            })
+            .select();
+        getNotificationApi().success({
+            message: `Successfully saved`,
+            placement: "top",
+        });
+        return data ? data[0] : null;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+});
+
 const draftActions = {
     fetchDraftWorkout,
     createDraftWorkout,
     upsertDay,
     deleteDay,
+    upsertExercise,
 };
 
 export { draftActions };

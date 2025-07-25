@@ -34,4 +34,11 @@ export interface AddDayPayload {
 export interface DayExercise {
     id: number;
     name: string;
+    exercise_id: number;
+}
+
+export interface AddDayExercisePayload {
+    id?: number;
+    day_id: number;
+    exercise_id: number;
 }
