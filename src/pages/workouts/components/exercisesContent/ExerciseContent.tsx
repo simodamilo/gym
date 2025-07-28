@@ -10,12 +10,14 @@ import { Button, Select } from "antd";
 import type { Category } from "../../../../store/categories/types";
 import type { DayExercise } from "../../../../store/draft/types";
 import { draftActions } from "../../../../store/draft/draft.actions";
+import { DeleteOutlined } from "@ant-design/icons";
 
 export interface ExerciseContentProps {
     dayId: number;
     exerciseId: number;
     day_exercise?: DayExercise;
     isReadOnly?: boolean;
+    isNew?: boolean;
 }
 
 export const ExerciseContent = (props: ExerciseContentProps) => {
@@ -50,10 +52,14 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
     };
 
     const saveExercise = async () => {
-        if (selectedExercise) {
-            await dispatch(draftActions.upsertExercise({ id: props.exerciseId, day_id: props.dayId, exercise_id: selectedExercise }));
+        if (hasValidFields()) {
+            await dispatch(draftActions.upsertExercise({ id: props.exerciseId, day_id: props.dayId, exercise_id: selectedExercise! }));
         }
     };
+
+    const hasValidFields = (): boolean => {
+        return !!selectedCategory && !!selectedExercise;
+    }
 
     return (
         <div className="flex flex-col gap-8">
@@ -65,6 +71,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                     value={selectedCategory}
                     onChange={(value) => {
                         setSelectedCategory(value ? Number(value) : undefined);
+                        setSelectedExercise(undefined);
                     }}
                     options={categories.map((category: Category) => ({
                         label: category.name[0].toUpperCase() + category.name.slice(1),
@@ -89,8 +96,9 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                     disabled={props.isReadOnly || !selectedCategory}
                 />
             </div>
-            <div>
-                <Button type="primary" block onClick={saveExercise}>
+            <div className="flex gap-4">
+                <Button type="primary" icon={<DeleteOutlined />} danger shape="circle" disabled={props.isNew}/>
+                <Button type="primary" block onClick={saveExercise} disabled={!hasValidFields()}>
                     {t("workouts.exercises.save_btn")}
                 </Button>
             </div>

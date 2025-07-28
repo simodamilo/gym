@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { supabase } from "../supabaseClient";
 import type { RootState } from "../reducer.config";
 import { getNotificationApi } from "../../utils/notificationService";
-import type { AddDayExercisePayload, AddDayPayload, Workout } from "./types";
+import type { AddDayExercisePayload, AddDayExerciseResponse, AddDayPayload, Workout } from "./types";
 
 const fetchDraftWorkout = createAsyncThunk("data/fetchDraftWorkout", async (_arg, thunkAPI) => {
     try {
@@ -90,12 +90,18 @@ const upsertExercise = createAsyncThunk("data/upsertExercise", async (exercise: 
             .upsert([exercise], {
                 onConflict: "id",
             })
-            .select();
+            .select(`
+                id, exercise_id, day_id, exercises (
+                    id, name, category_id
+                )
+            `);
         getNotificationApi().success({
             message: `Successfully saved`,
             placement: "top",
         });
-        return data ? data[0] : null;
+        if (data) {
+            return data as unknown as AddDayExerciseResponse[] || null;
+        }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         return thunkAPI.rejectWithValue(error.message);

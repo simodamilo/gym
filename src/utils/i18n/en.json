@@ -19,7 +19,8 @@
         "exercises": {
             "category_placeholder": "Select a category",
             "exercise_placeholder": "Select an exercise",
-            "save_btn": "Save"
+            "save_btn": "Save",
+            "new_exercise_title": "New exercise"
         }
     }
 }

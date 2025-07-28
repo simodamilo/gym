@@ -4,34 +4,21 @@ import { useSelector } from "react-redux";
 import type { RootState } from "../../../../store";
 import { useEffect, useState } from "react";
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
-import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { Collapse, type CollapseProps } from "antd";
 import { ExerciseContent } from "../exercisesContent/ExerciseContent";
-
-const SortableItem = ({ id, item }: { id: string, item: CollapseProps["items"] }) => {
-    const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
-
-    const style = {
-        transform: transform ? CSS.Transform.toString(transform) : undefined,
-        transition,
-        touchAction: "none",
-    };
-
-    return (
-        <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-            <Collapse items={item} defaultActiveKey={["1"]} onChange={() => console.log("TEST")} />
-        </div>
-    );
-};
+import { SortableItem } from "../../../../components/sortableItem/SortableItem";
+import { useTranslation } from "react-i18next";
 
 interface ExercisesProps {
     dayId: number;
     setOpenExercisesId: (id?: number) => void;
 }
 
-export const Exercises = (props: ExercisesProps) => {
+export const Exercises = (props: ExercisesProps) => {    
+    const { t } = useTranslation();
     const [items, setItems] = useState<CollapseProps["items"]>([]);
+    const [activeKey, setActiveKey] = useState<number>();
 
     const day_exercises = useSelector((state: RootState) => draftSelectors.getDraftExercisesByDayId(state, props.dayId));
 
@@ -59,7 +46,11 @@ export const Exercises = (props: ExercisesProps) => {
         const newItems = day_exercises.map((day_exercise) => {
             return {
                 key: day_exercise.id.toString(),
-                label: day_exercise.exercise.name,
+                label: (
+                    <div className="flex justify-end">
+                        {day_exercise.exercise.name}
+                    </div>
+                ),
                 children: (
                     <div>
                         <ExerciseContent dayId={props.dayId} exerciseId={day_exercise.id} day_exercise={day_exercise} />
@@ -72,10 +63,14 @@ export const Exercises = (props: ExercisesProps) => {
         const highestId = Math.max(...day_exercises.map((day_exercise) => day_exercise.id), 0) + 1;
         newItems.push({
             key: highestId.toString(),
-            label: "",
+            label: (
+                    <div className="flex justify-end">
+                        {t('workouts.exercises.new_exercise_title')}
+                    </div>
+                ),
             children: (
                 <div>
-                    <ExerciseContent dayId={props.dayId} exerciseId={highestId} />
+                    <ExerciseContent dayId={props.dayId} exerciseId={highestId} isNew/>
                 </div>
             ),
         });
@@ -95,7 +90,9 @@ export const Exercises = (props: ExercisesProps) => {
                         items={items.map(item => item?.key).filter((key): key is string | number => key !== undefined && key !== null)} 
                         strategy={verticalListSortingStrategy}>
                             {items.map((item) => (
-                                <SortableItem key={item.key} id={String(item.key)} item={[item]}/>
+                                <SortableItem key={item.key} id={String(item.key)}>
+                                    <Collapse items={[item]} activeKey={item.key === activeKey ? item.key : undefined} onChange={() => setActiveKey(item.key !== activeKey ? (item.key as number) : undefined)} />
+                                </SortableItem>
                             ))}
                     </SortableContext>
                 </DndContext>}

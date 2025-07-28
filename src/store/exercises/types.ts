@@ -7,7 +7,7 @@ export type ExercisesState = {
 export interface Exercise {
   id: number;
   name: string;
-  created: number;
+  created?: number;
   category_id: number;
 }
 

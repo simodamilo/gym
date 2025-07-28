@@ -6,6 +6,7 @@ export type DraftState = {
     historyWorkouts: Workout[];
     isLoadingWorkout: boolean;
     isLoadingDays: boolean;
+    isLoadingExercises: boolean;
     isError: boolean;
     currentRequestId?: string;
 };
@@ -42,4 +43,11 @@ export interface AddDayExercisePayload {
     id?: number;
     day_id: number;
     exercise_id: number;
+}
+
+export interface AddDayExerciseResponse {
+  id: number;
+  day_id: number;
+  exercise_id: number;
+  exercises: Exercise;
 }
