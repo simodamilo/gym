@@ -17,7 +17,7 @@ const fetchDraftWorkout = createAsyncThunk("data/fetchDraftWorkout", async (_arg
                     id, name, description, created_at, status, days (
                         id, name, created_at, day_exercises (
                             id, exercise_id, exercises (
-                                id, name
+                                id, name, category_id
                             )
                         )
                     )

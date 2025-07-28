@@ -1,6 +1,7 @@
 import { createReducer } from "@reduxjs/toolkit";
 import type { Day, DraftState } from "./types";
 import { draftActions } from "./draft.actions";
+import { workoutMapper } from "./draft.mapper";
 
 const draftState: DraftState = {
     currentWorkout: undefined,
@@ -19,8 +20,11 @@ export const draftReducer = {
                 state.currentRequestId = action.meta.requestId;
             })
             .addCase(draftActions.fetchDraftWorkout.fulfilled, (state, action) => {
+                if (action.payload && action.payload[0]) {
+                    const mappedWorkout = workoutMapper.getDraftWorkoutDataMapper(action.payload[0]);
+                    state.draftWorkout = mappedWorkout;
+                }
                 state.isLoadingWorkout = false;
-                state.draftWorkout = action.payload ? action.payload[0] : state.draftWorkout;
             })
             .addCase(draftActions.fetchDraftWorkout.rejected, (state) => {
                 state.isLoadingWorkout = false;

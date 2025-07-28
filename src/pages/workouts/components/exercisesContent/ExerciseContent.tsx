@@ -14,7 +14,7 @@ import { draftActions } from "../../../../store/draft/draft.actions";
 export interface ExerciseContentProps {
     dayId: number;
     exerciseId: number;
-    exercise?: DayExercise;
+    day_exercise?: DayExercise;
     isReadOnly?: boolean;
 }
 
@@ -29,10 +29,11 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
     const categories = useSelector((state: RootState) => categoriesSelectors.getCategories(state));
 
     useEffect(() => {
-        if (props.exercise) {
-            setSelectedExercise(props.exercise.exercise_id);
+        if (props.day_exercise) {
+            setSelectedCategory(props.day_exercise.exercise.category_id);
+            setSelectedExercise(props.day_exercise.exercise.id);
         }
-    }, [props.exercise]);
+    }, [props.day_exercise]);
 
     useEffect(() => {
         getExercises();

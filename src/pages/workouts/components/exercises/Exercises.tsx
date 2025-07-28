@@ -6,25 +6,21 @@ import { useEffect, useState } from "react";
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { CollapseProps } from "antd";
+import { Collapse, type CollapseProps } from "antd";
 import { ExerciseContent } from "../exercisesContent/ExerciseContent";
 
-const SortableItem = ({ id }: { id: string }) => {
+const SortableItem = ({ id, item }: { id: string, item: CollapseProps["items"] }) => {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 
     const style = {
         transform: transform ? CSS.Transform.toString(transform) : undefined,
         transition,
-        padding: 16,
-        margin: "8px 0",
-        background: "#f2f2f2",
-        borderRadius: 8,
         touchAction: "none",
     };
 
     return (
         <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-            {id}
+            <Collapse items={item} defaultActiveKey={["1"]} onChange={() => console.log("TEST")} />
         </div>
     );
 };
@@ -52,23 +48,25 @@ export const Exercises = (props: ExercisesProps) => {
         const { active, over } = event;
 
         if (active.id !== over.id) {
-            const oldIndex = items!.indexOf(active.id);
-            const newIndex = items!.indexOf(over.id);
+            const oldIndex = items!.findIndex(item => item.key === active.id);
+            const newIndex = items!.findIndex(item => item.key === over.id);
 
             setItems((items) => arrayMove(items!, oldIndex, newIndex));
         }
     };
 
     useEffect(() => {
-        const newItems = day_exercises.map((day_exercise) => ({
-            key: day_exercise.id.toString(),
-            label: day_exercise.name,
-            children: (
-                <div>
-                    <ExerciseContent dayId={props.dayId} exerciseId={day_exercise.id} exercise={day_exercise} />
-                </div>
-            ),
-        }));
+        const newItems = day_exercises.map((day_exercise) => {
+            return {
+                key: day_exercise.id.toString(),
+                label: day_exercise.exercise.name,
+                children: (
+                    <div>
+                        <ExerciseContent dayId={props.dayId} exerciseId={day_exercise.id} day_exercise={day_exercise} />
+                    </div>
+                ),
+            }
+        });
 
         // Add a new item for creating a new exercise
         const highestId = Math.max(...day_exercises.map((day_exercise) => day_exercise.id), 0) + 1;
@@ -91,17 +89,17 @@ export const Exercises = (props: ExercisesProps) => {
                 <LeftOutlined onClick={() => props.setOpenExercisesId()} />
             </div>
 
-            {/*<div className="flex-1 overflow-y-auto flex flex-col gap-2">
-                <Collapse items={items} defaultActiveKey={["1"]} onChange={() => console.log("TEST")} />
-            </div>*/}
-
-            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                <SortableContext items={items} strategy={verticalListSortingStrategy}>
-                    {items.map((id) => (
-                        <SortableItem key={id} id={id} />
-                    ))}
-                </SortableContext>
-            </DndContext>
+            <div className="flex-1 overflow-y-auto flex flex-col gap-2">
+                {items && items.length > 0 && <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                    <SortableContext 
+                        items={items.map(item => item?.key).filter((key): key is string | number => key !== undefined && key !== null)} 
+                        strategy={verticalListSortingStrategy}>
+                            {items.map((item) => (
+                                <SortableItem key={item.key} id={String(item.key)} item={[item]}/>
+                            ))}
+                    </SortableContext>
+                </DndContext>}
+            </div>
         </>
     );
 };

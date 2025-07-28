@@ -1,3 +1,5 @@
+import type { Exercise } from "../exercises/types";
+
 export type DraftState = {
     currentWorkout?: Workout;
     draftWorkout?: Workout;
@@ -33,8 +35,7 @@ export interface AddDayPayload {
 
 export interface DayExercise {
     id: number;
-    name: string;
-    exercise_id: number;
+    exercise: Exercise;
 }
 
 export interface AddDayExercisePayload {
