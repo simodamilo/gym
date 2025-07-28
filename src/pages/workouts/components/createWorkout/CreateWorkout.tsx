@@ -106,7 +106,7 @@ export const CreateWorkout = (props: CreateWorkoutProps) => {
                         <div ref={scrollContainerRef} className="flex-1 overflow-y-auto flex flex-col gap-2">
                             {days.map((day, index) => {
                                 return (
-                                    <div key={index} className="p-3 border rounded-xl">
+                                    <div key={index} className="p-3 border border-[#FFEAD8] shadow-md rounded-xl">
                                         <Input
                                             size="small"
                                             placeholder={t("workouts.create_workout.day_name_placeholder")}
@@ -130,7 +130,7 @@ export const CreateWorkout = (props: CreateWorkoutProps) => {
                         <Button type="default" block onClick={handleAddDay}>
                             {t("workouts.create_workout.add_day_btn")}
                         </Button>
-                        <Button type="primary" block>
+                        <Button type="primary" className="bg-brand-primary" block>
                             {t("workouts.create_workout.publish_btn")}
                         </Button>
                     </div>

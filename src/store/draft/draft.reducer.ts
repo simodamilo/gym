@@ -96,49 +96,79 @@ export const draftReducer = {
                 state.isLoadingDays = false;
                 state.isError = true;
             })
-            .addCase(draftActions.upsertExercise.pending, (state, action) => {
+            .addCase(draftActions.upsertExercises.pending, (state, action) => {
                 state.isLoadingExercises = true;
                 state.currentRequestId = action.meta.requestId;
             })
-            .addCase(draftActions.upsertExercise.fulfilled, (state, action) => {
+            .addCase(draftActions.upsertExercises.fulfilled, (state, action) => {
                 state.isLoadingExercises = false;
                 if (!action.payload || !state.draftWorkout) return;
 
-                const firstItem = action.payload[0];
-
                 const updatedDay = state.draftWorkout.days.find(
-                    (day: Day) => day.id === firstItem.day_id
+                    (day: Day) => day.id === action.payload[0].day_id
                 );
 
                 if (updatedDay) {
-                    let newDayExercises: DayExercise[] = updatedDay.day_exercises || [];
+                    if (action.payload.length !== 1) {
+                        state.draftWorkout = {
+                            ...state.draftWorkout,
+                            days: state.draftWorkout.days.map((day) =>
+                                day.id === updatedDay.id ? 
+                                    { 
+                                        ...updatedDay, 
+                                        day_exercises: workoutMapper.getDayExerciseDataMapper(action.payload) 
+                                    } : 
+                                    day
+                            ),
+                        };
+                    } else {
+                        state.draftWorkout = {
+                            ...state.draftWorkout,
+                            days: state.draftWorkout.days.map((day) =>
+                                day.id === updatedDay.id ? 
+                                    { 
+                                        ...updatedDay, 
+                                        day_exercises: [ ...day.day_exercises, workoutMapper.getDayExerciseDataMapper(action.payload)[0] ] 
+                                    } : 
+                                    day
+                            ),
+                        };
+                    }
+                }
+                
+            })
+            .addCase(draftActions.upsertExercises.rejected, (state) => {
+                state.isLoadingExercises = false;
+                state.isError = true;
+            })
+            .addCase(draftActions.deleteExercise.pending, (state, action) => {
+                state.isLoadingExercises = true;
+                state.currentRequestId = action.meta.requestId;
+            })
+            .addCase(draftActions.deleteExercise.fulfilled, (state, action) => {
+                state.isLoadingExercises = false;
+                if (!action.payload || !state.draftWorkout) return;
 
-                    newDayExercises = newDayExercises.map((day_exercise) => {
-                        if (day_exercise.id === firstItem.id) {
-                            return {
-                                ...day_exercise,
-                                exercise: {
-                                    id: firstItem.exercises.id,
-                                    name: firstItem.exercises.name,
-                                    category_id: firstItem.exercises.category_id,
-                                },
-                            };
-                        }
-                        return day_exercise;
-                    });
+                const dayToUpdate = state.draftWorkout.days.find(day => day.id === action.payload.dayId);
+                let newDayExercises: DayExercise[] = dayToUpdate?.day_exercises || [];
+                newDayExercises = newDayExercises.filter((dayExercise) => dayExercise.id !== action.payload.dayExerciseId);
 
-                    // Replace updated day in the workout
+                if (state.draftWorkout) {
                     state.draftWorkout = {
                         ...state.draftWorkout,
-                        days: state.draftWorkout.days.map((day) =>
-                            day.id === updatedDay.id
-                                ? { ...updatedDay, day_exercises: newDayExercises }
-                                : day
-                        ),
+                        days: state.draftWorkout.days.map((day) => {
+                            if (day.id === dayToUpdate?.id) {
+                                return {
+                                    ...day,
+                                    day_exercises: newDayExercises
+                                }
+                            }
+                            return day
+                        })
                     };
                 }
             })
-            .addCase(draftActions.upsertExercise.rejected, (state) => {
+            .addCase(draftActions.deleteExercise.rejected, (state) => {
                 state.isLoadingExercises = false;
                 state.isError = true;
             });

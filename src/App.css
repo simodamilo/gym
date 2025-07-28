@@ -56,7 +56,8 @@
     margin-bottom: 0px;
 }
 
-.ant-notification .ant-notification-notice-wrapper .ant-notification-notice-icon-success.anticon {
+.ant-notification .ant-notification-notice-wrapper .ant-notification-notice-icon-success.anticon,
+.ant-notification .ant-notification-notice-wrapper .ant-notification-notice-icon-error.anticon {
     width: 20px;
     height: 20px;
 }

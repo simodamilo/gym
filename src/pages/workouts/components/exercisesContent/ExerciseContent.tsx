@@ -9,13 +9,14 @@ import { categoriesActions } from "../../../../store/categories/categories.actio
 import { Button, Select } from "antd";
 import type { Category } from "../../../../store/categories/types";
 import type { DayExercise } from "../../../../store/draft/types";
-import { draftActions } from "../../../../store/draft/draft.actions";
 import { DeleteOutlined } from "@ant-design/icons";
 
 export interface ExerciseContentProps {
     dayId: number;
     exerciseId: number;
-    day_exercise?: DayExercise;
+    dayExercise: DayExercise;
+    saveExercises: (dayExercise: DayExercise) => void;
+    deleteExercise: (dayExerciseId: number) => void;
     isReadOnly?: boolean;
     isNew?: boolean;
 }
@@ -24,6 +25,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
     const dispatch = useAppDispatch();
     const { t } = useTranslation();
 
+    const [dayExercise, setDayExercise] = useState<DayExercise>(props.dayExercise);
     const [selectedExercise, setSelectedExercise] = useState<number>();
     const [selectedCategory, setSelectedCategory] = useState<number>();
 
@@ -31,11 +33,11 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
     const categories = useSelector((state: RootState) => categoriesSelectors.getCategories(state));
 
     useEffect(() => {
-        if (props.day_exercise) {
-            setSelectedCategory(props.day_exercise.exercise.category_id);
-            setSelectedExercise(props.day_exercise.exercise.id);
+        if (props.dayExercise) {
+            setSelectedCategory(props.dayExercise.exercise?.category_id);
+            setSelectedExercise(props.dayExercise.exercise?.id);
         }
-    }, [props.day_exercise]);
+    }, [props.dayExercise]);
 
     useEffect(() => {
         getExercises();
@@ -49,12 +51,6 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
 
     const getCategories = async () => {
         await dispatch(categoriesActions.fetchAllCategories());
-    };
-
-    const saveExercise = async () => {
-        if (hasValidFields()) {
-            await dispatch(draftActions.upsertExercise({ id: props.exerciseId, day_id: props.dayId, exercise_id: selectedExercise! }));
-        }
     };
 
     const hasValidFields = (): boolean => {
@@ -86,6 +82,12 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                     value={selectedExercise}
                     onChange={(value) => {
                         setSelectedExercise(value ? Number(value) : undefined);
+                        setDayExercise({
+                            ...dayExercise,
+                            id: props.dayExercise.id,
+                            order_number: props.dayExercise.order_number,
+                            exercise: exercises.find(ex => ex.id === value)
+                        })
                     }}
                     options={exercises
                         .filter((exercise) => (selectedCategory ? exercise.category_id === selectedCategory : true))
@@ -97,8 +99,20 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                 />
             </div>
             <div className="flex gap-4">
-                <Button type="primary" icon={<DeleteOutlined />} danger shape="circle" disabled={props.isNew}/>
-                <Button type="primary" block onClick={saveExercise} disabled={!hasValidFields()}>
+                <Button 
+                    type="primary" 
+                    icon={<DeleteOutlined />} 
+                    danger 
+                    shape="circle" 
+                    disabled={props.isNew}
+                    onClick={() => props.deleteExercise(props.exerciseId)}
+                />
+                <Button 
+                    type="primary" 
+                    block 
+                    onClick={() => props.saveExercises(dayExercise)} 
+                    disabled={!hasValidFields()}
+                >
                     {t("workouts.exercises.save_btn")}
                 </Button>
             </div>

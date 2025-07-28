@@ -13,6 +13,18 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    --brand-primary: #4682A9;
+    --brand-secondary: #749BC2;
+    --brand-white: #FFFFFF;
+}
+
+.bg-brand-primary {
+    background-color: var(--brand-primary);
+}
+
+.bg-brand-secondary {
+    background-color: var(--brand-secondary);
 }
 
 a {

@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { supabase } from "../supabaseClient";
 import type { RootState } from "../reducer.config";
 import { getNotificationApi } from "../../utils/notificationService";
-import type { AddDayExercisePayload, AddDayExerciseResponse, AddDayPayload, Workout } from "./types";
+import type { UpsertDayExercisePayload, AddDayPayload, Workout, DayExerciseResponse } from "./types";
 
 const fetchDraftWorkout = createAsyncThunk("data/fetchDraftWorkout", async (_arg, thunkAPI) => {
     try {
@@ -83,15 +83,15 @@ const deleteDay = createAsyncThunk("data/deleteDay", async (dayId: number, thunk
     }
 });
 
-const upsertExercise = createAsyncThunk("data/upsertExercise", async (exercise: AddDayExercisePayload, thunkAPI) => {
+const upsertExercises = createAsyncThunk<DayExerciseResponse[], UpsertDayExercisePayload[]>("data/upsertExercise", async (exercises: UpsertDayExercisePayload[], thunkAPI) => {
     try {
         const { data } = await supabase
             .from("day_exercises")
-            .upsert([exercise], {
+            .upsert(exercises, {
                 onConflict: "id",
             })
             .select(`
-                id, exercise_id, day_id, exercises (
+                id, exercise_id, day_id, order_number, exercises (
                     id, name, category_id
                 )
             `);
@@ -99,9 +99,20 @@ const upsertExercise = createAsyncThunk("data/upsertExercise", async (exercise: 
             message: `Successfully saved`,
             placement: "top",
         });
-        if (data) {
-            return data as unknown as AddDayExerciseResponse[] || null;
-        }
+        return data as unknown as DayExerciseResponse[] || [];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+});
+
+const deleteExercise = createAsyncThunk("data/deleteExercise", async (payload: { dayExerciseId: number, dayId: number}, thunkAPI) => {
+    try {
+        await supabase.from("day_exercises").delete().eq("id", payload.dayExerciseId);
+        return {
+            dayId: payload.dayId,
+            dayExerciseId: payload.dayExerciseId
+        };
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         return thunkAPI.rejectWithValue(error.message);
@@ -113,7 +124,8 @@ const draftActions = {
     createDraftWorkout,
     upsertDay,
     deleteDay,
-    upsertExercise,
+    upsertExercises,
+    deleteExercise
 };
 
 export { draftActions };

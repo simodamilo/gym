@@ -36,18 +36,21 @@ export interface AddDayPayload {
 
 export interface DayExercise {
     id: number;
-    exercise: Exercise;
+    order_number: number;
+    exercise?: Exercise;
 }
 
-export interface AddDayExercisePayload {
+export interface UpsertDayExercisePayload {
     id?: number;
     day_id: number;
+    order_number: number;
     exercise_id: number;
 }
 
-export interface AddDayExerciseResponse {
-  id: number;
-  day_id: number;
-  exercise_id: number;
-  exercises: Exercise;
+export interface DayExerciseResponse {
+    id: number;
+    day_id: number;
+    order_number: number;
+    exercise_id: number;
+    exercises: Exercise;
 }
