@@ -1,15 +1,14 @@
 import { LeftOutlined } from "@ant-design/icons";
 import { draftSelectors } from "../../../../store/draft/draft.selectors";
 import { useSelector } from "react-redux";
-import { useAppDispatch, type RootState } from "../../../../store";
-import { useEffect, useState } from "react";
+import { useAppDispatch } from "../../../../store";
+import { useEffect, useMemo, useState } from "react";
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { Collapse, Skeleton } from "antd";
+import { Collapse } from "antd";
 import { ExerciseContent } from "../exercisesContent/ExerciseContent";
 import { SortableItem } from "../../../../components/sortableItem/SortableItem";
-import { useTranslation } from "react-i18next";
-import type { DayExercise } from "../../../../store/draft/types";
+import type { Day, DayExercise } from "../../../../store/draft/types";
 import { draftActions } from "../../../../store/draft/draft.actions";
 import { getNotificationApi } from "../../../../utils/notificationService";
 
@@ -19,14 +18,16 @@ interface ExercisesProps {
 }
 
 export const Exercises = (props: ExercisesProps) => {    
-    const { t } = useTranslation();    
     const dispatch = useAppDispatch();
 
     const [activeKey, setActiveKey] = useState<number>();
     const [mutableDayExercises, setMutableDayExercises] = useState<DayExercise[]>([]);
 
-    const dayExercises: DayExercise[] = useSelector((state: RootState) => draftSelectors.getDraftExercisesByDayId(state, props.dayId));
-    const isLoadingExercises: boolean = useSelector((state: RootState) => draftSelectors.isLoadingExercises(state));
+    const draftWorkout = useSelector(draftSelectors.getDraftWorkout);
+
+    const dayExercises = useMemo(() => {
+    return draftWorkout?.days.find((day: Day) => day.id === props.dayId)?.dayExercises ?? [];
+    }, [draftWorkout?.days, props.dayId]);
 
     useEffect(() => {
         const mutable: DayExercise[] = [...dayExercises];
@@ -35,8 +36,10 @@ export const Exercises = (props: ExercisesProps) => {
             .sort((a: DayExercise, b: DayExercise) => a.orderNumber - b.orderNumber)
             .push({
                 id: highestId,
-                orderNumber: mutable.length,
-                sets: []
+                orderNumber: mutable.length + 1,
+                sets: [],
+                rest: undefined,
+                notes: undefined
             });
         setMutableDayExercises(mutable);
     }, [dayExercises]);
@@ -93,10 +96,7 @@ export const Exercises = (props: ExercisesProps) => {
     }
 
     const deleteExercise = async (exerciseId: number) => {
-        await dispatch(draftActions.deleteExercise({
-            dayExerciseId: exerciseId,
-            dayId: props.dayId
-        }))
+        await dispatch(draftActions.deleteExercise(exerciseId));
     }
 
     return (
@@ -107,51 +107,44 @@ export const Exercises = (props: ExercisesProps) => {
 
             <div className="flex-1 overflow-y-auto flex flex-col gap-2">
                 {
-                    isLoadingExercises ? (
-                        <Skeleton active className="width-[90%]"/>
-                    ) : (
-                        mutableDayExercises.length > 0 && 
-                            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                                <SortableContext 
-                                    items={mutableDayExercises.map(item => item.id.toString()).filter((id): id is string => id !== undefined && id !== null)} 
-                                    strategy={verticalListSortingStrategy}>
-                                        {
-                                            mutableDayExercises.map((mutableDayExercise) => {
-                                                const item = {
-                                                    key: mutableDayExercise.id,
-                                                    label: (
-                                                        <div className="flex justify-end dark:text-white">
-                                                            {mutableDayExercise.exercise?.name || t('workouts.exercises.new_exercise_title')}
-                                                        </div>
-                                                    ),
-                                                    children: (
-                                                        <div>
-                                                            <ExerciseContent 
-                                                                dayId={props.dayId} 
-                                                                exerciseId={mutableDayExercise.id} 
-                                                                dayExercise={mutableDayExercise} 
-                                                                saveExercises={saveExercises}
-                                                                deleteExercise={deleteExercise}
-                                                                isNew={!mutableDayExercise.exercise?.name}
-                                                            />
-                                                        </div>
-                                                    ),
-                                                };
-                                                return (
-                                                    <SortableItem 
-                                                        key={mutableDayExercise.id} 
-                                                        id={mutableDayExercise.id.toString()}>
-                                                        <Collapse items={[item]} activeKey={item.key === activeKey ? item.key : undefined} onChange={() => setActiveKey(item.key !== activeKey ? (item.key as number) : undefined)} />
-                                                    </SortableItem>
-                                                )
-                                            })
-                                        }
-                                </SortableContext>
-                            </DndContext>
-                    )
-                
-                }
-                {
+                    mutableDayExercises.length > 0 && 
+                        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                            <SortableContext 
+                                items={mutableDayExercises.map(item => item.id.toString()).filter((id): id is string => id !== undefined && id !== null)} 
+                                strategy={verticalListSortingStrategy}>
+                                    {
+                                        mutableDayExercises.map((mutableDayExercise) => {
+                                            const item = {
+                                                key: mutableDayExercise.id,
+                                                label: (
+                                                    <div className="flex justify-end dark:text-white">
+                                                        {mutableDayExercise.exercise?.name}
+                                                    </div>
+                                                ),
+                                                children: (
+                                                    <div>
+                                                        <ExerciseContent 
+                                                            dayId={props.dayId} 
+                                                            exerciseId={mutableDayExercise.id} 
+                                                            dayExercise={mutableDayExercise} 
+                                                            saveExercises={saveExercises}
+                                                            deleteExercise={deleteExercise}
+                                                            isNew={!mutableDayExercise.exercise?.name}
+                                                        />
+                                                    </div>
+                                                ),
+                                            };
+                                            return (
+                                                <SortableItem 
+                                                    key={mutableDayExercise.id} 
+                                                    id={mutableDayExercise.id.toString()}>
+                                                    <Collapse items={[item]} activeKey={item.key === activeKey ? item.key : undefined} onChange={() => setActiveKey(item.key !== activeKey ? (item.key as number) : undefined)} />
+                                                </SortableItem>
+                                            )
+                                        })
+                                    }
+                            </SortableContext>
+                        </DndContext>
                 }
             </div>
         </>

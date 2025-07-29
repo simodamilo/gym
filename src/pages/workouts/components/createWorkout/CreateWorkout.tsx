@@ -89,6 +89,11 @@ export const CreateWorkout = (props: CreateWorkoutProps) => {
         dispatch(draftActions.deleteDay(dayId));
     };
 
+    const publishWorkout = () => {
+        dispatch(draftActions.publishDraftWorkout());
+        props.setOpenCreateWorkout(false);
+    }
+
     if (isLoadingWorkout && !draftWorkout) {
         return <Skeleton />;
     }
@@ -124,13 +129,13 @@ export const CreateWorkout = (props: CreateWorkoutProps) => {
                             })}
                         </div>
                     ) : (
-                        <div>No Draft available</div>
+                        <div>{t('workouts.create_workout.no_draft')}</div>
                     )}
                     <div className="sticky bottom-0 flex flex-col gap-2">
                         <Button type="default" block onClick={handleAddDay}>
                             {t("workouts.create_workout.add_day_btn")}
                         </Button>
-                        <Button type="primary" className="bg-brand-primary" block>
+                        <Button type="primary" className="bg-brand-primary" block onClick={publishWorkout}>
                             {t("workouts.create_workout.publish_btn")}
                         </Button>
                     </div>

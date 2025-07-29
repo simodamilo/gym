@@ -14,13 +14,17 @@
             "title": "Days",
             "add_day_btn": "Add Day",
             "publish_btn": "Publish",
-            "day_name_placeholder": "Day Name"
+            "day_name_placeholder": "Day Name",
+            "no_draft": "No draft available"
         },
         "exercises": {
             "category_placeholder": "Select a category",
             "exercise_placeholder": "Select an exercise",
             "set_title": "Sets",
             "reps_placeholder": "Add the number of reps",
+            "rest_placeholder": "Add the rest",
+            "rest_label": "Rest",
+            "notes_placeholder": "Add a note",
             "save_btn": "Save",
             "new_exercise_title": "New exercise"
         }

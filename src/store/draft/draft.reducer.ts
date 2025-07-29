@@ -1,5 +1,5 @@
 import { createReducer } from "@reduxjs/toolkit";
-import type { Day, DayExercise, DraftState } from "./types";
+import type { Day, DraftState } from "./types";
 import { draftActions } from "./draft.actions";
 import { workoutMapper } from "./draft.mapper";
 
@@ -114,32 +114,15 @@ export const draftReducer = {
                 state.isLoadingExercises = true;
                 state.currentRequestId = action.meta.requestId;
             })
-            .addCase(draftActions.deleteExercise.fulfilled, (state, action) => {
+            .addCase(draftActions.deleteExercise.fulfilled, (state) => {
                 state.isLoadingExercises = false;
-                if (!action.payload || !state.draftWorkout) return;
-
-                const dayToUpdate = state.draftWorkout.days.find(day => day.id === action.payload.dayId);
-                let newDayExercises: DayExercise[] = dayToUpdate?.dayExercises || [];
-                newDayExercises = newDayExercises.filter((dayExercise) => dayExercise.id !== action.payload.dayExerciseId);
-
-                if (state.draftWorkout) {
-                    state.draftWorkout = {
-                        ...state.draftWorkout,
-                        days: state.draftWorkout.days.map((day) => {
-                            if (day.id === dayToUpdate?.id) {
-                                return {
-                                    ...day,
-                                    day_exercises: newDayExercises
-                                }
-                            }
-                            return day
-                        })
-                    };
-                }
             })
             .addCase(draftActions.deleteExercise.rejected, (state) => {
                 state.isLoadingExercises = false;
                 state.isError = true;
+            })
+            .addCase(draftActions.resetDraft, (state) => {
+                state.draftWorkout = undefined;
             });
     }),
 };

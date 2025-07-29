@@ -10,6 +10,8 @@ import { Button, Input, Select } from "antd";
 import type { Category } from "../../../../store/categories/types";
 import type { DayExercise, Set } from "../../../../store/draft/types";
 import { DeleteOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
+import { draftSelectors } from "../../../../store/draft/draft.selectors";
+import TextArea from "antd/es/input/TextArea";
 
 export interface ExerciseContentProps {
     dayId: number;
@@ -26,17 +28,16 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
     const { t } = useTranslation();
 
     const [dayExercise, setDayExercise] = useState<DayExercise>(props.dayExercise);
-    console.log('TEST', dayExercise);
     const [selectedCategory, setSelectedCategory] = useState<number>();
-    const [selectedExercise, setSelectedExercise] = useState<number>();
 
     const exercises = useSelector((state: RootState) => exercisesSelectors.getExercises(state));
     const categories = useSelector((state: RootState) => categoriesSelectors.getCategories(state));
-
+    const isLoadingExercises: boolean = useSelector((state: RootState) => draftSelectors.isLoadingExercises(state));
+    
     useEffect(() => {
         if (props.dayExercise) {
+            setDayExercise(props.dayExercise);
             setSelectedCategory(props.dayExercise.exercise?.category_id);
-            setSelectedExercise(props.dayExercise.exercise?.id);
         }
     }, [props.dayExercise]);
 
@@ -55,7 +56,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
     };
 
     const hasValidFields = (): boolean => {
-        return !!selectedCategory && !!selectedExercise;
+        return !!selectedCategory;
     }
 
     const addSet = () => {
@@ -105,30 +106,34 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
     }
 
     return (
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
                 <Select
                     allowClear
-                    className="w-full md:w-xl"
+                    className="w-full md:w-xl text-left"
                     placeholder={t("workouts.exercises.category_placeholder")}
                     value={selectedCategory}
                     onChange={(value) => {
-                        setSelectedCategory(value ? Number(value) : undefined);
-                        setSelectedExercise(undefined);
+                        setSelectedCategory(value !== undefined ? Number(value) : undefined);
+                        setDayExercise({
+                            ...dayExercise,
+                            id: props.dayExercise.id,
+                            orderNumber: props.dayExercise.orderNumber,
+                            exercise: undefined
+                        })
                     }}
                     options={categories.map((category: Category) => ({
                         label: category.name[0].toUpperCase() + category.name.slice(1),
                         value: category.id,
                     }))}
-                    disabled={props.isReadOnly}
+                    disabled={props.isReadOnly || isLoadingExercises}
                 />
                 <Select
                     allowClear
-                    className="w-full md:w-xl"
+                    className="w-full md:w-xl text-left"
                     placeholder={t("workouts.exercises.exercise_placeholder")}
-                    value={selectedExercise}
+                    value={dayExercise.exercise?.id}
                     onChange={(value) => {
-                        setSelectedExercise(value ? Number(value) : undefined);
                         setDayExercise({
                             ...dayExercise,
                             id: props.dayExercise.id,
@@ -142,40 +147,72 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                             label: exercise.name[0].toUpperCase() + exercise.name.slice(1),
                             value: exercise.id,
                         }))}
-                    disabled={props.isReadOnly || !selectedCategory}
+                    disabled={props.isReadOnly || !selectedCategory || isLoadingExercises}
                 />
             </div>
-            <div className="flex flex-col gap-4">
-                <p>{t("workouts.exercises.set_title")}</p>
-                {dayExercise.sets?.map((set: Set) => {
-                    return (
-                        <div key={set.id} className="flex gap-4 items-center">
-                            <p>{set.setNumber}</p>
+            <div className="flex flex-col gap-2 border rounded-md border-[#FFEAD8] p-3">
+                <p className="text-lg text-left">{t("workouts.exercises.set_title")}</p>
+                {
+                    [...(dayExercise.sets ?? [])].sort((a, b) => a.setNumber - b.setNumber).map((set: Set) => {
+                        return (
                             <Input 
+                                key={set.id}
+                                addonBefore={set.setNumber}
                                 placeholder={t("workouts.exercises.reps_placeholder")}
                                 value={set.reps}
                                 onChange={(input) => updateSet(Number(input.target.value), set.id)}
                                 type="number"
+                                disabled={isLoadingExercises}
                             />
-                        </div>
-                    );
-                })}
+                        );
+                    })
+                }
                 <div className="flex justify-between">
                     <Button 
                         type="primary" 
                         icon={<MinusOutlined />}  
                         shape="circle"
                         onClick={removeSet}
-                        disabled={dayExercise.sets.length === 0}
+                        disabled={dayExercise.sets.length === 0 || isLoadingExercises}
                     />
                     <Button 
                         type="primary" 
                         icon={<PlusOutlined />}  
                         shape="circle"
                         onClick={addSet}
+                        disabled={isLoadingExercises}
                     />
                 </div>
             </div>
+            <Input 
+                addonBefore={t("workouts.exercises.rest_label")}    
+                placeholder={t("workouts.exercises.rest_placeholder")}
+                value={dayExercise.rest}
+                onChange={(input) => {
+                    setDayExercise((prevState) => {
+                        return {
+                            ...prevState,
+                            rest: Number(input.target.value)
+                        }
+                    });
+                }}
+                type="number"
+                disabled={isLoadingExercises}
+            />
+            <TextArea
+                rows={4}
+                value={dayExercise.notes}
+                onChange={(input) => {
+                    setDayExercise((prevState) => {
+                        return {
+                            ...prevState,
+                            notes: input.target.value
+                        }
+                    });
+                }}
+                placeholder={t("workouts.exercises.notes_placeholder")}
+                disabled={isLoadingExercises}
+            />
             <div className="flex gap-4">
                 <Button 
                     type="primary" 

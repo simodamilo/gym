@@ -1,4 +1,4 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { supabase } from "../supabaseClient";
 import type { RootState } from "../reducer.config";
 import { getNotificationApi } from "../../utils/notificationService";
@@ -10,7 +10,7 @@ const fetchDraftWorkout = createAsyncThunk("data/fetchDraftWorkout", async (_arg
         if (state.draft.isLoadingWorkout && thunkAPI.requestId !== state.draft.currentRequestId) {
             return;
         }
-        const { data } = await supabase
+        const { data, error } = await supabase
             .from("workouts")
             .select(
                 `
@@ -19,17 +19,22 @@ const fetchDraftWorkout = createAsyncThunk("data/fetchDraftWorkout", async (_arg
                             id, 
                             exercise_id,
                             order_number,
+                            rest, 
+                            notes,
                             exercises (
                                 id, name, category_id
                             ), 
                             day_exercise_sets (
-                                id, set_number, reps, weight, notes
+                                id, set_number, reps, weight
                             )
                         )
                     )
                 `
             )
             .eq("status", "draft");
+        if (error) {
+            throw Error('Error in get draft workout');
+        }
         if (!data || !data[0]) {
             thunkAPI.dispatch(createDraftWorkout());
         }
@@ -53,6 +58,25 @@ const createDraftWorkout = createAsyncThunk("data/createDraftWorkout", async (_a
                 `
             );
         return data;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+});
+
+const publishDraftWorkout = createAsyncThunk("data/publishDraftWorkout", async (_arg, thunkAPI) => {
+    try {
+        await supabase
+            .from("workouts")
+            .update({ status: "archived" })
+            .eq("status", "published");
+        await supabase
+            .from("workouts")
+            .update({ status: "published" })
+            .eq("status", "draft");
+
+        thunkAPI.dispatch(resetDraft());
+        return;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         return thunkAPI.rejectWithValue(error.message);
@@ -99,18 +123,19 @@ const upsertExercises = createAsyncThunk("data/upsertExercise",
                         set_number: set.setNumber,
                         reps: set.reps!,
                         weight: set.weight,
-                        notes: set.notes
+                        day_id: payloadData.dayId
                     }
                 })
 
                 await supabase
                     .from("day_exercise_sets")
                     .delete()
-                    .eq("day_exercise_id", payloadData.dayExercises[0].id);
+                    .eq("day_exercise_id", payloadData.dayExercises[0].id)
+                    .eq("day_id", payloadData.dayId);
                 await supabase
                     .from("day_exercise_sets")
                     .upsert(payloadDayExerciseSets, {
-                        onConflict: "id, day_exercise_id",
+                        onConflict: "id, day_exercise_id, day_id",
                     });
             }
 
@@ -119,14 +144,16 @@ const upsertExercises = createAsyncThunk("data/upsertExercise",
                     id: dayExercise.id,
                     day_id: payloadData.dayId,
                     order_number: dayExercise.orderNumber,
-                    exercise_id: dayExercise.exercise!.id
+                    exercise_id: dayExercise.exercise!.id,
+                    rest: dayExercise.rest,
+                    notes: dayExercise.notes
                 }
             });
 
             await supabase
                 .from("day_exercises")
                 .upsert(payloadDayExercises, {
-                    onConflict: "id",
+                    onConflict: "id, day_id",
                 });
 
             getNotificationApi().success({
@@ -142,26 +169,28 @@ const upsertExercises = createAsyncThunk("data/upsertExercise",
         }
 });
 
-const deleteExercise = createAsyncThunk("data/deleteExercise", async (payload: { dayExerciseId: number, dayId: number}, thunkAPI) => {
+const deleteExercise = createAsyncThunk("data/deleteExercise", async (dayExerciseId: number, thunkAPI) => {
     try {
-        await supabase.from("day_exercises").delete().eq("id", payload.dayExerciseId);
-        return {
-            dayId: payload.dayId,
-            dayExerciseId: payload.dayExerciseId
-        };
+        await supabase.from("day_exercises").delete().eq("id", dayExerciseId);
+        await thunkAPI.dispatch(fetchDraftWorkout());
+        return;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         return thunkAPI.rejectWithValue(error.message);
     }
 });
 
+const resetDraft = createAction("data/resetDraft");
+
 const draftActions = {
     fetchDraftWorkout,
     createDraftWorkout,
+    publishDraftWorkout,
     upsertDay,
     deleteDay,
     upsertExercises,
-    deleteExercise
+    deleteExercise,
+    resetDraft
 };
 
 export { draftActions };

@@ -16,13 +16,14 @@ const getDraftWorkoutDataMapper = (response: any): Workout => {
                     return {
                         id: day_exercise.id,
                         orderNumber: day_exercise.order_number,
+                        rest: day_exercise.rest,
+                        notes: day_exercise.notes,
                         sets: day_exercise.day_exercise_sets.map((set) => {
                             return {
                                 id: set.id,
                                 setNumber: set.set_number,
                                 reps: set.reps,
                                 weight: set.weight,
-                                notes: set.notes
                             }
                         }),
                         exercise: {
@@ -42,13 +43,14 @@ const getDayExerciseDataMapper = (response: DayExerciseResponse[]): DayExercise[
         return {
             id: dayExercise.id,
             orderNumber: dayExercise.order_number,
+            rest: dayExercise.rest,
+            notes: dayExercise.notes,
             sets: dayExercise.day_exercise_sets.map((set) => {
                 return {
                     id: set.id,
                     setNumber: set.set_number,
                     reps: set.reps,
                     weight: set.weight,
-                    notes: set.notes
                 }
             }),
             exercise: {
