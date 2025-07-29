@@ -6,7 +6,7 @@ const getDraftWorkout = (state: RootState): Workout | undefined => {
 };
 
 const getDraftExercisesByDayId = (state: RootState, dayId: number): DayExercise[] => {
-    return state.draft.draftWorkout?.days.find((day) => day.id === dayId)?.day_exercises || [];
+    return state.draft.draftWorkout?.days.find((day) => day.id === dayId)?.dayExercises || [];
 };
 
 const isLoadingWorkout = (state: RootState): boolean => {
@@ -17,9 +17,14 @@ const isLoadingDays = (state: RootState): boolean => {
     return state.draft.isLoadingDays;
 };
 
+const isLoadingExercises = (state: RootState): boolean => {
+    return state.draft.isLoadingExercises;
+};
+
 export const draftSelectors = {
     getDraftWorkout,
     isLoadingWorkout,
     isLoadingDays,
+    isLoadingExercises,
     getDraftExercisesByDayId,
 };

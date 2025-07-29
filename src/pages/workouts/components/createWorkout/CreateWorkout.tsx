@@ -46,7 +46,7 @@ export const CreateWorkout = (props: CreateWorkoutProps) => {
                 id: prevDays.length + 1,
                 name: "",
                 exercises: [],
-                day_exercises: [],
+                dayExercises: [],
             },
         ]);
 
@@ -89,7 +89,12 @@ export const CreateWorkout = (props: CreateWorkoutProps) => {
         dispatch(draftActions.deleteDay(dayId));
     };
 
-    if (isLoadingWorkout) {
+    const publishWorkout = () => {
+        dispatch(draftActions.publishDraftWorkout());
+        props.setOpenCreateWorkout(false);
+    }
+
+    if (isLoadingWorkout && !draftWorkout) {
         return <Skeleton />;
     }
 
@@ -106,7 +111,7 @@ export const CreateWorkout = (props: CreateWorkoutProps) => {
                         <div ref={scrollContainerRef} className="flex-1 overflow-y-auto flex flex-col gap-2">
                             {days.map((day, index) => {
                                 return (
-                                    <div key={index} className="p-3 border rounded-xl">
+                                    <div key={index} className="p-3 border border-[#FFEAD8] shadow-md rounded-xl">
                                         <Input
                                             size="small"
                                             placeholder={t("workouts.create_workout.day_name_placeholder")}
@@ -124,13 +129,13 @@ export const CreateWorkout = (props: CreateWorkoutProps) => {
                             })}
                         </div>
                     ) : (
-                        <div>No Draft available</div>
+                        <div>{t('workouts.create_workout.no_draft')}</div>
                     )}
                     <div className="sticky bottom-0 flex flex-col gap-2">
                         <Button type="default" block onClick={handleAddDay}>
                             {t("workouts.create_workout.add_day_btn")}
                         </Button>
-                        <Button type="primary" block>
+                        <Button type="primary" className="bg-brand-primary" block onClick={publishWorkout}>
                             {t("workouts.create_workout.publish_btn")}
                         </Button>
                     </div>

@@ -1,6 +1,7 @@
 import { createReducer } from "@reduxjs/toolkit";
 import type { Day, DraftState } from "./types";
 import { draftActions } from "./draft.actions";
+import { workoutMapper } from "./draft.mapper";
 
 const draftState: DraftState = {
     currentWorkout: undefined,
@@ -8,6 +9,7 @@ const draftState: DraftState = {
     historyWorkouts: [],
     isLoadingWorkout: false,
     isLoadingDays: false,
+    isLoadingExercises: false,
     isError: false,
 };
 
@@ -20,7 +22,10 @@ export const draftReducer = {
             })
             .addCase(draftActions.fetchDraftWorkout.fulfilled, (state, action) => {
                 state.isLoadingWorkout = false;
-                state.draftWorkout = action.payload ? action.payload[0] : state.draftWorkout;
+                if (action.payload && action.payload[0]) {
+                    const mappedWorkout = workoutMapper.getDraftWorkoutDataMapper(action.payload[0]);
+                    state.draftWorkout = mappedWorkout;
+                }
             })
             .addCase(draftActions.fetchDraftWorkout.rejected, (state) => {
                 state.isLoadingWorkout = false;
@@ -32,7 +37,10 @@ export const draftReducer = {
             })
             .addCase(draftActions.createDraftWorkout.fulfilled, (state, action) => {
                 state.isLoadingWorkout = false;
-                state.draftWorkout = action.payload ? action.payload[0] : state.draftWorkout;
+                if (action.payload && action.payload[0]) {
+                    const mappedWorkout = workoutMapper.getDraftWorkoutDataMapper(action.payload[0]);
+                    state.draftWorkout = mappedWorkout;
+                }
             })
             .addCase(draftActions.createDraftWorkout.rejected, (state) => {
                 state.isLoadingWorkout = false;
@@ -90,6 +98,31 @@ export const draftReducer = {
             .addCase(draftActions.deleteDay.rejected, (state) => {
                 state.isLoadingDays = false;
                 state.isError = true;
+            })
+            .addCase(draftActions.upsertExercises.pending, (state, action) => {
+                state.isLoadingExercises = true;
+                state.currentRequestId = action.meta.requestId;
+            })
+            .addCase(draftActions.upsertExercises.fulfilled, (state) => {
+                state.isLoadingExercises = false;                
+            })
+            .addCase(draftActions.upsertExercises.rejected, (state) => {
+                state.isLoadingExercises = false;
+                state.isError = true;
+            })
+            .addCase(draftActions.deleteExercise.pending, (state, action) => {
+                state.isLoadingExercises = true;
+                state.currentRequestId = action.meta.requestId;
+            })
+            .addCase(draftActions.deleteExercise.fulfilled, (state) => {
+                state.isLoadingExercises = false;
+            })
+            .addCase(draftActions.deleteExercise.rejected, (state) => {
+                state.isLoadingExercises = false;
+                state.isError = true;
+            })
+            .addCase(draftActions.resetDraft, (state) => {
+                state.draftWorkout = undefined;
             });
     }),
 };
