@@ -1,35 +1,29 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css";
+import { Routes, Route } from "react-router-dom";
+import { Profile } from "./pages/profile/Profile";
+import { Exercises } from "./pages/exercises/Exercises";
+import { Provider } from "react-redux";
+import store from "./store/store.config";
+import "./utils/i18n/i18n";
+import { Navbar } from "./components/navbar/Navbar";
+import { Workouts } from "./pages/workouts/Workouts";
+import { NotificationProvider } from "./components/notificationProvider/NotificationProvider";
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    return (
+        <NotificationProvider>
+            <Provider store={store}>
+                <div className="h-full w-full flex flex-col items-center">
+                    <Navbar />
+                    <Routes>
+                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/workouts" element={<Workouts />} />
+                        <Route path="/exercises" element={<Exercises />} />
+                    </Routes>
+                </div>
+            </Provider>
+        </NotificationProvider>
+    );
 }
 
-export default App
+export default App;

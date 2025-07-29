@@ -1,0 +1,32 @@
+{
+    "common": {
+        "back_btn": "Back"
+    },
+    "exercises": {
+        "category_placeholder": "Select a category",
+        "name_placeholder": "Add a new exercise",
+        "add_exercise_btn": "Add"
+    },
+    "workouts": {
+        "current_tab": "Current",
+        "history_tab": "History",
+        "create_workout": {
+            "title": "Days",
+            "add_day_btn": "Add Day",
+            "publish_btn": "Publish",
+            "day_name_placeholder": "Day Name",
+            "no_draft": "No draft available"
+        },
+        "exercises": {
+            "category_placeholder": "Select a category",
+            "exercise_placeholder": "Select an exercise",
+            "set_title": "Sets",
+            "reps_placeholder": "Add the number of reps",
+            "rest_placeholder": "Add the rest",
+            "rest_label": "Rest",
+            "notes_placeholder": "Add a note",
+            "save_btn": "Save",
+            "new_exercise_title": "New exercise"
+        }
+    }
+}
