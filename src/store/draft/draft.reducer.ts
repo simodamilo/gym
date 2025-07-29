@@ -21,11 +21,11 @@ export const draftReducer = {
                 state.currentRequestId = action.meta.requestId;
             })
             .addCase(draftActions.fetchDraftWorkout.fulfilled, (state, action) => {
+                state.isLoadingWorkout = false;
                 if (action.payload && action.payload[0]) {
                     const mappedWorkout = workoutMapper.getDraftWorkoutDataMapper(action.payload[0]);
                     state.draftWorkout = mappedWorkout;
                 }
-                state.isLoadingWorkout = false;
             })
             .addCase(draftActions.fetchDraftWorkout.rejected, (state) => {
                 state.isLoadingWorkout = false;
@@ -37,7 +37,10 @@ export const draftReducer = {
             })
             .addCase(draftActions.createDraftWorkout.fulfilled, (state, action) => {
                 state.isLoadingWorkout = false;
-                state.draftWorkout = action.payload ? action.payload[0] : state.draftWorkout;
+                if (action.payload && action.payload[0]) {
+                    const mappedWorkout = workoutMapper.getDraftWorkoutDataMapper(action.payload[0]);
+                    state.draftWorkout = mappedWorkout;
+                }
             })
             .addCase(draftActions.createDraftWorkout.rejected, (state) => {
                 state.isLoadingWorkout = false;
@@ -100,42 +103,8 @@ export const draftReducer = {
                 state.isLoadingExercises = true;
                 state.currentRequestId = action.meta.requestId;
             })
-            .addCase(draftActions.upsertExercises.fulfilled, (state, action) => {
-                state.isLoadingExercises = false;
-                if (!action.payload || !state.draftWorkout) return;
-
-                const updatedDay = state.draftWorkout.days.find(
-                    (day: Day) => day.id === action.payload[0].day_id
-                );
-
-                if (updatedDay) {
-                    if (action.payload.length !== 1) {
-                        state.draftWorkout = {
-                            ...state.draftWorkout,
-                            days: state.draftWorkout.days.map((day) =>
-                                day.id === updatedDay.id ? 
-                                    { 
-                                        ...updatedDay, 
-                                        day_exercises: workoutMapper.getDayExerciseDataMapper(action.payload) 
-                                    } : 
-                                    day
-                            ),
-                        };
-                    } else {
-                        state.draftWorkout = {
-                            ...state.draftWorkout,
-                            days: state.draftWorkout.days.map((day) =>
-                                day.id === updatedDay.id ? 
-                                    { 
-                                        ...updatedDay, 
-                                        day_exercises: [ ...day.day_exercises, workoutMapper.getDayExerciseDataMapper(action.payload)[0] ] 
-                                    } : 
-                                    day
-                            ),
-                        };
-                    }
-                }
-                
+            .addCase(draftActions.upsertExercises.fulfilled, (state) => {
+                state.isLoadingExercises = false;                
             })
             .addCase(draftActions.upsertExercises.rejected, (state) => {
                 state.isLoadingExercises = false;
@@ -150,7 +119,7 @@ export const draftReducer = {
                 if (!action.payload || !state.draftWorkout) return;
 
                 const dayToUpdate = state.draftWorkout.days.find(day => day.id === action.payload.dayId);
-                let newDayExercises: DayExercise[] = dayToUpdate?.day_exercises || [];
+                let newDayExercises: DayExercise[] = dayToUpdate?.dayExercises || [];
                 newDayExercises = newDayExercises.filter((dayExercise) => dayExercise.id !== action.payload.dayExerciseId);
 
                 if (state.draftWorkout) {

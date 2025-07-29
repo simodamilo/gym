@@ -19,6 +19,8 @@
         "exercises": {
             "category_placeholder": "Select a category",
             "exercise_placeholder": "Select an exercise",
+            "set_title": "Sets",
+            "reps_placeholder": "Add the number of reps",
             "save_btn": "Save",
             "new_exercise_title": "New exercise"
         }

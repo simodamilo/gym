@@ -6,16 +6,25 @@ const getDraftWorkoutDataMapper = (response: any): Workout => {
         name: response.name,
         status: response.status,
         description: response.description,
-        created_at: response.created_at,
+        createdAt: response.created_at,
         days: response.days.map((day: any) => {
             return {
                 id: day.id,
                 name: day.name,
                 created_at: day.created_at,
-                day_exercises: day.day_exercises.map((day_exercise: DayExerciseResponse) => {
+                dayExercises: day.day_exercises.map((day_exercise: DayExerciseResponse) => {
                     return {
                         id: day_exercise.id,
-                        order_number: day_exercise.order_number,
+                        orderNumber: day_exercise.order_number,
+                        sets: day_exercise.day_exercise_sets.map((set) => {
+                            return {
+                                id: set.id,
+                                setNumber: set.set_number,
+                                reps: set.reps,
+                                weight: set.weight,
+                                notes: set.notes
+                            }
+                        }),
                         exercise: {
                             id: day_exercise.exercises.id,
                             name: day_exercise.exercises.name,
@@ -32,7 +41,16 @@ const getDayExerciseDataMapper = (response: DayExerciseResponse[]): DayExercise[
     return response.map((dayExercise: DayExerciseResponse) => {
         return {
             id: dayExercise.id,
-            order_number: dayExercise.order_number,
+            orderNumber: dayExercise.order_number,
+            sets: dayExercise.day_exercise_sets.map((set) => {
+                return {
+                    id: set.id,
+                    setNumber: set.set_number,
+                    reps: set.reps,
+                    weight: set.weight,
+                    notes: set.notes
+                }
+            }),
             exercise: {
                 id: dayExercise.exercises.id,
                 name: dayExercise.exercises.name,

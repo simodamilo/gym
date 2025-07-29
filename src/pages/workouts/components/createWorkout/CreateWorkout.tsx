@@ -46,7 +46,7 @@ export const CreateWorkout = (props: CreateWorkoutProps) => {
                 id: prevDays.length + 1,
                 name: "",
                 exercises: [],
-                day_exercises: [],
+                dayExercises: [],
             },
         ]);
 
@@ -89,7 +89,7 @@ export const CreateWorkout = (props: CreateWorkoutProps) => {
         dispatch(draftActions.deleteDay(dayId));
     };
 
-    if (isLoadingWorkout) {
+    if (isLoadingWorkout && !draftWorkout) {
         return <Skeleton />;
     }
 

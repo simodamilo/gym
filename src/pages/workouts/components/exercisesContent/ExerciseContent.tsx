@@ -6,10 +6,10 @@ import { exercisesSelectors } from "../../../../store/exercises/exercises.select
 import { categoriesSelectors } from "../../../../store/categories/categories.selector";
 import { exercisesActions } from "../../../../store/exercises/exercises.action";
 import { categoriesActions } from "../../../../store/categories/categories.actions";
-import { Button, Select } from "antd";
+import { Button, Input, Select } from "antd";
 import type { Category } from "../../../../store/categories/types";
-import type { DayExercise } from "../../../../store/draft/types";
-import { DeleteOutlined } from "@ant-design/icons";
+import type { DayExercise, Set } from "../../../../store/draft/types";
+import { DeleteOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
 
 export interface ExerciseContentProps {
     dayId: number;
@@ -26,8 +26,9 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
     const { t } = useTranslation();
 
     const [dayExercise, setDayExercise] = useState<DayExercise>(props.dayExercise);
-    const [selectedExercise, setSelectedExercise] = useState<number>();
+    console.log('TEST', dayExercise);
     const [selectedCategory, setSelectedCategory] = useState<number>();
+    const [selectedExercise, setSelectedExercise] = useState<number>();
 
     const exercises = useSelector((state: RootState) => exercisesSelectors.getExercises(state));
     const categories = useSelector((state: RootState) => categoriesSelectors.getCategories(state));
@@ -40,8 +41,8 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
     }, [props.dayExercise]);
 
     useEffect(() => {
-        getExercises();
         getCategories();
+        getExercises();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -55,6 +56,52 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
 
     const hasValidFields = (): boolean => {
         return !!selectedCategory && !!selectedExercise;
+    }
+
+    const addSet = () => {
+        if (dayExercise.sets) {
+            const newSets: Set[] = [...dayExercise.sets];
+            const highestId: number = Math.max(...newSets.map((set) => set.id), 0) + 1;
+            const newSetNumber: number = Math.max(...newSets.map((set) => set.setNumber), 0) + 1;
+            newSets.push({
+                id: highestId,
+                setNumber: newSetNumber
+            });
+            setDayExercise((prevState) => {
+                return {
+                    ...prevState,
+                    sets: newSets
+                }
+            });
+        }
+    }
+
+    const removeSet = () => {
+        const newSets: Set[] = [...dayExercise.sets];
+        setDayExercise((prevState) => {
+            return {
+                ...prevState,
+                sets: newSets.filter((set) => set.setNumber !== newSets.length)
+            }
+        });
+    }
+
+    const updateSet = (reps: number, setId: number) => {
+        const newSets: Set[] = [...dayExercise.sets];
+        setDayExercise((prevState) => {
+            return {
+                ...prevState,
+                sets: newSets.map((set) => {
+                    if (set.id === setId) {
+                        return {
+                            ...set,
+                            reps: reps
+                        }
+                    }
+                    return set;
+                })
+            }
+        });
     }
 
     return (
@@ -85,7 +132,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                         setDayExercise({
                             ...dayExercise,
                             id: props.dayExercise.id,
-                            order_number: props.dayExercise.order_number,
+                            orderNumber: props.dayExercise.orderNumber,
                             exercise: exercises.find(ex => ex.id === value)
                         })
                     }}
@@ -97,6 +144,37 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                         }))}
                     disabled={props.isReadOnly || !selectedCategory}
                 />
+            </div>
+            <div className="flex flex-col gap-4">
+                <p>{t("workouts.exercises.set_title")}</p>
+                {dayExercise.sets?.map((set: Set) => {
+                    return (
+                        <div key={set.id} className="flex gap-4 items-center">
+                            <p>{set.setNumber}</p>
+                            <Input 
+                                placeholder={t("workouts.exercises.reps_placeholder")}
+                                value={set.reps}
+                                onChange={(input) => updateSet(Number(input.target.value), set.id)}
+                                type="number"
+                            />
+                        </div>
+                    );
+                })}
+                <div className="flex justify-between">
+                    <Button 
+                        type="primary" 
+                        icon={<MinusOutlined />}  
+                        shape="circle"
+                        onClick={removeSet}
+                        disabled={dayExercise.sets.length === 0}
+                    />
+                    <Button 
+                        type="primary" 
+                        icon={<PlusOutlined />}  
+                        shape="circle"
+                        onClick={addSet}
+                    />
+                </div>
             </div>
             <div className="flex gap-4">
                 <Button 

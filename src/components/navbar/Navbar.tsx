@@ -1,4 +1,4 @@
-import { DownOutlined, UpOutlined, UserOutlined } from "@ant-design/icons";
+import { PlayCircleOutlined, UnorderedListOutlined, UserOutlined } from "@ant-design/icons";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -10,8 +10,8 @@ export const Navbar = () => {
 
     const menus = [
         { name: "Profile", icon: <UserOutlined />, dis: "translate-x-0", path: "/profile" },
-        { name: "Workout", icon: <UpOutlined />, dis: "translate-x-16", path: "/workouts" },
-        { name: "Exercise", icon: <DownOutlined />, dis: "translate-x-32", path: "/exercises" },
+        { name: "Workout", icon: <PlayCircleOutlined />, dis: "translate-x-16", path: "/workouts" },
+        { name: "Exercise", icon: <UnorderedListOutlined />, dis: "translate-x-32", path: "/exercises" },
     ];
 
     useEffect(() => {
@@ -28,7 +28,7 @@ export const Navbar = () => {
             default:
                 setActive(0);
         }
-    }, [location]);
+    }, [location.pathname]);
 
     useEffect(() => {
         if (menuRef.current) {
