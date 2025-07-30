@@ -92,7 +92,7 @@ export const CreateWorkout = (props: CreateWorkoutProps) => {
     const publishWorkout = () => {
         dispatch(draftActions.publishDraftWorkout());
         props.setOpenCreateWorkout(false);
-    }
+    };
 
     if (isLoadingWorkout && !draftWorkout) {
         return <Skeleton />;
@@ -113,7 +113,7 @@ export const CreateWorkout = (props: CreateWorkoutProps) => {
                                 return (
                                     <div key={index} className="p-3 border border-[#FFEAD8] shadow-md rounded-xl">
                                         <Input
-                                            size="small"
+                                            className="!text-[16px]"
                                             placeholder={t("workouts.create_workout.day_name_placeholder")}
                                             value={day.name}
                                             onChange={(input) => handleChangeDayName(day.id, input.target.value)}
@@ -129,7 +129,7 @@ export const CreateWorkout = (props: CreateWorkoutProps) => {
                             })}
                         </div>
                     ) : (
-                        <div>{t('workouts.create_workout.no_draft')}</div>
+                        <div>{t("workouts.create_workout.no_draft")}</div>
                     )}
                     <div className="sticky bottom-0 flex flex-col gap-2">
                         <Button type="default" block onClick={handleAddDay}>
