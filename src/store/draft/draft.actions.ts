@@ -79,12 +79,17 @@ const publishDraftWorkout = createAsyncThunk("data/publishDraftWorkout", async (
 
 const upsertDay = createAsyncThunk("data/upsertDay", async (day: UpsertDayPayload, thunkAPI) => {
     try {
-        const { data } = await supabase
+        const { data, error } = await supabase
             .from("days")
             .upsert([day], {
-                onConflict: "id",
+                onConflict: "id, workout_id",
             })
             .select();
+
+        if (error) {
+            throw new Error("Error in adding day");
+        }
+
         getNotificationApi().success({
             message: `Successfully saved`,
             placement: "top",
@@ -106,12 +111,13 @@ const deleteDay = createAsyncThunk("data/deleteDay", async (dayId: number, thunk
     }
 });
 
-const upsertExercises = createAsyncThunk("data/upsertExercise", async (payloadData: { dayExercises: DayExercise[]; dayId: number; isOrderUpdate?: boolean }, thunkAPI) => {
+const upsertExercises = createAsyncThunk("data/upsertExercise", async (payloadData: { dayExercises: DayExercise[]; dayId: number; workoutId: number; isOrderUpdate?: boolean }, thunkAPI) => {
     try {
         const payloadDayExercises: UpsertDayExercisePayload[] = payloadData.dayExercises.map((dayExercise: DayExercise) => {
             return {
                 id: dayExercise.id,
                 day_id: payloadData.dayId,
+                workout_id: payloadData.workoutId,
                 order_number: dayExercise.orderNumber,
                 exercise_id: dayExercise.exercise!.id,
                 rest: dayExercise.rest,

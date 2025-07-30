@@ -2,11 +2,13 @@ import { combineReducers, type Action } from "redux";
 import { exercisesReducer } from "./exercises/exercises.reducer";
 import { categoriesReducer } from "./categories/categories.reducer";
 import { draftReducer } from "./draft/draft.reducer";
+import { currentReducer } from "./current/current.reducer";
 
 const appReducer = combineReducers({
     ...exercisesReducer,
     ...categoriesReducer,
     ...draftReducer,
+    ...currentReducer,
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

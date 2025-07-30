@@ -80,3 +80,13 @@
     max-height: 80vh; /* or suitable max height */
     touch-action: pan-y; /* allow vertical scrolling */
 }
+
+/* ONLY change the skeleton shimmer/lines */
+.ant-skeleton .ant-skeleton-title,
+.ant-skeleton .ant-skeleton-paragraph > li,
+.ant-skeleton .ant-skeleton-avatar,
+.ant-skeleton .ant-skeleton-input,
+.ant-skeleton .ant-skeleton-image,
+.ant-skeleton .ant-skeleton-button {
+    background-color: rgba(255, 255, 255, 0.2) !important; /* adjust brightness */
+}

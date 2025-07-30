@@ -3,7 +3,7 @@ import { draftSelectors } from "../../../../store/draft/draft.selectors";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "../../../../store";
 import { useEffect, useMemo, useState } from "react";
-import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { Collapse } from "antd";
 import { ExerciseContent } from "../exercisesContent/ExerciseContent";
@@ -52,13 +52,12 @@ export const Exercises = (props: ExercisesProps) => {
         })
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handleDragEnd = (event: any) => {
+    const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
 
-        if (active.id !== over.id) {
+        if (active.id !== over?.id) {
             const oldIndex = mutableDayExercises.findIndex((item) => item.id.toString() === active.id);
-            const newIndex = mutableDayExercises.findIndex((item) => item.id.toString() === over.id);
+            const newIndex = mutableDayExercises.findIndex((item) => item.id.toString() === over?.id);
 
             if (oldIndex === mutableDayExercises.length - 1 || newIndex === mutableDayExercises.length - 1) {
                 getNotificationApi().error({
@@ -76,6 +75,14 @@ export const Exercises = (props: ExercisesProps) => {
         }
     };
 
+    const renderItem = (exercise: DayExercise) => ({
+        key: exercise.id,
+        label: <div className="flex justify-end dark:text-white">{exercise.exercise?.name}</div>,
+        children: (
+            <ExerciseContent dayId={props.dayId} exerciseId={exercise.id} dayExercise={exercise} saveExercises={saveExercises} deleteExercise={deleteExercise} isNew={!exercise.exercise?.name} />
+        ),
+    });
+
     const saveNewOrder = async (newItems: DayExercise[]) => {
         const newOrder = newItems.filter((dayExercise) => dayExercise.exercise?.id);
 
@@ -83,6 +90,7 @@ export const Exercises = (props: ExercisesProps) => {
             draftActions.upsertExercises({
                 dayExercises: newOrder,
                 dayId: props.dayId,
+                workoutId: draftWorkout!.id,
                 isOrderUpdate: true,
             })
         );
@@ -93,6 +101,7 @@ export const Exercises = (props: ExercisesProps) => {
             draftActions.upsertExercises({
                 dayExercises: [exercise],
                 dayId: props.dayId,
+                workoutId: draftWorkout!.id,
             })
         );
     };
@@ -117,22 +126,7 @@ export const Exercises = (props: ExercisesProps) => {
                                     strategy={verticalListSortingStrategy}
                                 >
                                     {mutableDayExercises.map((mutableDayExercise) => {
-                                        const item = {
-                                            key: mutableDayExercise.id,
-                                            label: <div className="flex justify-end dark:text-white">{mutableDayExercise.exercise?.name}</div>,
-                                            children: (
-                                                <div>
-                                                    <ExerciseContent
-                                                        dayId={props.dayId}
-                                                        exerciseId={mutableDayExercise.id}
-                                                        dayExercise={mutableDayExercise}
-                                                        saveExercises={saveExercises}
-                                                        deleteExercise={deleteExercise}
-                                                        isNew={!mutableDayExercise.exercise?.name}
-                                                    />
-                                                </div>
-                                            ),
-                                        };
+                                        const item = renderItem(mutableDayExercise);
                                         return (
                                             <SortableItem key={mutableDayExercise.id} id={mutableDayExercise.id.toString()}>
                                                 <Collapse
@@ -148,26 +142,10 @@ export const Exercises = (props: ExercisesProps) => {
                         ) : (
                             <>
                                 {mutableDayExercises.map((mutableDayExercise) => {
-                                    const item = {
-                                        key: mutableDayExercise.id,
-                                        label: <div className="flex justify-end dark:text-white">{mutableDayExercise.exercise?.name}</div>,
-                                        children: (
-                                            <div className="touch-auto">
-                                                <ExerciseContent
-                                                    dayId={props.dayId}
-                                                    exerciseId={mutableDayExercise.id}
-                                                    dayExercise={mutableDayExercise}
-                                                    saveExercises={saveExercises}
-                                                    deleteExercise={deleteExercise}
-                                                    isNew={!mutableDayExercise.exercise?.name}
-                                                />
-                                            </div>
-                                        ),
-                                    };
+                                    const item = renderItem(mutableDayExercise);
                                     return (
                                         <SortableItem key={mutableDayExercise.id} id={mutableDayExercise.id.toString()}>
                                             <Collapse
-                                                className="touch-auto"
                                                 items={[item]}
                                                 activeKey={item.key === activeKey ? item.key : undefined}
                                                 onChange={() => setActiveKey(item.key !== activeKey ? (item.key as number) : undefined)}

@@ -1,9 +1,7 @@
 import type { Exercise } from "../exercises/types";
 
 export type DraftState = {
-    currentWorkout?: Workout;
     draftWorkout?: Workout;
-    historyWorkouts: Workout[];
     isLoadingWorkout: boolean;
     isLoadingDays: boolean;
     isLoadingExercises: boolean;

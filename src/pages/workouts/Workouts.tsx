@@ -3,6 +3,7 @@ import { FloatButton, Radio } from "antd";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CreateWorkout } from "./components/createWorkout/CreateWorkout";
+import { CurrentWorkout } from "./components/currentWorkout/CurrentWorkout";
 
 export const Workouts = () => {
     const { t } = useTranslation();
@@ -23,6 +24,8 @@ export const Workouts = () => {
                             {t("workouts.history_tab")}
                         </Radio.Button>
                     </Radio.Group>
+
+                    {page === "current" ? <CurrentWorkout /> : <div>{t("workouts.history_tab_content")}</div>}
 
                     <FloatButton icon={<PlusOutlined />} onClick={() => setOpenCreateWorkout(true)} style={{ bottom: 80 }} />
                 </>
