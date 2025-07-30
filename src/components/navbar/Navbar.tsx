@@ -16,17 +16,17 @@ export const Navbar = () => {
 
     useEffect(() => {
         switch (location.pathname) {
-            case '/profile':
+            case "/profile":
                 setActive(0);
                 break;
-            case '/workouts':
+            case "/workouts":
                 setActive(1);
                 break;
-            case '/exercises':
+            case "/exercises":
                 setActive(2);
                 break;
             default:
-                setActive(0);
+                setActive(1);
         }
     }, [location.pathname]);
 
