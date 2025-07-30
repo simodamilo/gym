@@ -99,7 +99,7 @@ export const CreateWorkout = (props: CreateWorkoutProps) => {
     }
 
     return (
-        <div className="w-full h-screen max-h-full md:w-3xl flex flex-col justify-between gap-4">
+        <div className="w-full h-full max-h-full md:w-3xl flex flex-col justify-between gap-4">
             {openExercisesId ? (
                 <Exercises dayId={openExercisesId} setOpenExercisesId={setOpenExercisesId} />
             ) : (
