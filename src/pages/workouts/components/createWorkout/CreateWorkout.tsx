@@ -95,7 +95,7 @@ export const CreateWorkout = (props: CreateWorkoutProps) => {
     };
 
     if (isLoadingWorkout && !draftWorkout) {
-        return <Skeleton />;
+        return <Skeleton active />;
     }
 
     return (
@@ -113,7 +113,6 @@ export const CreateWorkout = (props: CreateWorkoutProps) => {
                                 return (
                                     <div key={index} className="p-3 border border-[#FFEAD8] shadow-md rounded-xl">
                                         <Input
-                                            className="!text-[16px]"
                                             placeholder={t("workouts.create_workout.day_name_placeholder")}
                                             value={day.name}
                                             onChange={(input) => handleChangeDayName(day.id, input.target.value)}

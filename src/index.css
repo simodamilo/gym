@@ -14,9 +14,9 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
-    --brand-primary: #4682A9;
-    --brand-secondary: #749BC2;
-    --brand-white: #FFFFFF;
+    --brand-primary: #4682a9;
+    --brand-secondary: #749bc2;
+    --brand-white: #ffffff;
 }
 
 .bg-brand-primary {
@@ -41,7 +41,6 @@ body {
     display: flex;
     place-items: center;
     min-width: 320px;
-    min-height: 100vh;
 }
 
 h1 {

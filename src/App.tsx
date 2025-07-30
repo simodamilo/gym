@@ -13,7 +13,7 @@ function App() {
     return (
         <NotificationProvider>
             <Provider store={store}>
-                <div className="w-full h-full flex flex-col items-center">
+                <div className="w-full flex flex-col items-center">
                     <Navbar />
                     <Routes>
                         <Route path="/profile" element={<Profile />} />

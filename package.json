@@ -5,7 +5,7 @@
   "type": "module",
   "homepage": "https://simodamilo.github.io/gym",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "tsc -b && vite build && cp dist/index.html dist/404.html",
     "lint": "eslint .",
     "preview": "vite preview",
