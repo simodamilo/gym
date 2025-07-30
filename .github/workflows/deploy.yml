@@ -35,3 +35,5 @@ jobs:
                   personal_token: ${{ secrets.PAT_TOKEN }}
                   publish_dir: ./dist
                   force_orphan: true
+                  user_name: simodamilo
+                  user_email: simodamilo@users.noreply.github.com
