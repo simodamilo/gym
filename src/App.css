@@ -66,3 +66,17 @@
     top: 8px;
     right: 8px;
 }
+
+.ant-input,
+.ant-select-selector,
+.ant-select-item,
+.ant-select input {
+    font-size: 16px !important;
+}
+
+.ant-collapse-content > .ant-collapse-content-box {
+    -webkit-overflow-scrolling: touch; /* smooth momentum scroll on iOS */
+    overflow-y: auto;
+    max-height: 80vh; /* or suitable max height */
+    touch-action: pan-y; /* allow vertical scrolling */
+}

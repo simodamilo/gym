@@ -10,7 +10,7 @@ export const Workouts = () => {
     const [openCreateWorkout, setOpenCreateWorkout] = useState<boolean>(false);
 
     return (
-        <div className="w-full h-screen md:w-3xl flex flex-col gap-2 p-4 pb-22">
+        <div className="w-full h-dvh md:w-3xl flex flex-col gap-2 p-4 pb-22">
             {openCreateWorkout ? (
                 <CreateWorkout setOpenCreateWorkout={setOpenCreateWorkout} />
             ) : (

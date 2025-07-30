@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { Profile } from "./pages/profile/Profile";
 import { Exercises } from "./pages/exercises/Exercises";
 import { Provider } from "react-redux";
@@ -13,12 +13,13 @@ function App() {
     return (
         <NotificationProvider>
             <Provider store={store}>
-                <div className="h-full w-full flex flex-col items-center">
+                <div className="w-full flex flex-col items-center">
                     <Navbar />
                     <Routes>
                         <Route path="/profile" element={<Profile />} />
                         <Route path="/workouts" element={<Workouts />} />
                         <Route path="/exercises" element={<Exercises />} />
+                        <Route path="*" element={<Navigate to="/workouts" replace />} />
                     </Routes>
                 </div>
             </Provider>

@@ -92,14 +92,14 @@ export const CreateWorkout = (props: CreateWorkoutProps) => {
     const publishWorkout = () => {
         dispatch(draftActions.publishDraftWorkout());
         props.setOpenCreateWorkout(false);
-    }
+    };
 
     if (isLoadingWorkout && !draftWorkout) {
-        return <Skeleton />;
+        return <Skeleton active />;
     }
 
     return (
-        <div className="w-full h-screen max-h-full md:w-3xl flex flex-col justify-between gap-4">
+        <div className="w-full h-full max-h-full md:w-3xl flex flex-col justify-between gap-4">
             {openExercisesId ? (
                 <Exercises dayId={openExercisesId} setOpenExercisesId={setOpenExercisesId} />
             ) : (
@@ -113,7 +113,6 @@ export const CreateWorkout = (props: CreateWorkoutProps) => {
                                 return (
                                     <div key={index} className="p-3 border border-[#FFEAD8] shadow-md rounded-xl">
                                         <Input
-                                            size="small"
                                             placeholder={t("workouts.create_workout.day_name_placeholder")}
                                             value={day.name}
                                             onChange={(input) => handleChangeDayName(day.id, input.target.value)}
@@ -129,7 +128,7 @@ export const CreateWorkout = (props: CreateWorkoutProps) => {
                             })}
                         </div>
                     ) : (
-                        <div>{t('workouts.create_workout.no_draft')}</div>
+                        <div>{t("workouts.create_workout.no_draft")}</div>
                     )}
                     <div className="sticky bottom-0 flex flex-col gap-2">
                         <Button type="default" block onClick={handleAddDay}>

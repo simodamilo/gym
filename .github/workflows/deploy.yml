@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy to GitHub Pages with Actions
 
 on:
     push:
@@ -32,5 +32,8 @@ jobs:
             - name: Deploy to GitHub Pages
               uses: peaceiris/actions-gh-pages@v3
               with:
-                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  personal_token: ${{ secrets.PAT_TOKEN }}
                   publish_dir: ./dist
+                  force_orphan: true
+                  user_name: simodamilo
+                  user_email: simodamilo@users.noreply.github.com
