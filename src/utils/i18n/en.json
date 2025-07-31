@@ -10,12 +10,12 @@
     "workouts": {
         "current_tab": "Current",
         "history_tab": "History",
-        "create_workout": {
+        "workout": {
             "title": "Days",
             "add_day_btn": "Add Day",
             "publish_btn": "Publish",
             "day_name_placeholder": "Day Name",
-            "no_draft": "No draft available"
+            "no_workout": "Workout is still empty"
         },
         "exercises": {
             "category_placeholder": "Select a category",
@@ -26,7 +26,8 @@
             "rest_label": "Rest",
             "notes_placeholder": "Add a note",
             "save_btn": "Save",
-            "new_exercise_title": "New exercise"
+            "new_exercise_title": "New exercise",
+            "kg": "Kg"
         }
     }
 }

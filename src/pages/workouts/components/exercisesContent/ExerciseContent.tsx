@@ -14,11 +14,11 @@ import { draftSelectors } from "../../../../store/draft/draft.selectors";
 import TextArea from "antd/es/input/TextArea";
 
 export interface ExerciseContentProps {
-    dayId: number;
-    exerciseId: number;
+    dayId: string;
+    exerciseId: string;
     dayExercise: DayExercise;
     saveExercises: (dayExercise: DayExercise) => void;
-    deleteExercise: (dayExerciseId: number) => void;
+    deleteExercise: (dayExerciseId: string) => void;
     isReadOnly?: boolean;
     isNew?: boolean;
 }
@@ -107,54 +107,76 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
 
     return (
         <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-2">
-                <Select
-                    allowClear
-                    className="w-full md:w-xl text-left !text-[16px]"
-                    placeholder={t("workouts.exercises.category_placeholder")}
-                    value={selectedCategory}
-                    onChange={(value) => {
-                        setSelectedCategory(value !== undefined ? Number(value) : undefined);
-                        setDayExercise({
-                            ...dayExercise,
-                            id: props.dayExercise.id,
-                            orderNumber: props.dayExercise.orderNumber,
-                            exercise: undefined,
-                        });
-                    }}
-                    options={categories.map((category: Category) => ({
-                        label: category.name[0].toUpperCase() + category.name.slice(1),
-                        value: category.id,
-                    }))}
-                    disabled={props.isReadOnly || isLoadingExercises}
-                />
-                <Select
-                    allowClear
-                    className="w-full md:w-xl text-left !text-[16px]"
-                    placeholder={t("workouts.exercises.exercise_placeholder")}
-                    value={dayExercise.exercise?.id}
-                    onChange={(value) => {
-                        setDayExercise({
-                            ...dayExercise,
-                            id: props.dayExercise.id,
-                            orderNumber: props.dayExercise.orderNumber,
-                            exercise: exercises.find((ex) => ex.id === value),
-                        });
-                    }}
-                    options={exercises
-                        .filter((exercise) => (selectedCategory ? exercise.category_id === selectedCategory : true))
-                        .map((exercise: Category) => ({
-                            label: exercise.name[0].toUpperCase() + exercise.name.slice(1),
-                            value: exercise.id,
+            {!props.isReadOnly && (
+                <div className="flex flex-col gap-2">
+                    <Select
+                        allowClear
+                        className="w-full md:w-xl text-left !text-[16px]"
+                        placeholder={t("workouts.exercises.category_placeholder")}
+                        value={selectedCategory}
+                        onChange={(value) => {
+                            setSelectedCategory(value !== undefined ? Number(value) : undefined);
+                            setDayExercise({
+                                ...dayExercise,
+                                id: props.dayExercise.id,
+                                orderNumber: props.dayExercise.orderNumber,
+                                exercise: undefined,
+                            });
+                        }}
+                        options={categories.map((category: Category) => ({
+                            label: category.name[0].toUpperCase() + category.name.slice(1),
+                            value: category.id,
                         }))}
-                    disabled={props.isReadOnly || !selectedCategory || isLoadingExercises}
-                />
-            </div>
+                        disabled={props.isReadOnly || isLoadingExercises}
+                    />
+                    <Select
+                        allowClear
+                        className="w-full md:w-xl text-left !text-[16px]"
+                        placeholder={t("workouts.exercises.exercise_placeholder")}
+                        value={dayExercise.exercise?.id}
+                        onChange={(value) => {
+                            setDayExercise({
+                                ...dayExercise,
+                                id: props.dayExercise.id,
+                                orderNumber: props.dayExercise.orderNumber,
+                                exercise: exercises.find((ex) => ex.id === value),
+                            });
+                        }}
+                        options={exercises
+                            .filter((exercise) => (selectedCategory ? exercise.category_id === selectedCategory : true))
+                            .map((exercise: Category) => ({
+                                label: exercise.name[0].toUpperCase() + exercise.name.slice(1),
+                                value: exercise.id,
+                            }))}
+                        disabled={props.isReadOnly || !selectedCategory || isLoadingExercises}
+                    />
+                </div>
+            )}
             <div className="flex flex-col gap-2 border rounded-md border-[#FFEAD8] p-3">
-                <p className="text-lg text-left">{t("workouts.exercises.set_title")}</p>
+                <p className="text-lg/5 text-left">{t("workouts.exercises.set_title")}</p>
                 {[...(dayExercise.sets ?? [])]
                     .sort((a, b) => a.setNumber - b.setNumber)
                     .map((set: Set) => {
+                        if (props.isReadOnly) {
+                            return (
+                                <div key={set.id} className="flex gap-4 w-full">
+                                    <div className="w-[40%]">
+                                        <Input readOnly addonBefore={set.setNumber} value={set.reps} />
+                                    </div>
+                                    <div className="w-[60%]">
+                                        <Input
+                                            key={set.id}
+                                            addonBefore={t("workouts.exercises.kg")}
+                                            placeholder={t("workouts.exercises.reps_placeholder")}
+                                            value={set.reps}
+                                            onChange={(input) => updateSet(Number(input.target.value), set.id)}
+                                            type="number"
+                                            disabled={isLoadingExercises}
+                                        />
+                                    </div>
+                                </div>
+                            );
+                        }
                         return (
                             <Input
                                 key={set.id}
@@ -167,12 +189,15 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                             />
                         );
                     })}
-                <div className="flex justify-between">
-                    <Button type="primary" icon={<MinusOutlined />} shape="circle" onClick={removeSet} disabled={dayExercise.sets.length === 0 || isLoadingExercises} />
-                    <Button type="primary" icon={<PlusOutlined />} shape="circle" onClick={addSet} disabled={isLoadingExercises} />
-                </div>
+                {!props.isReadOnly && (
+                    <div className="flex justify-between">
+                        <Button type="primary" icon={<MinusOutlined />} shape="circle" onClick={removeSet} disabled={dayExercise.sets.length === 0 || isLoadingExercises} />
+                        <Button type="primary" icon={<PlusOutlined />} shape="circle" onClick={addSet} disabled={isLoadingExercises} />
+                    </div>
+                )}
             </div>
             <Input
+                readOnly={props.isReadOnly}
                 addonBefore={t("workouts.exercises.rest_label")}
                 placeholder={t("workouts.exercises.rest_placeholder")}
                 value={dayExercise.rest}
@@ -201,12 +226,14 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                 placeholder={t("workouts.exercises.notes_placeholder")}
                 disabled={isLoadingExercises}
             />
-            <div className="flex gap-4">
-                <Button type="primary" icon={<DeleteOutlined />} danger shape="circle" disabled={props.isNew} onClick={() => props.deleteExercise(props.exerciseId)} />
-                <Button type="primary" block onClick={() => props.saveExercises(dayExercise)} disabled={!hasValidFields()}>
-                    {t("workouts.exercises.save_btn")}
-                </Button>
-            </div>
+            {!props.isReadOnly && (
+                <div className="flex gap-4">
+                    <Button type="primary" icon={<DeleteOutlined />} danger shape="circle" disabled={props.isNew} onClick={() => props.deleteExercise(props.exerciseId)} />
+                    <Button type="primary" block onClick={() => props.saveExercises(dayExercise)} disabled={!hasValidFields()}>
+                        {t("workouts.exercises.save_btn")}
+                    </Button>
+                </div>
+            )}
         </div>
     );
 };

@@ -3,6 +3,7 @@ import { supabase } from "../supabaseClient";
 import type { RootState } from "../reducer.config";
 import { getNotificationApi } from "../../utils/notificationService";
 import type { UpsertDayExercisePayload, UpsertDayPayload, DayExercise, Set, UpsertSetPayload } from "./types";
+import { v4 as uuidv4 } from "uuid";
 
 const fetchDraftWorkout = createAsyncThunk("data/fetchDraftWorkout", async (_arg, thunkAPI) => {
     try {
@@ -14,15 +15,15 @@ const fetchDraftWorkout = createAsyncThunk("data/fetchDraftWorkout", async (_arg
             .from("workouts")
             .select(
                 `
-                    id, name, description, created_at, status, days (
+                    id, name, description, status, created_at, days (
                         id, name, created_at, day_exercises (
                             id, 
-                            exercise_id,
+                            exercises_catalog_id,
                             order_number,
                             rest, 
                             notes,
-                            exercises (
-                                id, name, category_id
+                            exercises_catalog (
+                                id, name, category, description
                             ), 
                             day_exercise_sets (
                                 id, set_number, reps, weight
@@ -32,12 +33,14 @@ const fetchDraftWorkout = createAsyncThunk("data/fetchDraftWorkout", async (_arg
                 `
             )
             .eq("status", "draft");
+
         if (error) {
             throw Error("Error in get draft workout");
         }
         if (!data || !data[0]) {
             thunkAPI.dispatch(createDraftWorkout());
         }
+
         return data;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -49,10 +52,10 @@ const createDraftWorkout = createAsyncThunk("data/createDraftWorkout", async (_a
     try {
         const { data } = await supabase
             .from("workouts")
-            .insert([{ name: "New Workout", status: "draft", created_at: new Date().getMilliseconds() }])
+            .insert([{ id: uuidv4(), name: "New Workout", status: "draft" }])
             .select(
                 `
-                    id, name, description, created_at, status, days (
+                    id, name, description, status, created_at, days (
                         id, name, created_at
                     )
                 `
@@ -101,7 +104,7 @@ const upsertDay = createAsyncThunk("data/upsertDay", async (day: UpsertDayPayloa
     }
 });
 
-const deleteDay = createAsyncThunk("data/deleteDay", async (dayId: number, thunkAPI) => {
+const deleteDay = createAsyncThunk("data/deleteDay", async (dayId: string, thunkAPI) => {
     try {
         await supabase.from("days").delete().eq("id", dayId);
         return dayId;
@@ -111,7 +114,7 @@ const deleteDay = createAsyncThunk("data/deleteDay", async (dayId: number, thunk
     }
 });
 
-const upsertExercises = createAsyncThunk("data/upsertExercise", async (payloadData: { dayExercises: DayExercise[]; dayId: number; workoutId: number; isOrderUpdate?: boolean }, thunkAPI) => {
+const upsertExercises = createAsyncThunk("data/upsertExercise", async (payloadData: { dayExercises: DayExercise[]; dayId: string; workoutId: string; isOrderUpdate?: boolean }, thunkAPI) => {
     try {
         const payloadDayExercises: UpsertDayExercisePayload[] = payloadData.dayExercises.map((dayExercise: DayExercise) => {
             return {
@@ -160,7 +163,7 @@ const upsertExercises = createAsyncThunk("data/upsertExercise", async (payloadDa
     }
 });
 
-const deleteExercise = createAsyncThunk("data/deleteExercise", async (dayExerciseId: number, thunkAPI) => {
+const deleteExercise = createAsyncThunk("data/deleteExercise", async (dayExerciseId: string, thunkAPI) => {
     try {
         await supabase.from("day_exercises").delete().eq("id", dayExerciseId);
         await thunkAPI.dispatch(fetchDraftWorkout());

@@ -10,19 +10,19 @@ export type DraftState = {
 };
 
 export interface Workout {
-    id: number;
+    id: string;
     name: string;
     description?: string;
     status: string;
-    days: Day[];
     createdAt?: number;
+    days: Day[];
 }
 
 export interface Day {
-    id: number;
+    id: string;
     name?: string;
-    dayExercises: DayExercise[];
     createdAt?: number;
+    dayExercises: DayExercise[];
 }
 
 export interface DayExercise {
@@ -43,15 +43,14 @@ export interface Set {
 
 /* Types used for payload to sent to be */
 export interface UpsertDayPayload {
-    id: number;
-    name?: string;
-    workout_id?: number;
-    created_at?: number;
+    id: string;
+    name: string;
+    workout_id: string;
 }
 
 export interface UpsertDayExercisePayload {
-    id: number;
-    day_id: number;
+    id: string;
+    day_id: string;
     order_number: number;
     exercise_id: number;
     rest?: number;
