@@ -1,12 +1,10 @@
 import { combineReducers, type Action } from "redux";
-import { exercisesReducer } from "./exercises/exercises.reducer";
-import { categoriesReducer } from "./categories/categories.reducer";
+import { exercisesReducer } from "./exercisesCatalog/exercisesCatalog.reducer";
 import { draftReducer } from "./draft/draft.reducer";
 import { currentReducer } from "./current/current.reducer";
 
 const appReducer = combineReducers({
     ...exercisesReducer,
-    ...categoriesReducer,
     ...draftReducer,
     ...currentReducer,
 });

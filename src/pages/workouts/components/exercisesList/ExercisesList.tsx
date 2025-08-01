@@ -9,6 +9,7 @@ import { SortableItem } from "../../../../components/sortableItem/SortableItem";
 import type { DayExercise } from "../../../../store/draft/types";
 import { draftActions } from "../../../../store/draft/draft.actions";
 import { getNotificationApi } from "../../../../utils/notificationService";
+import { v4 as uuidv4 } from "uuid";
 
 interface ExercisesProps {
     workoutId: string;
@@ -18,19 +19,18 @@ interface ExercisesProps {
     setOpenExercisesId: (id?: string) => void;
 }
 
-export const Exercises = (props: ExercisesProps) => {
+export const ExercisesList = (props: ExercisesProps) => {
     const dispatch = useAppDispatch();
 
-    const [activeKey, setActiveKey] = useState<number>();
+    const [activeKey, setActiveKey] = useState<string>();
     const [mutableDayExercises, setMutableDayExercises] = useState<DayExercise[]>([]);
 
     useEffect(() => {
         const mutable: DayExercise[] = [...props.dayExercises];
-        const highestId: number = Math.max(...mutable.map((dayExercise) => dayExercise.id), 0) + 1;
         mutable.sort((a: DayExercise, b: DayExercise) => a.orderNumber - b.orderNumber);
         if (!props.isReadOnly) {
             mutable.push({
-                id: highestId,
+                id: uuidv4(),
                 orderNumber: mutable.length + 1,
                 sets: [],
                 rest: undefined,
@@ -143,7 +143,7 @@ export const Exercises = (props: ExercisesProps) => {
                                                 <Collapse
                                                     items={[item]}
                                                     activeKey={item.key === activeKey ? item.key : undefined}
-                                                    onChange={() => setActiveKey(item.key !== activeKey ? (item.key as number) : undefined)}
+                                                    onChange={() => setActiveKey(item.key !== activeKey ? (item.key as string) : undefined)}
                                                 />
                                             </SortableItem>
                                         );
@@ -159,7 +159,7 @@ export const Exercises = (props: ExercisesProps) => {
                                             <Collapse
                                                 items={[item]}
                                                 activeKey={item.key === activeKey ? item.key : undefined}
-                                                onChange={() => setActiveKey(item.key !== activeKey ? (item.key as number) : undefined)}
+                                                onChange={() => setActiveKey(item.key !== activeKey ? (item.key as string) : undefined)}
                                             />
                                         </SortableItem>
                                     );

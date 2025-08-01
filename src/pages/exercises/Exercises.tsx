@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, type RootState } from "../../store";
-import { exercisesActions } from "../../store/exercises/exercises.action";
+import { exercisesActions } from "../../store/exercisesCatalog/exercisesCatalog.action";
 import { useSelector } from "react-redux";
-import { exercisesSelectors } from "../../store/exercises/exercises.selector";
-import type { Exercise } from "../../store/exercises/types";
+import { exercisesSelectors } from "../../store/exercisesCatalog/exercisesCatalog.selector";
+import type { Exercise } from "../../store/exercisesCatalog/types";
 import { Link } from "react-router-dom";
 import { Button, Input, Select } from "antd";
 import { categoriesActions } from "../../store/categories/categories.actions";

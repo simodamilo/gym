@@ -2,9 +2,9 @@ import { useTranslation } from "react-i18next";
 import { useAppDispatch, type RootState } from "../../../../store";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { exercisesSelectors } from "../../../../store/exercises/exercises.selector";
+import { exercisesSelectors } from "../../../../store/exercisesCatalog/exercisesCatalog.selector";
 import { categoriesSelectors } from "../../../../store/categories/categories.selector";
-import { exercisesActions } from "../../../../store/exercises/exercises.action";
+import { exercisesActions } from "../../../../store/exercisesCatalog/exercisesCatalog.action";
 import { categoriesActions } from "../../../../store/categories/categories.actions";
 import { Button, Input, Select } from "antd";
 import type { Category } from "../../../../store/categories/types";
@@ -12,6 +12,7 @@ import type { DayExercise, Set } from "../../../../store/draft/types";
 import { DeleteOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { draftSelectors } from "../../../../store/draft/draft.selectors";
 import TextArea from "antd/es/input/TextArea";
+import { v4 as uuidv4 } from "uuid";
 
 export interface ExerciseContentProps {
     dayId: string;
@@ -62,10 +63,9 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
     const addSet = () => {
         if (dayExercise.sets) {
             const newSets: Set[] = [...dayExercise.sets];
-            const highestId: number = Math.max(...newSets.map((set) => set.id), 0) + 1;
             const newSetNumber: number = Math.max(...newSets.map((set) => set.setNumber), 0) + 1;
             newSets.push({
-                id: highestId,
+                id: uuidv4(),
                 setNumber: newSetNumber,
             });
             setDayExercise((prevState) => {
@@ -87,7 +87,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
         });
     };
 
-    const updateSet = (reps: number, setId: number) => {
+    const updateSet = (reps: number, setId: string) => {
         const newSets: Set[] = [...dayExercise.sets];
         setDayExercise((prevState) => {
             return {

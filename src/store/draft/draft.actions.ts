@@ -17,16 +17,16 @@ const fetchDraftWorkout = createAsyncThunk("data/fetchDraftWorkout", async (_arg
                 `
                     id, name, description, status, created_at, days (
                         id, name, created_at, day_exercises (
-                            id, 
-                            exercises_catalog_id,
+                            id,
                             order_number,
                             rest, 
                             notes,
+                            created_at,
                             exercises_catalog (
-                                id, name, category, description
+                                id, name, category, description, created_at
                             ), 
                             day_exercise_sets (
-                                id, set_number, reps, weight
+                                id, set_number, reps, weight, created_at
                             )
                         )
                     )
@@ -120,9 +120,8 @@ const upsertExercises = createAsyncThunk("data/upsertExercise", async (payloadDa
             return {
                 id: dayExercise.id,
                 day_id: payloadData.dayId,
-                workout_id: payloadData.workoutId,
+                exercises_catalog_id: dayExercise.exercise!.id,
                 order_number: dayExercise.orderNumber,
-                exercise_id: dayExercise.exercise!.id,
                 rest: dayExercise.rest,
                 notes: dayExercise.notes,
             };
@@ -140,13 +139,12 @@ const upsertExercises = createAsyncThunk("data/upsertExercise", async (payloadDa
                     set_number: set.setNumber,
                     reps: set.reps!,
                     weight: set.weight,
-                    day_id: payloadData.dayId,
                 };
             });
 
-            await supabase.from("day_exercise_sets").delete().eq("day_exercise_id", payloadData.dayExercises[0].id).eq("day_id", payloadData.dayId);
+            await supabase.from("day_exercise_sets").delete().eq("day_exercise_id", payloadData.dayExercises[0].id);
             await supabase.from("day_exercise_sets").upsert(payloadDayExerciseSets, {
-                onConflict: "id, day_exercise_id, day_id",
+                onConflict: "id, day_exercise_id",
             });
         }
 

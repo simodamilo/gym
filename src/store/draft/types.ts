@@ -1,4 +1,4 @@
-import type { Exercise } from "../exercises/types";
+import type { Exercise } from "../exercisesCatalog/types";
 
 export type DraftState = {
     draftWorkout?: Workout;
@@ -26,7 +26,7 @@ export interface Day {
 }
 
 export interface DayExercise {
-    id: number;
+    id: string;
     rest?: number;
     orderNumber: number;
     notes?: string;
@@ -35,7 +35,7 @@ export interface DayExercise {
 }
 
 export interface Set {
-    id: number;
+    id: string;
     setNumber: number;
     reps?: number;
     weight?: number;
@@ -51,15 +51,15 @@ export interface UpsertDayPayload {
 export interface UpsertDayExercisePayload {
     id: string;
     day_id: string;
+    exercises_catalog_id: string;
     order_number: number;
-    exercise_id: number;
     rest?: number;
     notes?: string;
 }
 
 export interface UpsertSetPayload {
-    id: number;
-    day_exercise_id: number;
+    id: string;
+    day_exercise_id: string;
     set_number: number;
     reps: number;
     weight?: number;
@@ -67,10 +67,10 @@ export interface UpsertSetPayload {
 
 /* Types used for reponse returned from be */
 export interface DayExerciseResponse {
-    id: number;
-    day_id: number;
+    id: string;
+    day_id: string;
     order_number: number;
-    exercise_id: number;
+    exercise_id: string;
     rest?: number;
     notes?: string;
     exercises: Exercise;
@@ -78,7 +78,7 @@ export interface DayExerciseResponse {
 }
 
 export interface SetResponse {
-    id: number;
+    id: string;
     set_number: number;
     reps: number;
     weight?: number;

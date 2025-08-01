@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, type RootState } from "../../../../store";
 import { Button, Input, Skeleton } from "antd";
-import { Exercises } from "../exercises/Exercises";
+import { ExercisesList } from "../exercisesList/ExercisesList";
 import { draftActions } from "../../../../store/draft/draft.actions";
 import type { Day, Workout } from "../../../../store/draft/types";
 import { useSelector } from "react-redux";
@@ -102,7 +102,7 @@ export const WorkoutComponent = (props: WorkoutProps) => {
     return (
         <div className={`w-full h-full max-h-full md:w-3xl flex flex-col ${props.isReadOnly ? "justify-around" : "justify-between"} gap-4`}>
             {openExercisesId ? (
-                <Exercises
+                <ExercisesList
                     workoutId={props.workout!.id}
                     dayId={openExercisesId}
                     dayExercises={workout?.days.find((day: Day) => day.id === openExercisesId)?.dayExercises ?? []}
