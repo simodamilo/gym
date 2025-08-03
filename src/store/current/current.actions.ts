@@ -12,18 +12,18 @@ const fetchCurrentWorkout = createAsyncThunk("data/fetchCurrentWorkout", async (
             .from("workouts")
             .select(
                 `
-                    id, name, description, created_at, status, days (
+                    id, name, description, status, created_at, days (
                         id, name, created_at, day_exercises (
-                            id, 
-                            exercise_id,
+                            id,
                             order_number,
                             rest, 
                             notes,
-                            exercises (
-                                id, name, category_id
+                            created_at,
+                            exercises_catalog (
+                                id, name, category, description, created_at
                             ), 
                             day_exercise_sets (
-                                id, set_number, reps, weight
+                                id, set_number, reps, weight, created_at
                             )
                         )
                     )

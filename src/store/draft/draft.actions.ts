@@ -85,7 +85,7 @@ const upsertDay = createAsyncThunk("data/upsertDay", async (day: UpsertDayPayloa
         const { data, error } = await supabase
             .from("days")
             .upsert([day], {
-                onConflict: "id, workout_id",
+                onConflict: "id",
             })
             .select();
 
@@ -128,7 +128,7 @@ const upsertExercises = createAsyncThunk("data/upsertExercise", async (payloadDa
         });
 
         await supabase.from("day_exercises").upsert(payloadDayExercises, {
-            onConflict: "id, day_id",
+            onConflict: "id",
         });
 
         if (!payloadData.isOrderUpdate) {
@@ -144,7 +144,7 @@ const upsertExercises = createAsyncThunk("data/upsertExercise", async (payloadDa
 
             await supabase.from("day_exercise_sets").delete().eq("day_exercise_id", payloadData.dayExercises[0].id);
             await supabase.from("day_exercise_sets").upsert(payloadDayExerciseSets, {
-                onConflict: "id, day_exercise_id",
+                onConflict: "id",
             });
         }
 

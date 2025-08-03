@@ -3,16 +3,15 @@ import { useAppDispatch, type RootState } from "../../../../store";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { exercisesSelectors } from "../../../../store/exercisesCatalog/exercisesCatalog.selector";
-import { categoriesSelectors } from "../../../../store/categories/categories.selector";
-import { exercisesActions } from "../../../../store/exercisesCatalog/exercisesCatalog.action";
-import { categoriesActions } from "../../../../store/categories/categories.actions";
+import { exercisesCatalogActions } from "../../../../store/exercisesCatalog/exercisesCatalog.action";
 import { Button, Input, Select } from "antd";
-import type { Category } from "../../../../store/categories/types";
 import type { DayExercise, Set } from "../../../../store/draft/types";
 import { DeleteOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { draftSelectors } from "../../../../store/draft/draft.selectors";
 import TextArea from "antd/es/input/TextArea";
 import { v4 as uuidv4 } from "uuid";
+import type { ExerciseCatalog } from "../../../../store/exercisesCatalog/types";
+import { Categories } from "../../../../utils/constants";
 
 export interface ExerciseContentProps {
     dayId: string;
@@ -29,31 +28,27 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
     const { t } = useTranslation();
 
     const [dayExercise, setDayExercise] = useState<DayExercise>(props.dayExercise);
-    const [selectedCategory, setSelectedCategory] = useState<number>();
+    const [selectedCategory, setSelectedCategory] = useState<string>();
+    const [isExerciseUpdated, setIsExerciseUpdated] = useState<boolean>(false);
 
-    const exercises = useSelector((state: RootState) => exercisesSelectors.getExercises(state));
-    const categories = useSelector((state: RootState) => categoriesSelectors.getCategories(state));
+    const exercises: ExerciseCatalog[] = useSelector((state: RootState) => exercisesSelectors.getExercises(state));
     const isLoadingExercises: boolean = useSelector((state: RootState) => draftSelectors.isLoadingExercises(state));
 
     useEffect(() => {
         if (props.dayExercise) {
             setDayExercise(props.dayExercise);
-            setSelectedCategory(props.dayExercise.exercise?.category_id);
+            setSelectedCategory(props.dayExercise.exercise?.category);
+            setIsExerciseUpdated(false);
         }
     }, [props.dayExercise]);
 
     useEffect(() => {
-        getCategories();
         getExercises();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const getExercises = async () => {
-        await dispatch(exercisesActions.fetchAllExercises());
-    };
-
-    const getCategories = async () => {
-        await dispatch(categoriesActions.fetchAllCategories());
+        await dispatch(exercisesCatalogActions.fetchExercisesCatalog());
     };
 
     const hasValidFields = (): boolean => {
@@ -87,23 +82,32 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
         });
     };
 
-    const updateSet = (reps: number, setId: string) => {
-        const newSets: Set[] = [...dayExercise.sets];
+    const updateSet = (fieldToUpdate: string, newValue: string, setId: string) => {
+        const newSets: Set[] = [...dayExercise.sets].map((set) => {
+            if (set.id === setId) {
+                return {
+                    ...set,
+                    [fieldToUpdate]: newValue,
+                };
+            }
+            return set;
+        });
+
         setDayExercise((prevState) => {
             return {
                 ...prevState,
-                sets: newSets.map((set) => {
-                    if (set.id === setId) {
-                        return {
-                            ...set,
-                            reps: reps,
-                        };
-                    }
-                    return set;
-                }),
+                sets: newSets,
             };
         });
+
+        setIsExerciseUpdated(true);
     };
+
+    const saveWeights = () => {
+        if (props.isReadOnly && isExerciseUpdated) {
+            props.saveExercises(dayExercise);
+        }
+    }
 
     return (
         <div className="flex flex-col gap-4">
@@ -115,7 +119,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                         placeholder={t("workouts.exercises.category_placeholder")}
                         value={selectedCategory}
                         onChange={(value) => {
-                            setSelectedCategory(value !== undefined ? Number(value) : undefined);
+                            setSelectedCategory(value ?? undefined);
                             setDayExercise({
                                 ...dayExercise,
                                 id: props.dayExercise.id,
@@ -123,17 +127,14 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                                 exercise: undefined,
                             });
                         }}
-                        options={categories.map((category: Category) => ({
-                            label: category.name[0].toUpperCase() + category.name.slice(1),
-                            value: category.id,
-                        }))}
+                        options={Categories}
                         disabled={props.isReadOnly || isLoadingExercises}
                     />
                     <Select
                         allowClear
                         className="w-full md:w-xl text-left !text-[16px]"
                         placeholder={t("workouts.exercises.exercise_placeholder")}
-                        value={dayExercise.exercise?.id}
+                        value={dayExercise.exercise?.name}
                         onChange={(value) => {
                             setDayExercise({
                                 ...dayExercise,
@@ -143,8 +144,8 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                             });
                         }}
                         options={exercises
-                            .filter((exercise) => (selectedCategory ? exercise.category_id === selectedCategory : true))
-                            .map((exercise: Category) => ({
+                            .filter((exercise) => (exercise.category === selectedCategory))
+                            .map((exercise: ExerciseCatalog) => ({
                                 label: exercise.name[0].toUpperCase() + exercise.name.slice(1),
                                 value: exercise.id,
                             }))}
@@ -168,9 +169,9 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                                             key={set.id}
                                             addonBefore={t("workouts.exercises.kg")}
                                             placeholder={t("workouts.exercises.reps_placeholder")}
-                                            value={set.reps}
-                                            onChange={(input) => updateSet(Number(input.target.value), set.id)}
-                                            type="number"
+                                            value={set.weight}
+                                            onChange={(input) => updateSet("weight", input.target.value, set.id)}
+                                            onBlur={saveWeights}
                                             disabled={isLoadingExercises}
                                         />
                                     </div>
@@ -183,8 +184,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                                 addonBefore={set.setNumber}
                                 placeholder={t("workouts.exercises.reps_placeholder")}
                                 value={set.reps}
-                                onChange={(input) => updateSet(Number(input.target.value), set.id)}
-                                type="number"
+                                onChange={(input) => updateSet("reps", input.target.value, set.id)}
                                 disabled={isLoadingExercises}
                             />
                         );
@@ -205,7 +205,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                     setDayExercise((prevState) => {
                         return {
                             ...prevState,
-                            rest: Number(input.target.value),
+                            rest: input.target.value,
                         };
                     });
                 }}
@@ -222,7 +222,9 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                             notes: input.target.value,
                         };
                     });
+                    setIsExerciseUpdated(true);
                 }}
+                onBlur={saveWeights}
                 placeholder={t("workouts.exercises.notes_placeholder")}
                 disabled={isLoadingExercises}
             />

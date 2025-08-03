@@ -1,18 +1,20 @@
 export type ExercisesState = {
-    exercises: Exercise[];
+    exercises: ExerciseCatalog[];
     isLoading: boolean;
     isError: boolean;
 };
 
-export interface Exercise {
+export interface ExerciseCatalog {
     id: string;
     name: string;
-    created?: number;
-    category_id: number;
+    category: string;
+    description?: string;
+    created_at?: number;
 }
 
 export interface AddExercisePayload {
+    id: string;
     name: string;
-    created: number;
-    category_id: number;
+    category: string;
+    description?: string;
 }

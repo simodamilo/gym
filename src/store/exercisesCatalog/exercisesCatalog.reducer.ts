@@ -1,6 +1,6 @@
 import { createReducer } from "@reduxjs/toolkit";
 import type { ExercisesState } from "./types";
-import { exercisesActions } from "./exercisesCatalog.action";
+import { exercisesCatalogActions } from "./exercisesCatalog.action";
 
 const exercisesState: ExercisesState = {
     exercises: [],
@@ -11,25 +11,25 @@ const exercisesState: ExercisesState = {
 export const exercisesReducer = {
     exercises: createReducer(exercisesState, (builder) => {
         builder
-            .addCase(exercisesActions.fetchAllExercises.pending, (state) => {
+            .addCase(exercisesCatalogActions.fetchExercisesCatalog.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(exercisesActions.fetchAllExercises.fulfilled, (state, action) => {
+            .addCase(exercisesCatalogActions.fetchExercisesCatalog.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.exercises = action.payload;
             })
-            .addCase(exercisesActions.fetchAllExercises.rejected, (state) => {
+            .addCase(exercisesCatalogActions.fetchExercisesCatalog.rejected, (state) => {
                 state.isLoading = false;
                 state.isError = true;
             })
-            .addCase(exercisesActions.addExercise.pending, (state) => {
+            .addCase(exercisesCatalogActions.addExercise.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(exercisesActions.addExercise.fulfilled, (state, action) => {
+            .addCase(exercisesCatalogActions.addExercise.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.exercises = [...state.exercises, action.payload[0]];
             })
-            .addCase(exercisesActions.addExercise.rejected, (state) => {
+            .addCase(exercisesCatalogActions.addExercise.rejected, (state) => {
                 state.isLoading = false;
                 state.isError = true;
             });

@@ -1,72 +1,62 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, type RootState } from "../../store";
-import { exercisesActions } from "../../store/exercisesCatalog/exercisesCatalog.action";
+import { exercisesCatalogActions } from "../../store/exercisesCatalog/exercisesCatalog.action";
 import { useSelector } from "react-redux";
 import { exercisesSelectors } from "../../store/exercisesCatalog/exercisesCatalog.selector";
-import type { Exercise } from "../../store/exercisesCatalog/types";
+import type { ExerciseCatalog } from "../../store/exercisesCatalog/types";
 import { Link } from "react-router-dom";
 import { Button, Input, Select } from "antd";
-import { categoriesActions } from "../../store/categories/categories.actions";
-import { categoriesSelectors } from "../../store/categories/categories.selector";
-import type { Category } from "../../store/categories/types";
 import { useTranslation } from "react-i18next";
+import { v4 as uuidv4 } from "uuid";
+import { Categories } from "../../utils/constants";
 
 export const Exercises = () => {
     const dispatch = useAppDispatch();
     const { t } = useTranslation();
 
     const [newExerciseName, setNewExerciseName] = useState("");
-    const [selectedCategory, setSelectedCategory] = useState<number>();
+    const [selectedCategory, setSelectedCategory] = useState<string>();
 
-    const exercises = useSelector((state: RootState) => exercisesSelectors.getExercises(state));
-    const categories = useSelector((state: RootState) => categoriesSelectors.getCategories(state));
+    const exercises: ExerciseCatalog[] = useSelector((state: RootState) => exercisesSelectors.getExercises(state));
 
     useEffect(() => {
         getExercises();
-        getCategories();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const getExercises = async () => {
-        await dispatch(exercisesActions.fetchAllExercises());
-    };
-
-    const getCategories = async () => {
-        await dispatch(categoriesActions.fetchAllCategories());
+        await dispatch(exercisesCatalogActions.fetchExercisesCatalog());
     };
 
     const addExercise = async () => {
-        if (!newExerciseName.trim()) {
+        if (!newExerciseName.trim() || !selectedCategory) {
             return;
         }
         await dispatch(
-            exercisesActions.addExercise({
+            exercisesCatalogActions.addExercise({
+                id: uuidv4(),
                 name: newExerciseName,
-                created: Date.now(),
-                category_id: selectedCategory ?? 0,
+                category: selectedCategory,
             })
         );
         setNewExerciseName("");
     };
 
     return (
-        <div className="w-full h-screen md:w-3xl flex flex-col gap-2 p-4">
+        <div className="w-full h-screen md:w-3xl flex flex-col gap-4 p-4">
             <div className="flex items-start">
                 <Link to="/">{t("common.back_btn")}</Link>
             </div>
-            <div className="flex flex-col md:flex-row items-start gap-4">
+            <div className="flex flex-col text-left md:flex-row items-start gap-2">
                 <Select
                     allowClear
                     className="w-full md:w-xl"
                     placeholder={t("exercises.category_placeholder")}
                     value={selectedCategory}
                     onChange={(value) => {
-                        setSelectedCategory(value ? Number(value) : undefined);
+                        setSelectedCategory(value ?? undefined);
                     }}
-                    options={categories.map((category: Category) => ({
-                        label: category.name[0].toUpperCase() + category.name.slice(1),
-                        value: category.id,
-                    }))}
+                    options={Categories}
                 />
 
                 <Input placeholder={t("exercises.name_placeholder")} value={newExerciseName} onChange={(input) => setNewExerciseName(input.target.value)} />
@@ -76,17 +66,19 @@ export const Exercises = () => {
                 </Button>
             </div>
 
-            {exercises
-                .filter((exercise: Exercise) => {
-                    return !selectedCategory || exercise.category_id == selectedCategory;
-                })
-                .map((exercise: Exercise) => {
-                    return (
-                        <div key={exercise.id} className="p-4 flex items-start border-solid border-amber-50 border-1 rounded-lg">
-                            {exercise.name}
-                        </div>
-                    );
-                })}
+            <div className="flex flex-col gap-2 pb-24">
+                {exercises
+                    .filter((exercise: ExerciseCatalog) => {
+                        return !selectedCategory || exercise.category === selectedCategory;
+                    })
+                    .map((exercise: ExerciseCatalog) => {
+                        return (
+                            <div key={exercise.id} className="p-4 flex items-start border-solid border-amber-50 border-1 rounded-lg">
+                                {exercise.name}
+                            </div>
+                        );
+                    })}
+            </div>
         </div>
     );
 };

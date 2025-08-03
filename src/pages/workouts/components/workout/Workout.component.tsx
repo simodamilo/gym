@@ -120,10 +120,10 @@ export const WorkoutComponent = (props: WorkoutProps) => {
                         <div ref={scrollContainerRef} className="flex-1 overflow-y-auto flex flex-col gap-2">
                             {days.map((day, index) => {
                                 return props.isReadOnly ? (
-                                    <div key={index} className="p-3 border border-[#FFEAD8] shadow-md rounded-xl flex items-center justify-between">
+                                    <div key={index} onClick={() => setOpenExercisesId(day.id)} className="p-3 border border-[#FFEAD8] shadow-md rounded-xl flex items-center justify-between">
                                         <p>{day.name}</p>
                                         <div>
-                                            <ArrowRightOutlined onClick={() => setOpenExercisesId(day.id)} />
+                                            <ArrowRightOutlined />
                                         </div>
                                     </div>
                                 ) : (

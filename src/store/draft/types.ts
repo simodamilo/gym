@@ -1,4 +1,4 @@
-import type { Exercise } from "../exercisesCatalog/types";
+import type { ExerciseCatalog } from "../exercisesCatalog/types";
 
 export type DraftState = {
     draftWorkout?: Workout;
@@ -27,17 +27,17 @@ export interface Day {
 
 export interface DayExercise {
     id: string;
-    rest?: number;
+    rest?: string;
     orderNumber: number;
     notes?: string;
-    exercise?: Exercise;
+    exercise?: ExerciseCatalog;
     sets: Set[];
 }
 
 export interface Set {
     id: string;
     setNumber: number;
-    reps?: number;
+    reps?: string;
     weight?: number;
 }
 
@@ -73,7 +73,7 @@ export interface DayExerciseResponse {
     exercise_id: string;
     rest?: number;
     notes?: string;
-    exercises: Exercise;
+    exercises_catalog: ExerciseCatalog;
     day_exercise_sets: SetResponse[];
 }
 
