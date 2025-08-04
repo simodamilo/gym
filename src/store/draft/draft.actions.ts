@@ -16,7 +16,7 @@ const fetchDraftWorkout = createAsyncThunk("data/fetchDraftWorkout", async (_arg
             .select(
                 `
                     id, name, description, status, created_at, days (
-                        id, name, created_at, day_exercises (
+                        id, name, counter, is_last, order, created_at, day_exercises (
                             id,
                             order_number,
                             rest, 
@@ -80,11 +80,11 @@ const publishDraftWorkout = createAsyncThunk("data/publishDraftWorkout", async (
     }
 });
 
-const upsertDay = createAsyncThunk("data/upsertDay", async (day: UpsertDayPayload, thunkAPI) => {
+const upsertDay = createAsyncThunk("data/upsertDay", async (days: UpsertDayPayload[], thunkAPI) => {
     try {
         const { data, error } = await supabase
             .from("days")
-            .upsert([day], {
+            .upsert(days, {
                 onConflict: "id",
             })
             .select();

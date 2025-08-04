@@ -53,7 +53,13 @@ export const Workouts = () => {
                         </Radio.Button>
                     </Radio.Group>
 
-                    {page === "current" ? <WorkoutComponent workout={currentWorkout} isReadOnly /> : <div>{t("workouts.history_tab_content")}</div>}
+                    {page === "current" ? (
+                        <div className="mt-4">
+                            <WorkoutComponent workout={currentWorkout} isReadOnly />
+                        </div>
+                    ) : (
+                        <div>{t("workouts.history_tab_content")}</div>
+                    )}
 
                     <FloatButton icon={<PlusOutlined />} onClick={openDraftWorkout} style={{ bottom: 80 }} />
                 </>

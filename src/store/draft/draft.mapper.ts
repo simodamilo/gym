@@ -1,16 +1,19 @@
-import type { DayExerciseResponse, Workout } from "./types"
+import type { DayExerciseResponse, DayResponse, Workout, WorkoutResponse } from "./types";
 
-const getDraftWorkoutDataMapper = (response: any): Workout => {
+const getDraftWorkoutDataMapper = (response: WorkoutResponse): Workout => {
     return {
         id: response.id,
         name: response.name,
         status: response.status,
         description: response.description,
         createdAt: response.created_at,
-        days: response.days.map((day: any) => {
+        days: response.days.map((day: DayResponse) => {
             return {
                 id: day.id,
                 name: day.name,
+                counter: day.counter,
+                isLast: day.is_last,
+                lastWorkout: day.last_workout,
                 created_at: day.created_at,
                 dayExercises: day.day_exercises.map((day_exercise: DayExerciseResponse) => {
                     return {
@@ -24,20 +27,20 @@ const getDraftWorkoutDataMapper = (response: any): Workout => {
                                 setNumber: set.set_number,
                                 reps: set.reps,
                                 weight: set.weight,
-                            }
+                            };
                         }),
                         exercise: {
                             id: day_exercise.exercises_catalog.id,
                             name: day_exercise.exercises_catalog.name,
-                            category: day_exercise.exercises_catalog.category
+                            category: day_exercise.exercises_catalog.category,
                         },
-                    }
-                })
-            }
-        })
-    }
-}
+                    };
+                }),
+            };
+        }),
+    };
+};
 
 export const workoutMapper = {
-    getDraftWorkoutDataMapper
-}
+    getDraftWorkoutDataMapper,
+};

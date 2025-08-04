@@ -3,13 +3,14 @@ import { useAppDispatch } from "../../../../store";
 import { useEffect, useState } from "react";
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { Collapse } from "antd";
+import { Button, Collapse } from "antd";
 import { ExerciseContent } from "../exercisesContent/ExerciseContent";
 import { SortableItem } from "../../../../components/sortableItem/SortableItem";
 import type { DayExercise } from "../../../../store/draft/types";
 import { draftActions } from "../../../../store/draft/draft.actions";
 import { getNotificationApi } from "../../../../utils/notificationService";
 import { v4 as uuidv4 } from "uuid";
+import { useTranslation } from "react-i18next";
 
 interface ExercisesProps {
     workoutId: string;
@@ -17,9 +18,12 @@ interface ExercisesProps {
     dayExercises: DayExercise[];
     isReadOnly?: boolean;
     setOpenExercisesId: (id?: string) => void;
+    handleStartClick?: (dayId: string) => void;
+    lastWorkout?: number;
 }
 
 export const ExercisesList = (props: ExercisesProps) => {
+    const { t } = useTranslation();
     const dispatch = useAppDispatch();
 
     const [activeKey, setActiveKey] = useState<string>();
@@ -84,6 +88,7 @@ export const ExercisesList = (props: ExercisesProps) => {
                 deleteExercise={deleteExercise}
                 isReadOnly={props.isReadOnly}
                 isNew={!exercise.exercise?.name}
+                isWeightEditable={checkIfAlreadyStarted()}
             />
         ),
     });
@@ -115,11 +120,25 @@ export const ExercisesList = (props: ExercisesProps) => {
         await dispatch(draftActions.deleteExercise(exerciseId));
     };
 
+    const checkIfAlreadyStarted = () => {
+        if (props.lastWorkout) {
+            const savedDate = new Date(props.lastWorkout);
+            const today = new Date();
+
+            return savedDate.getFullYear() === today.getFullYear() && savedDate.getMonth() === today.getMonth() && savedDate.getDate() === today.getDate();
+        }
+    };
+
     return (
         <>
             {props.isReadOnly ? (
-                <div className="flex justify-start w-full mt-2">
+                <div className="flex justify-between w-full">
                     <LeftOutlined onClick={() => props.setOpenExercisesId()} />
+                    {!checkIfAlreadyStarted() && (
+                        <Button type="primary" onClick={() => props.handleStartClick?.(props.dayId)}>
+                            {t("workouts.exercises.start_workout")}
+                        </Button>
+                    )}
                 </div>
             ) : (
                 <div className="flex justify-end w-full">

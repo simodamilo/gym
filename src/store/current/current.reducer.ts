@@ -26,6 +26,32 @@ export const currentReducer = {
             .addCase(currentActions.fetchCurrentWorkout.rejected, (state) => {
                 state.isLoading = false;
                 state.isError = true;
+            })
+            .addCase(currentActions.updateDayStart.pending, (state, action) => {
+                state.isLoading = true;
+                state.currentRequestId = action.meta.requestId;
+            })
+            .addCase(currentActions.updateDayStart.fulfilled, (state, action) => {
+                state.isLoading = false;
+
+                if (action.payload && state.workout) {
+                    state.workout = {
+                        ...state.workout,
+                        days: state.workout.days.map((day) => {
+                            if (day.id === action.payload.id) {
+                                return {
+                                    ...day,
+                                    lastWorkout: action.payload.last_workout,
+                                };
+                            }
+                            return day;
+                        }),
+                    };
+                }
+            })
+            .addCase(currentActions.updateDayStart.rejected, (state) => {
+                state.isLoading = false;
+                state.isError = true;
             });
     }),
 };

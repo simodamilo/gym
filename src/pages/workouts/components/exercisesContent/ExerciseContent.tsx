@@ -21,6 +21,7 @@ export interface ExerciseContentProps {
     deleteExercise: (dayExerciseId: string) => void;
     isReadOnly?: boolean;
     isNew?: boolean;
+    isWeightEditable?: boolean;
 }
 
 export const ExerciseContent = (props: ExerciseContentProps) => {
@@ -107,7 +108,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
         if (props.isReadOnly && isExerciseUpdated) {
             props.saveExercises(dayExercise);
         }
-    }
+    };
 
     return (
         <div className="flex flex-col gap-4">
@@ -144,7 +145,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                             });
                         }}
                         options={exercises
-                            .filter((exercise) => (exercise.category === selectedCategory))
+                            .filter((exercise) => exercise.category === selectedCategory)
                             .map((exercise: ExerciseCatalog) => ({
                                 label: exercise.name[0].toUpperCase() + exercise.name.slice(1),
                                 value: exercise.id,
@@ -167,6 +168,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                                     <div className="w-[60%]">
                                         <Input
                                             key={set.id}
+                                            readOnly={!props.isWeightEditable}
                                             addonBefore={t("workouts.exercises.kg")}
                                             placeholder={t("workouts.exercises.reps_placeholder")}
                                             value={set.weight}
@@ -227,6 +229,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                 onBlur={saveWeights}
                 placeholder={t("workouts.exercises.notes_placeholder")}
                 disabled={isLoadingExercises}
+                readOnly={!props.isWeightEditable}
             />
             {!props.isReadOnly && (
                 <div className="flex gap-4">

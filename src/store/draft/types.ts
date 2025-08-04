@@ -22,6 +22,10 @@ export interface Day {
     id: string;
     name?: string;
     createdAt?: number;
+    counter?: number;
+    isLast?: boolean;
+    lastWorkout?: number;
+    order?: number;
     dayExercises: DayExercise[];
 }
 
@@ -44,8 +48,12 @@ export interface Set {
 /* Types used for payload to sent to be */
 export interface UpsertDayPayload {
     id: string;
-    name: string;
-    workout_id: string;
+    name?: string;
+    counter?: number;
+    is_last?: boolean;
+    last_workout?: number;
+    order?: number;
+    workout_id?: string;
 }
 
 export interface UpsertDayExercisePayload {
@@ -53,7 +61,7 @@ export interface UpsertDayExercisePayload {
     day_id: string;
     exercises_catalog_id: string;
     order_number: number;
-    rest?: number;
+    rest?: string;
     notes?: string;
 }
 
@@ -61,25 +69,51 @@ export interface UpsertSetPayload {
     id: string;
     day_exercise_id: string;
     set_number: number;
-    reps: number;
+    reps: string;
     weight?: number;
 }
 
 /* Types used for reponse returned from be */
+export interface WorkoutResponse {
+    id: string;
+    name: string;
+    description?: string;
+    status: string;
+    created_at: number;
+    days: DayResponse[];
+}
+
+export interface DayResponse {
+    id: string;
+    name?: string;
+    created_at?: number;
+    counter?: number;
+    is_last?: boolean;
+    last_workout?: number;
+    order?: number;
+    day_exercises: DayExerciseResponse[];
+}
+
 export interface DayExerciseResponse {
     id: string;
-    day_id: string;
     order_number: number;
-    exercise_id: string;
-    rest?: number;
+    rest?: string;
     notes?: string;
-    exercises_catalog: ExerciseCatalog;
+    exercises_catalog: ExerciseCatalogResponse;
     day_exercise_sets: SetResponse[];
+}
+
+export interface ExerciseCatalogResponse {
+    id: string;
+    name: string;
+    category: string;
+    description?: string;
+    created_at: number;
 }
 
 export interface SetResponse {
     id: string;
     set_number: number;
-    reps: number;
+    reps: string;
     weight?: number;
 }
