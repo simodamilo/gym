@@ -5,7 +5,7 @@ const getDraftWorkout = (state: RootState): Workout | undefined => {
     return state.draft.draftWorkout;
 };
 
-const getDraftExercisesByDayId = (state: RootState, dayId: number): DayExercise[] => {
+const getDraftExercisesByDayId = (state: RootState, dayId: string): DayExercise[] => {
     return state.draft.draftWorkout?.days.find((day) => day.id === dayId)?.dayExercises || [];
 };
 
