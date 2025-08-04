@@ -116,4 +116,5 @@ export interface SetResponse {
     set_number: number;
     reps: string;
     weight?: number;
+    created_at: number;
 }

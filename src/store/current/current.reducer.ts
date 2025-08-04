@@ -19,6 +19,7 @@ export const currentReducer = {
             .addCase(currentActions.fetchCurrentWorkout.fulfilled, (state, action) => {
                 state.isLoading = false;
                 if (action.payload && action.payload[0]) {
+                    console.log("TEST", action.payload[0]);
                     const mappedWorkout = workoutMapper.getDraftWorkoutDataMapper(action.payload[0]);
                     state.workout = mappedWorkout;
                 }
