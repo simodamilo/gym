@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { supabase } from "../supabaseClient";
 import type { RootState } from "../reducer.config";
-import type { UpsertDayPayload, WorkoutResponse } from "../draft/types";
+import type { UpsertDayPayload } from "../draft/types";
 
 const fetchCurrentWorkout = createAsyncThunk("data/fetchCurrentWorkout", async (_arg, thunkAPI) => {
     try {
@@ -34,7 +34,7 @@ const fetchCurrentWorkout = createAsyncThunk("data/fetchCurrentWorkout", async (
         if (error) {
             throw Error("Error in get draft workout");
         }
-        return data as WorkoutResponse[];
+        return data;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         return thunkAPI.rejectWithValue(error.message);
