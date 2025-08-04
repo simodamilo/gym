@@ -4,9 +4,7 @@ import { draftActions } from "./draft.actions";
 import { workoutMapper } from "./draft.mapper";
 
 const draftState: DraftState = {
-    currentWorkout: undefined,
     draftWorkout: undefined,
-    historyWorkouts: [],
     isLoadingWorkout: false,
     isLoadingDays: false,
     isLoadingExercises: false,
@@ -104,7 +102,7 @@ export const draftReducer = {
                 state.currentRequestId = action.meta.requestId;
             })
             .addCase(draftActions.upsertExercises.fulfilled, (state) => {
-                state.isLoadingExercises = false;                
+                state.isLoadingExercises = false;
             })
             .addCase(draftActions.upsertExercises.rejected, (state) => {
                 state.isLoadingExercises = false;

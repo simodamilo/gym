@@ -1,9 +1,7 @@
-import type { Exercise } from "../exercises/types";
+import type { ExerciseCatalog } from "../exercisesCatalog/types";
 
 export type DraftState = {
-    currentWorkout?: Workout;
     draftWorkout?: Workout;
-    historyWorkouts: Workout[];
     isLoadingWorkout: boolean;
     isLoadingDays: boolean;
     isLoadingExercises: boolean;
@@ -12,77 +10,110 @@ export type DraftState = {
 };
 
 export interface Workout {
-    id: number;
+    id: string;
     name: string;
     description?: string;
     status: string;
-    days: Day[];
     createdAt?: number;
+    days: Day[];
 }
 
 export interface Day {
-    id: number;
+    id: string;
     name?: string;
-    dayExercises: DayExercise[];
     createdAt?: number;
+    counter?: number;
+    isLast?: boolean;
+    lastWorkout?: number;
+    order?: number;
+    dayExercises: DayExercise[];
 }
 
 export interface DayExercise {
-    id: number;
-    rest?: number;
+    id: string;
+    rest?: string;
     orderNumber: number;
     notes?: string;
-    exercise?: Exercise;
+    exercise?: ExerciseCatalog;
     sets: Set[];
 }
 
 export interface Set {
-    id: number;
+    id: string;
     setNumber: number;
-    reps?: number;
+    reps?: string;
     weight?: number;
 }
 
 /* Types used for payload to sent to be */
 export interface UpsertDayPayload {
-    id: number;
+    id: string;
     name?: string;
-    workout_id?: number;
-    created_at?: number;
+    counter?: number;
+    is_last?: boolean;
+    last_workout?: number;
+    order?: number;
+    workout_id?: string;
 }
 
 export interface UpsertDayExercisePayload {
-    id: number;
-    day_id: number;
+    id: string;
+    day_id: string;
+    exercises_catalog_id: string;
     order_number: number;
-    exercise_id: number;
-    rest?: number;
+    rest?: string;
     notes?: string;
 }
 
 export interface UpsertSetPayload {
-    id: number;
-    day_exercise_id: number;
+    id: string;
+    day_exercise_id: string;
     set_number: number;
-    reps: number;
+    reps: string;
     weight?: number;
 }
 
 /* Types used for reponse returned from be */
+export interface WorkoutResponse {
+    id: string;
+    name: string;
+    description?: string;
+    status: string;
+    created_at: number;
+    days: DayResponse[];
+}
+
+export interface DayResponse {
+    id: string;
+    name?: string;
+    created_at?: number;
+    counter?: number;
+    is_last?: boolean;
+    last_workout?: number;
+    order?: number;
+    day_exercises: DayExerciseResponse[];
+}
+
 export interface DayExerciseResponse {
-    id: number;
-    day_id: number;
+    id: string;
     order_number: number;
-    exercise_id: number;
-    rest?: number;
+    rest?: string;
     notes?: string;
-    exercises: Exercise;
+    exercises_catalog: ExerciseCatalogResponse;
     day_exercise_sets: SetResponse[];
 }
 
+export interface ExerciseCatalogResponse {
+    id: string;
+    name: string;
+    category: string;
+    description?: string;
+    created_at: number;
+}
+
 export interface SetResponse {
-    id: number;
+    id: string;
     set_number: number;
-    reps: number;
+    reps: string;
     weight?: number;
 }
