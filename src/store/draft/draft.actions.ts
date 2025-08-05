@@ -82,7 +82,7 @@ const publishDraftWorkout = createAsyncThunk("data/publishDraftWorkout", async (
 
 const upsertDay = createAsyncThunk("data/upsertDay", async (days: UpsertDayPayload[], thunkAPI) => {
     try {
-        const { data, error } = await supabase
+        const { error } = await supabase
             .from("days")
             .upsert(days, {
                 onConflict: "id",
@@ -97,7 +97,9 @@ const upsertDay = createAsyncThunk("data/upsertDay", async (days: UpsertDayPaylo
             message: `Successfully saved`,
             placement: "top",
         });
-        return data ? data[0] : null;
+
+        await thunkAPI.dispatch(fetchDraftWorkout());
+        return;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         return thunkAPI.rejectWithValue(error.message);

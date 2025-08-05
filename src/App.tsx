@@ -8,6 +8,7 @@ import "./utils/i18n/i18n";
 import { Navbar } from "./components/navbar/Navbar";
 import { Workouts } from "./pages/workouts/Workouts";
 import { NotificationProvider } from "./components/notificationProvider/NotificationProvider";
+import { WorkoutComponent } from "./pages/workouts/components/workout/Workout.component";
 
 function App() {
     return (
@@ -17,7 +18,9 @@ function App() {
                     <Navbar />
                     <Routes>
                         <Route path="/profile" element={<Profile />} />
-                        <Route path="/workouts" element={<Workouts />} />
+                        <Route path="/workouts" element={<Workouts />}>
+                            <Route path="create" element={<WorkoutComponent isDraft />} />
+                        </Route>
                         <Route path="/exercises" element={<Exercises />} />
                         <Route path="*" element={<Navigate to="/workouts" replace />} />
                     </Routes>

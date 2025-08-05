@@ -1,7 +1,7 @@
 import { CloseOutlined, LeftOutlined } from "@ant-design/icons";
 import { useAppDispatch } from "../../../../store";
 import { useEffect, useState } from "react";
-import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
+import { DndContext, closestCenter, useSensor, useSensors, type DragEndEvent, MouseSensor, TouchSensor } from "@dnd-kit/core";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { Button, Collapse } from "antd";
 import { ExerciseContent } from "../exercisesContent/ExerciseContent";
@@ -46,9 +46,15 @@ export const ExercisesList = (props: ExercisesProps) => {
     }, [props.dayExercises, props.isReadOnly]);
 
     const sensors = useSensors(
-        useSensor(PointerSensor, {
+        useSensor(MouseSensor, {
             activationConstraint: {
-                distance: 5,
+                distance: 50,
+            },
+        }),
+        useSensor(TouchSensor, {
+            activationConstraint: {
+                delay: 500,
+                tolerance: 50,
             },
         })
     );
@@ -78,7 +84,12 @@ export const ExercisesList = (props: ExercisesProps) => {
 
     const renderItem = (exercise: DayExercise) => ({
         key: exercise.id,
-        label: <div className="flex justify-end dark:text-white">{exercise.exercise?.name}</div>,
+        label: (
+            <div className="flex justify-end gap-6 items-center">
+                <div className=" dark:text-white text-right">{exercise.exercise?.name}</div>
+                {!props.isReadOnly && <span className=" dark:text-white text-lg">⋮⋮</span>}
+            </div>
+        ),
         children: (
             <ExerciseContent
                 dayId={props.dayId}
@@ -88,7 +99,6 @@ export const ExercisesList = (props: ExercisesProps) => {
                 deleteExercise={deleteExercise}
                 isReadOnly={props.isReadOnly}
                 isNew={!exercise.exercise?.name}
-                isWeightEditable={checkIfAlreadyStarted()}
             />
         ),
     });
@@ -114,6 +124,9 @@ export const ExercisesList = (props: ExercisesProps) => {
                 workoutId: props.workoutId,
             })
         );
+        if (!checkIfAlreadyStarted()) {
+            props.handleStartClick?.(props.dayId);
+        }
     };
 
     const deleteExercise = async (exerciseId: string) => {
@@ -134,10 +147,12 @@ export const ExercisesList = (props: ExercisesProps) => {
             {props.isReadOnly ? (
                 <div className="flex justify-between w-full">
                     <LeftOutlined onClick={() => props.setOpenExercisesId()} />
-                    {!checkIfAlreadyStarted() && (
+                    {!checkIfAlreadyStarted() ? (
                         <Button type="primary" onClick={() => props.handleStartClick?.(props.dayId)}>
                             {t("workouts.exercises.start_workout")}
                         </Button>
+                    ) : (
+                        <div>Workout Started</div>
                     )}
                 </div>
             ) : (
@@ -146,10 +161,25 @@ export const ExercisesList = (props: ExercisesProps) => {
                 </div>
             )}
 
-            <div className="flex-1 overflow-y-auto flex flex-col gap-2">
+            <div className="flex-1 overflow-y-auto flex flex-col gap-2 hide-scrollbar">
                 {mutableDayExercises.length > 0 && (
                     <>
-                        {activeKey === undefined && !props.isReadOnly ? (
+                        {!props.isReadOnly && <p className="text-left text-[12px] italic">This is the list of exercises. Long press and drag to reorder</p>}
+                        {props.isReadOnly || activeKey !== undefined ? (
+                            <>
+                                {mutableDayExercises.map((mutableDayExercise) => {
+                                    const item = renderItem(mutableDayExercise);
+                                    return (
+                                        <Collapse
+                                            key={mutableDayExercise.id}
+                                            items={[item]}
+                                            activeKey={item.key === activeKey ? item.key : undefined}
+                                            onChange={() => setActiveKey(item.key !== activeKey ? (item.key as string) : undefined)}
+                                        />
+                                    );
+                                })}
+                            </>
+                        ) : (
                             <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                                 <SortableContext
                                     items={mutableDayExercises.map((item) => item.id.toString()).filter((id): id is string => id !== undefined && id !== null)}
@@ -169,21 +199,6 @@ export const ExercisesList = (props: ExercisesProps) => {
                                     })}
                                 </SortableContext>
                             </DndContext>
-                        ) : (
-                            <>
-                                {mutableDayExercises.map((mutableDayExercise) => {
-                                    const item = renderItem(mutableDayExercise);
-                                    return (
-                                        <SortableItem key={mutableDayExercise.id} id={mutableDayExercise.id.toString()}>
-                                            <Collapse
-                                                items={[item]}
-                                                activeKey={item.key === activeKey ? item.key : undefined}
-                                                onChange={() => setActiveKey(item.key !== activeKey ? (item.key as string) : undefined)}
-                                            />
-                                        </SortableItem>
-                                    );
-                                })}
-                            </>
                         )}
                     </>
                 )}

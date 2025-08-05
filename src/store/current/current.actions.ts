@@ -1,14 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { supabase } from "../supabaseClient";
-import type { RootState } from "../reducer.config";
 import type { UpsertDayPayload } from "../draft/types";
 
 const fetchCurrentWorkout = createAsyncThunk("data/fetchCurrentWorkout", async (_arg, thunkAPI) => {
     try {
-        const state = thunkAPI.getState() as RootState;
-        if (state.draft.isLoadingWorkout && thunkAPI.requestId !== state.draft.currentRequestId) {
-            return;
-        }
         const { data, error } = await supabase
             .from("workouts")
             .select(
@@ -34,6 +29,7 @@ const fetchCurrentWorkout = createAsyncThunk("data/fetchCurrentWorkout", async (
         if (error) {
             throw Error("Error in get draft workout");
         }
+
         return data;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -43,18 +39,14 @@ const fetchCurrentWorkout = createAsyncThunk("data/fetchCurrentWorkout", async (
 
 const updateDayStart = createAsyncThunk("data/updateDayStart", async (day: UpsertDayPayload, thunkAPI) => {
     try {
-        const { error } = await supabase
-            .from("days")
-            .upsert([day], {
-                onConflict: "id",
-            })
-            .select();
+        const { error } = await supabase.from("days").update(day).eq("id", day.id).select();
 
         if (error) {
             throw new Error("Error in updating day");
         }
 
-        return day;
+        thunkAPI.dispatch(currentActions.fetchCurrentWorkout());
+        return;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         return thunkAPI.rejectWithValue(error.message);

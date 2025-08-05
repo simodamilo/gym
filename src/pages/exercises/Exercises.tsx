@@ -4,7 +4,6 @@ import { exercisesCatalogActions } from "../../store/exercisesCatalog/exercisesC
 import { useSelector } from "react-redux";
 import { exercisesSelectors } from "../../store/exercisesCatalog/exercisesCatalog.selector";
 import type { ExerciseCatalog } from "../../store/exercisesCatalog/types";
-import { Link } from "react-router-dom";
 import { Button, Input, Select } from "antd";
 import { useTranslation } from "react-i18next";
 import { v4 as uuidv4 } from "uuid";
@@ -44,9 +43,6 @@ export const Exercises = () => {
 
     return (
         <div className="w-full h-screen md:w-3xl flex flex-col gap-4 p-4">
-            <div className="flex items-start">
-                <Link to="/">{t("common.back_btn")}</Link>
-            </div>
             <div className="flex flex-col text-left md:flex-row items-start gap-2">
                 <Select
                     allowClear
