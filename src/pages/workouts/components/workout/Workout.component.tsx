@@ -175,7 +175,7 @@ export const WorkoutComponent = (props: WorkoutProps) => {
     }
 
     return (
-        <div className={`w-full h-full max-h-full md:w-3xl flex flex-col ${props.isReadOnly ? "justify-around" : "justify-between"} gap-2`}>
+        <div className={`w-full h-full max-h-full md:w-3xl flex flex-col ${props.isReadOnly ? "justify-around" : "justify-between"} gap-2 pb-18`}>
             {openExercisesId ? (
                 <ExercisesList
                     workoutId={workout!.id}
@@ -190,7 +190,7 @@ export const WorkoutComponent = (props: WorkoutProps) => {
                 <>
                     {!props.isReadOnly && (
                         <div className="flex justify-end w-full">
-                            <CloseOutlined onClick={() => navigate("/workouts")} />
+                            <CloseOutlined onClick={() => navigate("/gym/workouts")} />
                         </div>
                     )}
                     {!props.isReadOnly && <p className="text-left text-[12px] italic">This is the list of days. Long press and drag to reorder</p>}

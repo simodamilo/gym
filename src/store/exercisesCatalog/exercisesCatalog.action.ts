@@ -5,6 +5,7 @@ import { supabase } from "../supabaseClient";
 const fetchExercisesCatalog = createAsyncThunk("data/fetchExercisesCatalog", async (_arg, thunkAPI) => {
     try {
         const { data } = await supabase.from("exercises_catalog").select();
+        console.log("Fetched exercises catalog:", data);
         return data as ExerciseCatalog[];
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

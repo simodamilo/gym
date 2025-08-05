@@ -30,6 +30,7 @@ const fetchCurrentWorkout = createAsyncThunk("data/fetchCurrentWorkout", async (
             throw Error("Error in get draft workout");
         }
 
+        console.log("Fetched current workout:", data);
         return data;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

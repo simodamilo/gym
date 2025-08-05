@@ -42,7 +42,7 @@ export const Exercises = () => {
     };
 
     return (
-        <div className="w-full h-screen md:w-3xl flex flex-col gap-4 p-4">
+        <div className="w-full h-screen md:w-3xl flex flex-col gap-4">
             <div className="flex flex-col text-left md:flex-row items-start gap-2">
                 <Select
                     allowClear
