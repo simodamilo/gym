@@ -23,9 +23,31 @@ const addExercise = createAsyncThunk("data/addExercise", async (exercise: AddExe
     }
 });
 
+const updateExercise = createAsyncThunk("data/updateExercise", async (exercise: AddExercisePayload, thunkAPI) => {
+    try {
+        const { data } = await supabase.from("exercises_catalog").update(exercise).eq("id", exercise.id).select();
+        return data as ExerciseCatalog[];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+});
+
+const deleteExercise = createAsyncThunk("data/deleteExercise", async (id: string, thunkAPI) => {
+    try {
+        await supabase.from("exercises_catalog").delete().eq("id", id);
+        return id;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+});
+
 const exercisesCatalogActions = {
     fetchExercisesCatalog,
     addExercise,
+    updateExercise,
+    deleteExercise
 };
 
 export { exercisesCatalogActions };

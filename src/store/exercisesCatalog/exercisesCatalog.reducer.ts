@@ -32,6 +32,28 @@ export const exercisesReducer = {
             .addCase(exercisesCatalogActions.addExercise.rejected, (state) => {
                 state.isLoading = false;
                 state.isError = true;
+            })
+            .addCase(exercisesCatalogActions.updateExercise.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(exercisesCatalogActions.updateExercise.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.exercises = [...state.exercises.map(exercise => exercise.id === action.payload[0].id ? action.payload[0] : exercise)];
+            })
+            .addCase(exercisesCatalogActions.updateExercise.rejected, (state) => {
+                state.isLoading = false;
+                state.isError = true;
+            })
+            .addCase(exercisesCatalogActions.deleteExercise.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(exercisesCatalogActions.deleteExercise.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.exercises = [...state.exercises.filter(exercise => exercise.id !== action.payload)];
+            })
+            .addCase(exercisesCatalogActions.deleteExercise.rejected, (state) => {
+                state.isLoading = false;
+                state.isError = true;
             });
     }),
 };
