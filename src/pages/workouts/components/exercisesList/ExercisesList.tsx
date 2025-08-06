@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { DndContext, closestCenter, useSensor, useSensors, type DragEndEvent, MouseSensor, TouchSensor } from "@dnd-kit/core";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { Button, Collapse } from "antd";
-import { ExerciseContent } from "../exercisesContent/ExerciseContent";
+import { ExerciseContent } from "../exerciseContent/ExerciseContent";
 import { SortableItem } from "../../../../components/sortableItem/SortableItem";
 import type { DayExercise } from "../../../../store/draft/types";
 import { draftActions } from "../../../../store/draft/draft.actions";

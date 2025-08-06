@@ -13,7 +13,7 @@ function App() {
     return (
         <NotificationProvider>
             <Provider store={store}>
-                <div className="w-screen h-screen flex flex-col p-4">
+                <div className="w-screen h-dvh flex flex-col p-4">
                     {user && <Navbar />}
                     <Outlet />
                 </div>

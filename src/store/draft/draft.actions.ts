@@ -95,7 +95,7 @@ const upsertDay = createAsyncThunk("data/upsertDay", async (days: UpsertDayPaylo
 
         getNotificationApi().success({
             message: `Successfully saved`,
-            placement: "top",
+            placement: "bottom",
         });
 
         await thunkAPI.dispatch(fetchDraftWorkout());

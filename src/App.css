@@ -42,6 +42,10 @@
     color: #888;
 }
 
+.ant-notification-bottom.ant-notification-stack > .ant-notification-notice-wrapper {
+    bottom: 50px;
+}
+
 .ant-notification .ant-notification-notice-wrapper .ant-notification-notice {
     padding: 8px;
     border-radius: 10px;

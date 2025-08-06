@@ -12,7 +12,7 @@ export const Workouts = () => {
     const [page, setPage] = useState<string>("current");
 
     return (
-        <div className="w-full h-dvh md:w-3xl flex flex-col gap-2 pb-22">
+        <div className="w-full h-dvh md:w-3xl flex flex-col gap-2">
             <Radio.Group value={page} onChange={(e) => setPage(e.target.value)}>
                 <Radio.Button value="current" className="w-1/2">
                     {t("workouts.current_tab")}

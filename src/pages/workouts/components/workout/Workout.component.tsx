@@ -1,4 +1,4 @@
-import { ArrowRightOutlined, CloseOutlined } from "@ant-design/icons";
+import Icon, { CloseOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, type RootState } from "../../../../store";
@@ -15,6 +15,16 @@ import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-ki
 import { SortableItem } from "../../../../components/sortableItem/SortableItem";
 import { useNavigate } from "react-router-dom";
 import { currentSelectors } from "../../../../store/current/current.selectors";
+import type { CustomIconComponentProps } from "@ant-design/icons/lib/components/Icon";
+import { DayContent } from "../dayContent/DayContent";
+
+const MoveIconSvg = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 -1 24 24" width="1em" height="1em" fill="currentColor">
+        <path d="M12 22L8 18H16L12 22ZM12 2L16 6H8L12 2ZM12 14C10.8954 14 10 13.1046 10 12C10 10.8954 10.8954 10 12 10C13.1046 10 14 10.8954 14 12C14 13.1046 13.1046 14 12 14ZM2 12L6 8V16L2 12ZM22 12L18 16V8L22 12Z"></path>
+    </svg>
+);
+
+const MoveIcon = (props: Partial<CustomIconComponentProps>) => <Icon component={MoveIconSvg} {...props} />;
 
 interface WorkoutProps {
     isDraft?: boolean;
@@ -31,8 +41,11 @@ export const WorkoutComponent = (props: WorkoutProps) => {
     const [openExercisesId, setOpenExercisesId] = useState<string>();
     const [workout, setWorkout] = useState<Workout>();
     const [days, setDays] = useState<Day[]>([]);
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+    const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
     const [selectedDay, setSelectedDay] = useState<Day>();
+    const [isDragEnable, setIsDragEnable] = useState<boolean>(false);
 
     const draftWorkout = useSelector((state: RootState) => draftSelectors.getDraftWorkout(state));
     const currentWorkout = useSelector((state: RootState) => currentSelectors.getCurrentWorkout(state));
@@ -54,15 +67,6 @@ export const WorkoutComponent = (props: WorkoutProps) => {
             setWorkout(workout);
             const newDays = [...workout.days];
             setDays(newDays.sort((a, b) => (a.order || 0) - (b.order || 0)));
-
-            setTimeout(() => {
-                if (scrollContainerRef.current) {
-                    scrollContainerRef.current.scrollTo({
-                        top: scrollContainerRef.current.scrollHeight,
-                        behavior: "smooth",
-                    });
-                }
-            }, 0);
         }
     }, [draftWorkout, currentWorkout, props.isDraft]);
 
@@ -74,12 +78,7 @@ export const WorkoutComponent = (props: WorkoutProps) => {
         await dispatch(currentActions.fetchCurrentWorkout());
     };
 
-    useEffect(() => {
-        if (!isModalOpen) {
-            setSelectedDay(undefined);
-        }
-    }, [isModalOpen]);
-
+    /* only used if isReadOnly is false */
     const sensors = useSensors(
         useSensor(MouseSensor, {
             activationConstraint: {
@@ -94,6 +93,7 @@ export const WorkoutComponent = (props: WorkoutProps) => {
         })
     );
 
+    /* only used if isReadOnly is false */
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
 
@@ -123,34 +123,44 @@ export const WorkoutComponent = (props: WorkoutProps) => {
     };
 
     /* only used if isReadOnly is false */
-    const saveDay = () => {
-        if (selectedDay) {
+    const saveDay = (type: "DELETE" | "UPDATE") => {
+        if (type === "DELETE") {
+            dispatch(draftActions.deleteDay(selectedDay!.id));
+            setIsDeleteModalOpen(false);
+        } else if (type === "UPDATE") {
             dispatch(
                 draftActions.upsertDay([
                     {
-                        id: selectedDay.id || uuidv4(),
-                        name: selectedDay?.name || "",
+                        id: selectedDay!.id || uuidv4(),
+                        name: selectedDay!.name || "",
                         workout_id: workout!.id,
-                        order: selectedDay.order,
+                        order: selectedDay!.order,
                     },
                 ])
             );
 
-            setIsModalOpen(false);
+            setIsEditModalOpen(false);
         }
+        setSelectedDay(undefined);
     };
 
     /* only used if isReadOnly is false */
-    const handleDeleteDay = (dayId: string) => {
-        dispatch(draftActions.deleteDay(dayId));
+    const handleDayUpdate = (day: Day, type: "DELETE" | "UPDATE") => {
+        setSelectedDay(day);
+        if (type === "DELETE") {
+            setIsDeleteModalOpen(true);
+        } else if (type === "UPDATE") {
+            setIsEditModalOpen(true);
+        }
     };
 
     /* only used if isReadOnly is false */
     const publishWorkout = () => {
         dispatch(draftActions.publishDraftWorkout());
-        navigate("/workouts");
+        navigate("/gym/workouts");
     };
 
+    /* only used for current workout */
     const handleStartClick = async (dayId: string) => {
         const now = new Date();
         const newDay: Day | undefined = workout?.days.find((day) => day.id === dayId);
@@ -189,28 +199,42 @@ export const WorkoutComponent = (props: WorkoutProps) => {
             ) : (
                 <>
                     {!props.isReadOnly && (
-                        <div className="flex justify-end w-full">
-                            <CloseOutlined onClick={() => navigate("/gym/workouts")} />
+                        <div className="flex flex-col gap-4">
+                            <div className="flex justify-between w-full">
+                                <div className="flex items-center gap-4">
+                                    <Button size="large" type="primary" shape="circle" icon={<PlusOutlined />} onClick={() => setIsEditModalOpen(true)} />
+                                    {days && days.length > 0 && (
+                                        <Button
+                                            size="large"
+                                            type="primary"
+                                            shape="circle"
+                                            icon={<UploadOutlined />}
+                                            onClick={() => {
+                                                setIsPublishModalOpen(true);
+                                            }}
+                                        />
+                                    )}
+                                    {days && days.length > 1 && (
+                                        <Button
+                                            size="large"
+                                            type={isDragEnable ? "default" : "primary"}
+                                            shape="circle"
+                                            icon={<MoveIcon style={{ fontSize: "20px" }} />}
+                                            onClick={() => setIsDragEnable(!isDragEnable)}
+                                        />
+                                    )}
+                                </div>
+                                <CloseOutlined onClick={() => navigate("/gym/workouts")} />
+                            </div>
+                            {days && days.length > 0 && <p className="text-left text-[12px] italic">{t("workouts.workout_page.description")}</p>}
                         </div>
                     )}
-                    {!props.isReadOnly && <p className="text-left text-[12px] italic">This is the list of days. Long press and drag to reorder</p>}
                     {days && days.length > 0 ? (
                         <div ref={scrollContainerRef} className="flex-1 overflow-y-auto flex flex-col gap-2 hide-scrollbar">
-                            {props.isReadOnly ? (
-                                <>
-                                    {days.map((day, index) => {
-                                        return (
-                                            <div key={index} onClick={() => setOpenExercisesId(day.id)} className="p-3 border border-[#FFEAD8] shadow-md rounded-md flex items-center justify-between">
-                                                <p>{day.name}</p>
-                                                <div className="flex items-center gap-4">
-                                                    {day.isLast && <div className="text-[10px] border border-[#00b300] px-2 py-[2px] rounded-md">{t("workouts.workout.is_last")}</div>}
-                                                    <div className="text-[10px] border border-[#4682a9] px-2 py-[2px] rounded-md">{`${day.counter}`}</div>
-                                                    <ArrowRightOutlined />
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </>
+                            {props.isReadOnly || !isDragEnable ? (
+                                days.map((day, index) => {
+                                    return <DayContent key={index} day={day} isReadOnly={props.isReadOnly} setOpenExercisesId={setOpenExercisesId} handleDayUpdate={handleDayUpdate} />;
+                                })
                             ) : (
                                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                                     <SortableContext
@@ -220,28 +244,7 @@ export const WorkoutComponent = (props: WorkoutProps) => {
                                         {days.map((day) => {
                                             return (
                                                 <SortableItem key={day.id} id={day.id}>
-                                                    <div className="p-3 border border-[#FFEAD8] shadow-md rounded-md">
-                                                        <p className="text-left">{day.name}</p>
-
-                                                        <div className="flex justify-between items-center mt-4 gap-2">
-                                                            <Button block type="primary" onClick={() => handleDeleteDay(day.id)}>
-                                                                Delete
-                                                            </Button>
-                                                            <Button
-                                                                block
-                                                                type="primary"
-                                                                onClick={() => {
-                                                                    setSelectedDay(day);
-                                                                    setIsModalOpen(true);
-                                                                }}
-                                                            >
-                                                                Edit
-                                                            </Button>
-                                                            <Button block type="primary" onClick={() => setOpenExercisesId(day.id)}>
-                                                                Details
-                                                            </Button>
-                                                        </div>
-                                                    </div>
+                                                    <DayContent day={day} setOpenExercisesId={setOpenExercisesId} handleDayUpdate={handleDayUpdate} />
                                                 </SortableItem>
                                             );
                                         })}
@@ -250,24 +253,24 @@ export const WorkoutComponent = (props: WorkoutProps) => {
                             )}
                         </div>
                     ) : (
-                        <div>{t("workouts.workout.no_workout")}</div>
-                    )}
-                    {!props.isReadOnly && (
-                        <div className="sticky bottom-0 flex flex-col gap-2">
-                            <Button type="default" block onClick={() => setIsModalOpen(true)}>
-                                {t("workouts.workout.add_day_btn")}
-                            </Button>
-                            <Button type="primary" className="bg-brand-primary" block onClick={publishWorkout}>
-                                {t("workouts.workout.publish_btn")}
-                            </Button>
-                        </div>
+                        <div className="flex h-full items-center mx-auto">{t("workouts.workout_page.no_workout")}</div>
                     )}
                 </>
             )}
 
-            <Modal title="Basic Modal" closable={{ "aria-label": "Custom Close Button" }} open={isModalOpen} onOk={saveDay} onCancel={() => setIsModalOpen(false)}>
+            {/* Edit Day name */}
+            <Modal
+                title={t("workouts.workout_page.add_day_modal_title")}
+                closable={{ "aria-label": "Custom Close Button" }}
+                open={isEditModalOpen}
+                onOk={() => saveDay("UPDATE")}
+                onCancel={() => {
+                    setIsEditModalOpen(false);
+                    setSelectedDay(undefined);
+                }}
+            >
                 <Input
-                    placeholder={t("workouts.workout.day_name_placeholder")}
+                    placeholder={t("workouts.workout_page.day_name_placeholder")}
                     value={selectedDay?.name || ""}
                     onChange={(input) =>
                         setSelectedDay((prevState) => {
@@ -281,6 +284,24 @@ export const WorkoutComponent = (props: WorkoutProps) => {
                         })
                     }
                 />
+            </Modal>
+
+            {/* Delete Day */}
+            <Modal
+                closable={{ "aria-label": "Custom Close Button" }}
+                open={isDeleteModalOpen}
+                onOk={() => saveDay("DELETE")}
+                onCancel={() => {
+                    setIsDeleteModalOpen(false);
+                    setSelectedDay(undefined);
+                }}
+            >
+                <div>{t("workouts.workout_page.delete_day_modal_title")}</div>
+            </Modal>
+
+            {/* Publish Workout */}
+            <Modal closable={{ "aria-label": "Custom Close Button" }} open={isPublishModalOpen} onOk={publishWorkout} onCancel={() => setIsPublishModalOpen(false)}>
+                <div>{t("workouts.workout_page.publish_workout_modal_title")}</div>
             </Modal>
         </div>
     );
