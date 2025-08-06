@@ -48,28 +48,9 @@ export const draftReducer = {
                 state.isLoadingDays = true;
                 state.currentRequestId = action.meta.requestId;
             })
-            .addCase(draftActions.upsertDay.fulfilled, (state, action) => {
+            .addCase(draftActions.upsertDay.fulfilled, (state) => {
                 state.isLoadingDays = false;
-                if (!action.payload || !state.draftWorkout) return;
-
-                let newDays: Day[] = [...state.draftWorkout.days];
-                if (newDays.find((day) => day.id === action.payload.id)) {
-                    newDays = newDays.map((day) => {
-                        if (day.id === action.payload.id) {
-                            return action.payload;
-                        }
-                        return day;
-                    });
-                } else {
-                    newDays.push(action.payload);
-                }
-
-                if (state.draftWorkout) {
-                    state.draftWorkout = {
-                        ...state.draftWorkout,
-                        days: newDays,
-                    };
-                }
+                state.isError = false;
             })
             .addCase(draftActions.upsertDay.rejected, (state) => {
                 state.isLoadingDays = false;
