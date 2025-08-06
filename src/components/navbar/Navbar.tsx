@@ -9,20 +9,20 @@ export const Navbar = () => {
     const location = useLocation();
 
     const menus = [
-        { name: "Profile", icon: <UserOutlined />, dis: "translate-x-0", path: "/profile" },
-        { name: "Workout", icon: <PlayCircleOutlined />, dis: "translate-x-16", path: "/workouts" },
-        { name: "Exercise", icon: <UnorderedListOutlined />, dis: "translate-x-32", path: "/exercises" },
+        { name: "Profile", icon: <UserOutlined />, dis: "translate-x-0", path: "/gym/profile" },
+        { name: "Workout", icon: <PlayCircleOutlined />, dis: "translate-x-16", path: "/gym/workouts" },
+        { name: "Exercise", icon: <UnorderedListOutlined />, dis: "translate-x-32", path: "/gym/exercises" },
     ];
 
     useEffect(() => {
         switch (location.pathname) {
-            case "/profile":
+            case "/gym/profile":
                 setActive(0);
                 break;
-            case "/workouts":
+            case "/gym/workouts":
                 setActive(1);
                 break;
-            case "/exercises":
+            case "/gym/exercises":
                 setActive(2);
                 break;
             default:

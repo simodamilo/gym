@@ -19,7 +19,6 @@ export const currentReducer = {
             .addCase(currentActions.fetchCurrentWorkout.fulfilled, (state, action) => {
                 state.isLoading = false;
                 if (action.payload && action.payload[0]) {
-                    console.log("TEST", action.payload[0]);
                     const mappedWorkout = workoutMapper.getDraftWorkoutDataMapper(action.payload[0]);
                     state.workout = mappedWorkout;
                 }
@@ -32,23 +31,9 @@ export const currentReducer = {
                 state.isLoading = true;
                 state.currentRequestId = action.meta.requestId;
             })
-            .addCase(currentActions.updateDayStart.fulfilled, (state, action) => {
+            .addCase(currentActions.updateDayStart.fulfilled, (state) => {
                 state.isLoading = false;
-
-                if (action.payload && state.workout) {
-                    state.workout = {
-                        ...state.workout,
-                        days: state.workout.days.map((day) => {
-                            if (day.id === action.payload.id) {
-                                return {
-                                    ...day,
-                                    lastWorkout: action.payload.last_workout,
-                                };
-                            }
-                            return day;
-                        }),
-                    };
-                }
+                state.isError = false;
             })
             .addCase(currentActions.updateDayStart.rejected, (state) => {
                 state.isLoading = false;

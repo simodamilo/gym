@@ -44,6 +44,12 @@ const fetchDraftWorkout = createAsyncThunk("data/fetchDraftWorkout", async (_arg
         return data;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
+        console.error('Error in getting draft workout', error.message);
+        getNotificationApi().error({
+            message: `Error in getting draft workout`,
+            placement: "bottom",
+            className: 'custom-error-notification'
+        });
         return thunkAPI.rejectWithValue(error.message);
     }
 });
@@ -63,6 +69,12 @@ const createDraftWorkout = createAsyncThunk("data/createDraftWorkout", async (_a
         return data;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
+        console.error('Error in creating new draft workout', error.message);
+        getNotificationApi().error({
+            message: `Error in creating new draft workout`,
+            placement: "bottom",
+            className: 'custom-error-notification'
+        });
         return thunkAPI.rejectWithValue(error.message);
     }
 });
@@ -72,17 +84,29 @@ const publishDraftWorkout = createAsyncThunk("data/publishDraftWorkout", async (
         await supabase.from("workouts").update({ status: "archived" }).eq("status", "published");
         await supabase.from("workouts").update({ status: "published" }).eq("status", "draft");
 
+        getNotificationApi().success({
+            message: `Successfully published`,
+            placement: "bottom",
+            className: 'custom-success-notification'
+        });
+
         thunkAPI.dispatch(resetDraft());
         return;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
+        console.error('Error in publishing draft workout', error.message);
+        getNotificationApi().error({
+            message: `Error in publishing draft workout`,
+            placement: "bottom",
+            className: 'custom-error-notification'
+        });
         return thunkAPI.rejectWithValue(error.message);
     }
 });
 
 const upsertDay = createAsyncThunk("data/upsertDay", async (days: UpsertDayPayload[], thunkAPI) => {
     try {
-        const { data, error } = await supabase
+        const { error } = await supabase
             .from("days")
             .upsert(days, {
                 onConflict: "id",
@@ -95,11 +119,20 @@ const upsertDay = createAsyncThunk("data/upsertDay", async (days: UpsertDayPaylo
 
         getNotificationApi().success({
             message: `Successfully saved`,
-            placement: "top",
+            placement: "bottom",
+            className: 'custom-success-notification'
         });
-        return data ? data[0] : null;
+
+        await thunkAPI.dispatch(fetchDraftWorkout());
+        return;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
+        console.error('Error in updating day', error.message);
+        getNotificationApi().error({
+            message: `Error in updating day`,
+            placement: "bottom",
+            className: 'custom-error-notification'
+        });
         return thunkAPI.rejectWithValue(error.message);
     }
 });
@@ -107,9 +140,22 @@ const upsertDay = createAsyncThunk("data/upsertDay", async (days: UpsertDayPaylo
 const deleteDay = createAsyncThunk("data/deleteDay", async (dayId: string, thunkAPI) => {
     try {
         await supabase.from("days").delete().eq("id", dayId);
+
+        getNotificationApi().success({
+            message: `Successfully deleted`,
+            placement: "bottom",
+            className: 'custom-success-notification'
+        });
+
         return dayId;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
+        console.error('Error in deleting day', error.message);
+        getNotificationApi().error({
+            message: `Error in deleting day`,
+            placement: "bottom",
+            className: 'custom-error-notification'
+        });
         return thunkAPI.rejectWithValue(error.message);
     }
 });
@@ -123,7 +169,7 @@ const upsertExercises = createAsyncThunk("data/upsertExercise", async (payloadDa
                 exercises_catalog_id: dayExercise.exercise!.id,
                 order_number: dayExercise.orderNumber,
                 rest: dayExercise.rest,
-                notes: dayExercise.notes,
+                notes: dayExercise.notes
             };
         });
 
@@ -138,7 +184,7 @@ const upsertExercises = createAsyncThunk("data/upsertExercise", async (payloadDa
                     day_exercise_id: payloadData.dayExercises[0].id,
                     set_number: set.setNumber,
                     reps: set.reps!,
-                    weight: set.weight,
+                    weight: set.weight
                 };
             });
 
@@ -150,13 +196,20 @@ const upsertExercises = createAsyncThunk("data/upsertExercise", async (payloadDa
 
         getNotificationApi().success({
             message: `Successfully saved`,
-            placement: "top",
+            placement: "bottom",
+            className: 'custom-success-notification'
         });
 
         await thunkAPI.dispatch(fetchDraftWorkout());
         return;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
+        console.error('Error in updating exercise', error.message);
+        getNotificationApi().error({
+            message: `Error in updating exercise`,
+            placement: "bottom",
+            className: 'custom-error-notification'
+        });
         return thunkAPI.rejectWithValue(error.message);
     }
 });
@@ -164,10 +217,23 @@ const upsertExercises = createAsyncThunk("data/upsertExercise", async (payloadDa
 const deleteExercise = createAsyncThunk("data/deleteExercise", async (dayExerciseId: string, thunkAPI) => {
     try {
         await supabase.from("day_exercises").delete().eq("id", dayExerciseId);
+
+        getNotificationApi().success({
+            message: `Successfully deleted`,
+            placement: "bottom",
+            className: 'custom-success-notification'
+        });
+
         await thunkAPI.dispatch(fetchDraftWorkout());
         return;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
+        console.error('Error in deleting exercise', error.message);
+        getNotificationApi().error({
+            message: `Error in deleting exercise`,
+            placement: "bottom",
+            className: 'custom-error-notification'
+        });
         return thunkAPI.rejectWithValue(error.message);
     }
 });

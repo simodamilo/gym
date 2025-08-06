@@ -12,9 +12,11 @@
     will-change: filter;
     transition: filter 300ms;
 }
+
 .logo:hover {
     filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
     filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -23,6 +25,7 @@
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(360deg);
     }
@@ -42,14 +45,19 @@
     color: #888;
 }
 
+
+/* override ant design notifications style */
+.ant-notification-bottom.ant-notification-stack>.ant-notification-notice-wrapper {
+    bottom: 50px;
+}
+
 .ant-notification .ant-notification-notice-wrapper .ant-notification-notice {
     padding: 8px;
-    border-radius: 10px;
+    border-radius: 6px;
     max-width: calc(100vw - 32px);
 }
 
 .ant-notification .ant-notification-notice-wrapper .ant-notification-notice-with-icon .ant-notification-notice-message {
-    color: #0050b3;
     font-size: 12px;
     line-height: 20px;
     font-weight: 400;
@@ -60,6 +68,7 @@
 .ant-notification .ant-notification-notice-wrapper .ant-notification-notice-icon-error.anticon {
     width: 20px;
     height: 20px;
+    color: #FFFFFF;
 }
 
 .ant-notification .ant-notification-notice-wrapper .ant-notification-notice-close {
@@ -67,6 +76,28 @@
     right: 8px;
 }
 
+/* SUCCESS */
+.custom-success-notification {
+    background-color: green;
+}
+
+.custom-success-notification .ant-notification-notice-message,
+.custom-success-notification .ant-notification-notice-close {
+    color: #FFFFFF !important;
+}
+
+/* ERROR */
+.custom-error-notification {
+    background-color: red;
+}
+
+.custom-error-notification .ant-notification-notice-message,
+.custom-error-notification .ant-notification-notice-close {
+    color: #FFFFFF !important;
+}
+
+
+/* override ant desing input style */
 .ant-input,
 .ant-select-selector,
 .ant-select-item,
@@ -74,19 +105,46 @@
     font-size: 16px !important;
 }
 
-.ant-collapse-content > .ant-collapse-content-box {
-    -webkit-overflow-scrolling: touch; /* smooth momentum scroll on iOS */
+
+/* override ant design collapse */
+.ant-collapse-content>.ant-collapse-content-box {
+    -webkit-overflow-scrolling: touch;
+    /* smooth momentum scroll on iOS */
     overflow-y: auto;
-    max-height: 80vh; /* or suitable max height */
-    touch-action: pan-y; /* allow vertical scrolling */
+    max-height: 80vh;
+    /* or suitable max height */
+    touch-action: pan-y;
+    /* allow vertical scrolling */
 }
 
-/* ONLY change the skeleton shimmer/lines */
+
+/* override ant design skeleton */
 .ant-skeleton .ant-skeleton-title,
-.ant-skeleton .ant-skeleton-paragraph > li,
+.ant-skeleton .ant-skeleton-paragraph>li,
 .ant-skeleton .ant-skeleton-avatar,
 .ant-skeleton .ant-skeleton-input,
 .ant-skeleton .ant-skeleton-image,
 .ant-skeleton .ant-skeleton-button {
-    background-color: rgba(255, 255, 255, 0.2) !important; /* adjust brightness */
+    background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+
+/* override auth-login-page */
+.supabase-auth-ui_ui-input {
+    font-size: 16px !important;
+    color: #FFFFFF !important;
+}
+
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
 }
