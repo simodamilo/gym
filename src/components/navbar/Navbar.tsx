@@ -45,7 +45,7 @@ export const Navbar = () => {
     }, [active]);
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 bg-brand-primary dark:bg-white max-h-[3.4rem] width-full px-6 rounded-t-xl md:hidden">
+        <div className="fixed bottom-0 left-0 right-0 bg-brand-primary dark:bg-white width-full px-6 rounded-t-xl md:hidden pb-4">
             <ul className="flex relative w-full justify-between" ref={menuRef}>
                 <span className={`bg-brand-primary h-12 w-12 absolute -top-6 rounded-full duration-700`} style={{ transform: `translateX(${translateX}px)` }}></span>
                 {menus.map((menu, index) => (
