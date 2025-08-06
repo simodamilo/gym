@@ -20,6 +20,7 @@
             "publish_workout_modal_title": "Are you sure you want to publish the workout?"
         },
         "exercises": {
+            "description": "This is the list of exercises",
             "category_placeholder": "Select a category",
             "exercise_placeholder": "Select an exercise",
             "set_title": "Sets",

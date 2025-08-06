@@ -30,7 +30,7 @@ export const Login = () => {
 
     return (
         <div>
-            <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} providers={["google"]} />
+            <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} providers={[]} />
         </div>
     );
 };

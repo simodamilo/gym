@@ -1,4 +1,4 @@
-import { ArrowRightOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { ArrowRightOutlined, DeleteOutlined, EditOutlined, HolderOutlined } from "@ant-design/icons";
 import type { Day } from "../../../../store/draft/types";
 import { useTranslation } from "react-i18next";
 import { Button } from "antd";
@@ -6,6 +6,7 @@ import { Button } from "antd";
 interface DayContentProps {
     day: Day;
     isReadOnly?: boolean;
+    isDraggable?: boolean;
     setOpenExercisesId: (id: string) => void;
     handleDayUpdate?: (day: Day, type: "DELETE" | "UPDATE") => void;
 }
@@ -28,7 +29,10 @@ export const DayContent = (props: DayContentProps) => {
 
     return (
         <div className="flex justify-between items-center p-3 border border-[#FFEAD8] shadow-md rounded-md">
-            <p className="text-left">{props.day.name}</p>
+            <div className="flex items-center gap-4">
+                {props.isDraggable && <HolderOutlined />}
+                <p className="text-left text-lg leading-4 p-0">{props.day.name}</p>
+            </div>
 
             <div className="flex justify-between items-center gap-4">
                 <Button size="large" icon={<DeleteOutlined />} type="primary" danger shape="circle" onClick={() => props.handleDayUpdate?.(props.day, "DELETE")} />
