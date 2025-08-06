@@ -32,7 +32,7 @@ export const Workouts = () => {
                 )}
             </>
 
-            <FloatButton icon={<PlusOutlined />} onClick={() => navigate("/gym/workouts/create")} style={{ bottom: 80 }} />
+            <FloatButton icon={<PlusOutlined />} onClick={() => navigate("/gym/workouts/create")} style={{ bottom: 100 }} />
         </div>
     );
 };
