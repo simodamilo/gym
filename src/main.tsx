@@ -10,6 +10,35 @@ import "./utils/i18n/i18n";
 import { WorkoutComponent } from "./pages/workouts/components/workout/Workout.component.tsx";
 import App from "./App.tsx";
 import { Login } from "./pages/login/Login.tsx";
+import { useEffect, useState } from "react";
+
+// eslint-disable-next-line react-refresh/only-export-components
+const RootWithSplash = () => {
+    const [isReady, setIsReady] = useState(false);
+
+    useEffect(() => {
+        const splash = document.getElementById("splash-screen");
+
+        const timeout = setTimeout(() => {
+            splash?.classList.add("fade-out");
+
+            setTimeout(() => {
+                splash?.remove();
+                setIsReady(true);
+            }, 500);
+        }, 1000);
+
+        return () => clearTimeout(timeout);
+    }, []);
+
+    if (!isReady) return null;
+
+    return (
+        <AuthProvider>
+            <RouterProvider router={router} />
+        </AuthProvider>
+    );
+};
 
 const router = createBrowserRouter([
     {
@@ -46,8 +75,4 @@ const router = createBrowserRouter([
     },
 ]);
 
-createRoot(document.getElementById("root")!).render(
-    <AuthProvider>
-        <RouterProvider router={router} />
-    </AuthProvider>
-);
+createRoot(document.getElementById("root")!).render(<RootWithSplash />);
