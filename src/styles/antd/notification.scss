@@ -1,0 +1,48 @@
+.ant-notification-bottom.ant-notification-stack > .ant-notification-notice-wrapper {
+    bottom: 70px;
+}
+
+.ant-notification .ant-notification-notice-wrapper .ant-notification-notice {
+    padding: 8px;
+    border-radius: 6px;
+    max-width: calc(100vw - 32px);
+}
+
+.ant-notification .ant-notification-notice-wrapper .ant-notification-notice-with-icon .ant-notification-notice-message {
+    font-size: 12px;
+    line-height: 20px;
+    font-weight: 400;
+    margin-bottom: 0px;
+}
+
+.ant-notification .ant-notification-notice-wrapper .ant-notification-notice-icon-success.anticon,
+.ant-notification .ant-notification-notice-wrapper .ant-notification-notice-icon-error.anticon {
+    width: 20px;
+    height: 20px;
+    color: #ffffff;
+}
+
+.ant-notification .ant-notification-notice-wrapper .ant-notification-notice-close {
+    top: 8px;
+    right: 8px;
+}
+
+/* SUCCESS */
+.custom-success-notification {
+    background-color: green;
+}
+
+.custom-success-notification .ant-notification-notice-message,
+.custom-success-notification .ant-notification-notice-close {
+    color: #ffffff !important;
+}
+
+/* ERROR */
+.custom-error-notification {
+    background-color: red;
+}
+
+.custom-error-notification .ant-notification-notice-message,
+.custom-error-notification .ant-notification-notice-close {
+    color: #ffffff !important;
+}

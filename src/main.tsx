@@ -1,8 +1,7 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
-import AuthProvider, { useAuth } from "./utils/AuthProvider.tsx";
-import ProtectedPage from "./ProtectedPage.tsx";
+import ProtectedPage from "./utils/auth/ProtectedPage.tsx";
 import { Workouts } from "./pages/workouts/Workouts.tsx";
 import { Profile } from "./pages/profile/Profile.tsx";
 import { Exercises } from "./pages/exercises/Exercises.tsx";
@@ -16,6 +15,7 @@ import store, { useAppDispatch } from "./store/store.config.ts";
 import type { RootState } from "./store/reducer.config.ts";
 import { currentSelectors } from "./store/current/current.selectors.ts";
 import { currentActions } from "./store/current/current.actions.ts";
+import AuthProvider, { useAuth } from "./utils/auth/AuthProvider.tsx";
 
 const MIN_SPLASH_TIME = 1000;
 
