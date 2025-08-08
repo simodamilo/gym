@@ -1,4 +1,4 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { supabase } from "../supabaseClient";
 import type { UpsertDayPayload } from "../draft/types";
 
@@ -53,9 +53,16 @@ const updateDayStart = createAsyncThunk("data/updateDayStart", async (day: Upser
     }
 });
 
+const showSwitcher = createAction("data/showSwitcher", (show: boolean) => {
+    return {
+        payload: show,
+    };
+});
+
 const currentActions = {
     fetchCurrentWorkout,
     updateDayStart,
+    showSwitcher,
 };
 
 export { currentActions };

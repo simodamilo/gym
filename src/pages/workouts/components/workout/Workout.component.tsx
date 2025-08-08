@@ -45,6 +45,10 @@ export const WorkoutComponent = (props: WorkoutProps) => {
     const isLoadingCurrentWorkout = useSelector((state: RootState) => currentSelectors.isLoading(state));
 
     useEffect(() => {
+        dispatch(currentActions.showSwitcher(openExercisesId === undefined ? true : false));
+    }, [openExercisesId, dispatch]);
+
+    useEffect(() => {
         if (props.isDraft) {
             getDraft();
         } else {
@@ -128,7 +132,7 @@ export const WorkoutComponent = (props: WorkoutProps) => {
                         workout_id: workout!.id,
                         order: selectedDay!.order,
                         counter: 0,
-                        is_last: false
+                        is_last: false,
                     },
                 ])
             );
@@ -179,7 +183,7 @@ export const WorkoutComponent = (props: WorkoutProps) => {
     }
 
     return (
-        <div className={`w-full h-full max-h-full md:w-3xl flex flex-col ${props.isReadOnly ? "justify-around" : "justify-between"} gap-2 pb-18`}>
+        <div className={`w-full h-full max-h-full md:w-3xl flex flex-col ${props.isReadOnly ? "justify-around" : "justify-between"} gap-2 pb-22`}>
             {openExercisesId ? (
                 <ExercisesList
                     workoutId={workout!.id}
@@ -197,15 +201,7 @@ export const WorkoutComponent = (props: WorkoutProps) => {
                             <div className="flex justify-between w-full">
                                 <div className="flex items-center gap-4">
                                     <Button size="large" type="primary" shape="circle" icon={<PlusOutlined />} onClick={() => setIsEditModalOpen(true)} />
-                                    {days && days.length > 0 && (
-                                        <Button
-                                            size="large"
-                                            type="primary"
-                                            shape="circle"
-                                            icon={<UploadOutlined />}
-                                            onClick={() => setIsPublishModalOpen(true)}
-                                        />
-                                    )}
+                                    {days && days.length > 0 && <Button size="large" type="primary" shape="circle" icon={<UploadOutlined />} onClick={() => setIsPublishModalOpen(true)} />}
                                     {days && days.length > 1 && (
                                         <Button
                                             size="large"

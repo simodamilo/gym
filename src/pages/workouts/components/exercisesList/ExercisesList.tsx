@@ -1,4 +1,4 @@
-import { CloseOutlined, HolderOutlined, LeftOutlined, PlusOutlined } from "@ant-design/icons";
+import { CloseOutlined, HolderOutlined, PlayCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { useAppDispatch } from "../../../../store";
 import { useEffect, useState } from "react";
 import { DndContext, closestCenter, useSensor, useSensors, type DragEndEvent, MouseSensor, TouchSensor } from "@dnd-kit/core";
@@ -68,15 +68,18 @@ export const ExercisesList = (props: ExercisesProps) => {
     /* only used if isReadOnly is false */
     const handleAddExercise = () => {
         const newId = uuidv4();
-        setMutableDayExercises([...mutableDayExercises, {
-            id: newId,
-            orderNumber: mutableDayExercises.length,
-            sets: [],
-            rest: undefined,
-            notes: undefined,
-        }]);
+        setMutableDayExercises([
+            ...mutableDayExercises,
+            {
+                id: newId,
+                orderNumber: mutableDayExercises.length,
+                sets: [],
+                rest: undefined,
+                notes: undefined,
+            },
+        ]);
         setActiveKey(newId);
-    }
+    };
 
     /* only used if isReadOnly is false */
     const saveNewOrder = async (newItems: DayExercise[]) => {
@@ -145,14 +148,12 @@ export const ExercisesList = (props: ExercisesProps) => {
         <>
             {props.isReadOnly ? (
                 <div className="flex justify-between w-full">
-                    <LeftOutlined onClick={() => props.setOpenExercisesId()} />
                     {!checkIfAlreadyStarted() ? (
-                        <Button type="primary" onClick={() => props.handleStartClick?.(props.dayId)}>
-                            {t("workouts.exercises.start_workout")}
-                        </Button>
+                        <Button size="large" type="primary" shape="circle" onClick={() => props.handleStartClick?.(props.dayId)} icon={<PlayCircleOutlined />} />
                     ) : (
                         <div>Workout Started</div>
                     )}
+                    <CloseOutlined onClick={() => props.setOpenExercisesId()} />
                 </div>
             ) : (
                 <div className="flex flex-col gap-4">
