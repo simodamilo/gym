@@ -1,0 +1,7 @@
+.ant-btn-variant-solid,
+.ant-btn-variant-solid:not(:disabled):not(.ant-btn-disabled):hover,
+.ant-btn-variant-solid:not(:disabled):not(.ant-btn-disabled):active {
+    background-color: var(--secondary-color);
+    color: var(--black-color);
+    font-weight: bold;
+}

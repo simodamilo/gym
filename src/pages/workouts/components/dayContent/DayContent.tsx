@@ -16,11 +16,11 @@ export const DayContent = (props: DayContentProps) => {
 
     if (props.isReadOnly) {
         return (
-            <div onClick={() => props.setOpenExercisesId(props.day.id)} className="p-3 border border-[#FFEAD8] shadow-md rounded-md flex items-center justify-between">
-                <p>{props.day.name}</p>
+            <div onClick={() => props.setOpenExercisesId(props.day.id)} className="bg-[var(--primary-color)] shadow-lg rounded-lg flex items-center justify-between p-3">
+                <p className="font-bold">{props.day.name}</p>
                 <div className="flex items-center gap-4">
-                    {props.day.isLast && <div className="text-[10px] border border-[#00b300] px-2 py-[2px] rounded-md">{t("workouts.workout_page.is_last")}</div>}
-                    <div className="text-[10px] border border-[#4682a9] px-2 py-[2px] rounded-md">{`${props.day.counter}`}</div>
+                    {props.day.isLast && <div className="text-[10px] border border-[var(--secondary-color)] px-2 py-[2px] rounded-md">{t("workouts.workout_page.is_last")}</div>}
+                    <div className="text-[10px] border border-[var(--secondary-color)] px-2 py-[2px] rounded-md">{`${props.day.counter}`}</div>
                     <ArrowRightOutlined />
                 </div>
             </div>
@@ -28,14 +28,14 @@ export const DayContent = (props: DayContentProps) => {
     }
 
     return (
-        <div className="flex justify-between items-center p-3 border border-[#FFEAD8] shadow-md rounded-md">
+        <div className="bg-[var(--primary-color)] shadow-lg rounded-lg flex justify-between items-center p-3">
             <div className="flex items-center gap-4">
                 {props.isDraggable && <HolderOutlined />}
-                <p className="text-left text-lg leading-4 p-0">{props.day.name}</p>
+                <p className="font-bold">{props.day.name}</p>
             </div>
 
             <div className="flex justify-between items-center gap-4">
-                <Button size="large" icon={<DeleteOutlined />} type="primary" danger shape="circle" onClick={() => props.handleDayUpdate?.(props.day, "DELETE")} />
+                <Button className="bg-amber-950" size="large" icon={<DeleteOutlined />} type="primary" danger shape="circle" onClick={() => props.handleDayUpdate?.(props.day, "DELETE")} />
                 <Button size="large" icon={<EditOutlined />} type="primary" shape="circle" onClick={() => props.handleDayUpdate?.(props.day, "UPDATE")} />
                 <Button size="large" icon={<ArrowRightOutlined />} type="primary" shape="circle" onClick={() => props.setOpenExercisesId(props.day.id)} />
             </div>

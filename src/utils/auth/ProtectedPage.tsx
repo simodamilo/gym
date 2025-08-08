@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "./utils/AuthProvider";
+import { useAuth } from "./AuthProvider";
 
 const ProtectedPage = () => {
     const { user } = useAuth();

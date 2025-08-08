@@ -1,10 +1,9 @@
-import "./App.css";
 import "./utils/i18n/i18n";
 import { Navbar } from "./components/navbar/Navbar";
 import { NotificationProvider } from "./components/notificationProvider/NotificationProvider";
-import { useAuth } from "./utils/AuthProvider";
 import { Outlet } from "react-router-dom";
 import { useEffect } from "react";
+import { useAuth } from "./utils/auth/AuthProvider";
 
 function App() {
     const { user } = useAuth();

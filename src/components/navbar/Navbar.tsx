@@ -45,14 +45,14 @@ export const Navbar = () => {
     }, [active]);
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 bg-brand-primary dark:bg-white width-full px-6 rounded-t-xl md:hidden pb-4">
+        <div className="fixed bottom-0 left-0 right-0 bg-[var(--primary-color)] width-full px-6 rounded-t-xl md:hidden pb-4">
             <ul className="flex relative w-full justify-between" ref={menuRef}>
-                <span className={`bg-brand-primary h-12 w-12 absolute -top-6 rounded-full duration-700`} style={{ transform: `translateX(${translateX}px)` }}></span>
+                <span className={`bg-[var(--primary-color)] h-12 w-12 absolute -top-6 rounded-full duration-700`} style={{ transform: `translateX(${translateX}px)` }}></span>
                 {menus.map((menu, index) => (
                     <li key={index} className="w-12">
                         <Link to={menu.path} className="flex flex-col text-center pt-2" onClick={() => setActive(index)}>
-                            <span className={`text-white z-100 text-xl cursor-pointer duration-500 ${index === active && "-mt-6"}`}>{menu.icon}</span>
-                            <span className={`text-white text-xs mt-0.5 ${active === index ? "translate-y-4 duration-700 opacity-100" : "translate-y-10 opacity-0"}`}>{menu.name}</span>
+                            <span className={`text-[var(--white-color)] z-100 text-xl cursor-pointer duration-500 ${index === active && "-mt-6"}`}>{menu.icon}</span>
+                            <span className={`text-[var(--white-color)] text-xs mt-0.5 ${active === index ? "translate-y-4 duration-700 opacity-100" : "translate-y-10 opacity-0"}`}>{menu.name}</span>
                         </Link>
                     </li>
                 ))}
