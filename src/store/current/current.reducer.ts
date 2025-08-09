@@ -38,6 +38,9 @@ export const currentReducer = {
             .addCase(currentActions.updateDayStart.rejected, (state) => {
                 state.isLoading = false;
                 state.isError = true;
+            })
+            .addCase(currentActions.showSwitcher, (state, action) => {
+                state.showSwitcher = action.payload;
             });
     }),
 };

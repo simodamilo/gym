@@ -9,7 +9,12 @@ const isLoading = (state: RootState): boolean => {
     return state.current.isLoading;
 };
 
+const showSwitcher = (state: RootState): boolean | undefined => {
+    return state.current.showSwitcher;
+};
+
 export const currentSelectors = {
     getCurrentWorkout,
     isLoading,
+    showSwitcher,
 };

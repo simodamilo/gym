@@ -1,4 +1,5 @@
-.ant-float-btn-default .ant-float-btn-body {
+.ant-float-btn-default .ant-float-btn-body,
+.ant-float-btn-default .ant-float-btn-body .ant-float-btn-content .ant-float-btn-icon {
     background-color: var(--secondary-color);
-    color: var(--black-color);
+    color: var(--white-color);
 }

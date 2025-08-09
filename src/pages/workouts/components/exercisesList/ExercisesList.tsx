@@ -1,4 +1,4 @@
-import { CloseOutlined, HolderOutlined, LeftOutlined, PlusOutlined } from "@ant-design/icons";
+import { CloseOutlined, HolderOutlined, PlayCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { useAppDispatch } from "../../../../store";
 import { useEffect, useState } from "react";
 import { DndContext, closestCenter, useSensor, useSensors, type DragEndEvent, MouseSensor, TouchSensor } from "@dnd-kit/core";
@@ -45,7 +45,7 @@ export const ExercisesList = (props: ExercisesProps) => {
         }),
         useSensor(TouchSensor, {
             activationConstraint: {
-                delay: 500,
+                delay: 200,
                 tolerance: 50,
             },
         })
@@ -68,15 +68,18 @@ export const ExercisesList = (props: ExercisesProps) => {
     /* only used if isReadOnly is false */
     const handleAddExercise = () => {
         const newId = uuidv4();
-        setMutableDayExercises([...mutableDayExercises, {
-            id: newId,
-            orderNumber: mutableDayExercises.length,
-            sets: [],
-            rest: undefined,
-            notes: undefined,
-        }]);
+        setMutableDayExercises([
+            ...mutableDayExercises,
+            {
+                id: newId,
+                orderNumber: mutableDayExercises.length,
+                sets: [],
+                rest: undefined,
+                notes: undefined,
+            },
+        ]);
         setActiveKey(newId);
-    }
+    };
 
     /* only used if isReadOnly is false */
     const saveNewOrder = async (newItems: DayExercise[]) => {
@@ -101,7 +104,7 @@ export const ExercisesList = (props: ExercisesProps) => {
                 workoutId: props.workoutId,
             })
         );
-        if (!checkIfAlreadyStarted() && props.isReadOnly) {
+        if (!isAlreadyStarted() && props.isReadOnly) {
             props.handleStartClick?.(props.dayId);
         }
     };
@@ -111,7 +114,7 @@ export const ExercisesList = (props: ExercisesProps) => {
         await dispatch(draftActions.deleteExercise(exerciseId));
     };
 
-    const checkIfAlreadyStarted = () => {
+    const isAlreadyStarted = () => {
         if (props.lastWorkout) {
             const savedDate = new Date(props.lastWorkout);
             const today = new Date();
@@ -144,15 +147,19 @@ export const ExercisesList = (props: ExercisesProps) => {
     return (
         <>
             {props.isReadOnly ? (
-                <div className="flex justify-between w-full">
-                    <LeftOutlined onClick={() => props.setOpenExercisesId()} />
-                    {!checkIfAlreadyStarted() ? (
-                        <Button type="primary" onClick={() => props.handleStartClick?.(props.dayId)}>
-                            {t("workouts.exercises.start_workout")}
-                        </Button>
-                    ) : (
-                        <div>Workout Started</div>
-                    )}
+                <div className="flex justify-between w-full mb-2">
+                    <Button
+                        size="large"
+                        type="primary"
+                        disabled={isAlreadyStarted()}
+                        shape={!isAlreadyStarted() ? "circle" : "default"}
+                        onClick={() => props.handleStartClick?.(props.dayId)}
+                        icon={!isAlreadyStarted() && <PlayCircleOutlined />}
+                    >
+                        {isAlreadyStarted() && <div>Workout Started</div>}
+                    </Button>
+
+                    <CloseOutlined onClick={() => props.setOpenExercisesId()} />
                 </div>
             ) : (
                 <div className="flex flex-col gap-4">

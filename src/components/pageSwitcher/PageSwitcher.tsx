@@ -20,12 +20,12 @@ export const PageSwitcher = ({ active, onChange }: IProps) => {
     ];
 
     return (
-        <div className="flex w-full rounded-full bg-[var(--primary-color)] p-1 h-10">
+        <div className="flex w-full rounded-full bg-[var(--primary-color)] p-1 h-10 mb-4">
             {items.map(({ key, label }) => (
                 <div
                     key={key}
                     className={`flex-1 h-8 cursor-pointer rounded-full py-1 text-center font-medium text-[var(--white-color)] transition-all duration-300 ease-in-out ${
-                        active === key ? "bg-[var(--secondary-color)] !text-[var(--black-color)] shadow-md" : ""
+                        active === key ? "bg-[var(--secondary-color)] !text-[var(--white-color)] shadow-md" : ""
                     }`}
                     onClick={() => onChange(key)}
                 >

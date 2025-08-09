@@ -4,10 +4,10 @@ import type { DayExerciseResponse, DayResponse, Set, Workout } from "./types";
 const getDraftWorkoutDataMapper = (response: any): Workout => {
     return {
         id: response.id,
-        name: response.name,
         status: response.status,
-        description: response.description,
         createdAt: response.created_at,
+        startDate: response.start_date,
+        endDate: response.end_date,
         days: response.days.map((day: DayResponse) => {
             return {
                 id: day.id,

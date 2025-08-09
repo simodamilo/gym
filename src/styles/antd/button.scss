@@ -2,6 +2,14 @@
 .ant-btn-variant-solid:not(:disabled):not(.ant-btn-disabled):hover,
 .ant-btn-variant-solid:not(:disabled):not(.ant-btn-disabled):active {
     background-color: var(--secondary-color);
-    color: var(--black-color);
+    color: var(--white-color);
     font-weight: bold;
+}
+
+.ant-btn-variant-solid:disabled {
+    background-color: var(--secondary-color);
+    color: var(--white-color);
+    font-weight: 400;
+    border: none;
+    opacity: 0.5;
 }

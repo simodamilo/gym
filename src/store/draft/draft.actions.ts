@@ -15,7 +15,7 @@ const fetchDraftWorkout = createAsyncThunk("data/fetchDraftWorkout", async (_arg
             .from("workouts")
             .select(
                 `
-                    id, name, description, status, created_at, days (
+                    id, status, created_at, start_date, end_date, days (
                         id, name, counter, is_last, order, created_at, day_exercises (
                             id,
                             order_number,
@@ -44,11 +44,11 @@ const fetchDraftWorkout = createAsyncThunk("data/fetchDraftWorkout", async (_arg
         return data;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-        console.error('Error in getting draft workout', error.message);
+        console.error("Error in getting draft workout", error.message);
         getNotificationApi().error({
             message: `Error in getting draft workout`,
             placement: "bottom",
-            className: 'custom-error-notification'
+            className: "custom-error-notification",
         });
         return thunkAPI.rejectWithValue(error.message);
     }
@@ -58,7 +58,7 @@ const createDraftWorkout = createAsyncThunk("data/createDraftWorkout", async (_a
     try {
         const { data } = await supabase
             .from("workouts")
-            .insert([{ id: uuidv4(), name: "New Workout", status: "draft" }])
+            .insert([{ id: uuidv4(), status: "draft" }])
             .select(
                 `
                     id, name, description, status, created_at, days (
@@ -69,11 +69,11 @@ const createDraftWorkout = createAsyncThunk("data/createDraftWorkout", async (_a
         return data;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-        console.error('Error in creating new draft workout', error.message);
+        console.error("Error in creating new draft workout", error.message);
         getNotificationApi().error({
             message: `Error in creating new draft workout`,
             placement: "bottom",
-            className: 'custom-error-notification'
+            className: "custom-error-notification",
         });
         return thunkAPI.rejectWithValue(error.message);
     }
@@ -81,24 +81,25 @@ const createDraftWorkout = createAsyncThunk("data/createDraftWorkout", async (_a
 
 const publishDraftWorkout = createAsyncThunk("data/publishDraftWorkout", async (_arg, thunkAPI) => {
     try {
-        await supabase.from("workouts").update({ status: "archived" }).eq("status", "published");
-        await supabase.from("workouts").update({ status: "published" }).eq("status", "draft");
+        const now = new Date();
+        await supabase.from("workouts").update({ status: "archived", end_date: now.getTime() }).eq("status", "published");
+        await supabase.from("workouts").update({ status: "published", start_date: now.getTime() }).eq("status", "draft");
 
         getNotificationApi().success({
             message: `Successfully published`,
             placement: "bottom",
-            className: 'custom-success-notification'
+            className: "custom-success-notification",
         });
 
         thunkAPI.dispatch(resetDraft());
         return;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-        console.error('Error in publishing draft workout', error.message);
+        console.error("Error in publishing draft workout", error.message);
         getNotificationApi().error({
             message: `Error in publishing draft workout`,
             placement: "bottom",
-            className: 'custom-error-notification'
+            className: "custom-error-notification",
         });
         return thunkAPI.rejectWithValue(error.message);
     }
@@ -120,18 +121,18 @@ const upsertDay = createAsyncThunk("data/upsertDay", async (days: UpsertDayPaylo
         getNotificationApi().success({
             message: `Successfully saved`,
             placement: "bottom",
-            className: 'custom-success-notification'
+            className: "custom-success-notification",
         });
 
         await thunkAPI.dispatch(fetchDraftWorkout());
         return;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-        console.error('Error in updating day', error.message);
+        console.error("Error in updating day", error.message);
         getNotificationApi().error({
             message: `Error in updating day`,
             placement: "bottom",
-            className: 'custom-error-notification'
+            className: "custom-error-notification",
         });
         return thunkAPI.rejectWithValue(error.message);
     }
@@ -144,17 +145,17 @@ const deleteDay = createAsyncThunk("data/deleteDay", async (dayId: string, thunk
         getNotificationApi().success({
             message: `Successfully deleted`,
             placement: "bottom",
-            className: 'custom-success-notification'
+            className: "custom-success-notification",
         });
 
         return dayId;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-        console.error('Error in deleting day', error.message);
+        console.error("Error in deleting day", error.message);
         getNotificationApi().error({
             message: `Error in deleting day`,
             placement: "bottom",
-            className: 'custom-error-notification'
+            className: "custom-error-notification",
         });
         return thunkAPI.rejectWithValue(error.message);
     }
@@ -169,7 +170,7 @@ const upsertExercises = createAsyncThunk("data/upsertExercise", async (payloadDa
                 exercises_catalog_id: dayExercise.exercise!.id,
                 order_number: dayExercise.orderNumber,
                 rest: dayExercise.rest,
-                notes: dayExercise.notes
+                notes: dayExercise.notes,
             };
         });
 
@@ -184,7 +185,7 @@ const upsertExercises = createAsyncThunk("data/upsertExercise", async (payloadDa
                     day_exercise_id: payloadData.dayExercises[0].id,
                     set_number: set.setNumber,
                     reps: set.reps!,
-                    weight: set.weight
+                    weight: set.weight,
                 };
             });
 
@@ -197,18 +198,18 @@ const upsertExercises = createAsyncThunk("data/upsertExercise", async (payloadDa
         getNotificationApi().success({
             message: `Successfully saved`,
             placement: "bottom",
-            className: 'custom-success-notification'
+            className: "custom-success-notification",
         });
 
         await thunkAPI.dispatch(fetchDraftWorkout());
         return;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-        console.error('Error in updating exercise', error.message);
+        console.error("Error in updating exercise", error.message);
         getNotificationApi().error({
             message: `Error in updating exercise`,
             placement: "bottom",
-            className: 'custom-error-notification'
+            className: "custom-error-notification",
         });
         return thunkAPI.rejectWithValue(error.message);
     }
@@ -221,18 +222,18 @@ const deleteExercise = createAsyncThunk("data/deleteExercise", async (dayExercis
         getNotificationApi().success({
             message: `Successfully deleted`,
             placement: "bottom",
-            className: 'custom-success-notification'
+            className: "custom-success-notification",
         });
 
         await thunkAPI.dispatch(fetchDraftWorkout());
         return;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-        console.error('Error in deleting exercise', error.message);
+        console.error("Error in deleting exercise", error.message);
         getNotificationApi().error({
             message: `Error in deleting exercise`,
             placement: "bottom",
-            className: 'custom-error-notification'
+            className: "custom-error-notification",
         });
         return thunkAPI.rejectWithValue(error.message);
     }
