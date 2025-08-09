@@ -83,7 +83,7 @@ export const WorkoutComponent = (props: WorkoutProps) => {
         }),
         useSensor(TouchSensor, {
             activationConstraint: {
-                delay: 500,
+                delay: 200,
                 tolerance: 50,
             },
         })

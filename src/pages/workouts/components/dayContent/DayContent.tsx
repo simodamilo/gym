@@ -21,7 +21,6 @@ export const DayContent = (props: DayContentProps) => {
                 <div className="flex items-center gap-4">
                     {props.day.isLast && <div className="text-[10px] border border-[var(--secondary-color)] px-2 py-[2px] rounded-md">{t("workouts.workout_page.is_last")}</div>}
                     <div className="text-[10px] border border-[var(--secondary-color)] px-2 py-[2px] rounded-md">{`${props.day.counter}`}</div>
-                    <ArrowRightOutlined />
                 </div>
             </div>
         );

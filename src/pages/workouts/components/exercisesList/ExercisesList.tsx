@@ -45,7 +45,7 @@ export const ExercisesList = (props: ExercisesProps) => {
         }),
         useSensor(TouchSensor, {
             activationConstraint: {
-                delay: 500,
+                delay: 200,
                 tolerance: 50,
             },
         })
@@ -104,7 +104,7 @@ export const ExercisesList = (props: ExercisesProps) => {
                 workoutId: props.workoutId,
             })
         );
-        if (!checkIfAlreadyStarted() && props.isReadOnly) {
+        if (!isAlreadyStarted() && props.isReadOnly) {
             props.handleStartClick?.(props.dayId);
         }
     };
@@ -114,7 +114,7 @@ export const ExercisesList = (props: ExercisesProps) => {
         await dispatch(draftActions.deleteExercise(exerciseId));
     };
 
-    const checkIfAlreadyStarted = () => {
+    const isAlreadyStarted = () => {
         if (props.lastWorkout) {
             const savedDate = new Date(props.lastWorkout);
             const today = new Date();
@@ -147,12 +147,18 @@ export const ExercisesList = (props: ExercisesProps) => {
     return (
         <>
             {props.isReadOnly ? (
-                <div className="flex justify-between w-full">
-                    {!checkIfAlreadyStarted() ? (
-                        <Button size="large" type="primary" shape="circle" onClick={() => props.handleStartClick?.(props.dayId)} icon={<PlayCircleOutlined />} />
-                    ) : (
-                        <div>Workout Started</div>
-                    )}
+                <div className="flex justify-between w-full mb-2">
+                    <Button
+                        size="large"
+                        type="primary"
+                        disabled={isAlreadyStarted()}
+                        shape={!isAlreadyStarted() ? "circle" : "default"}
+                        onClick={() => props.handleStartClick?.(props.dayId)}
+                        icon={!isAlreadyStarted() && <PlayCircleOutlined />}
+                    >
+                        {isAlreadyStarted() && <div>Workout Started</div>}
+                    </Button>
+
                     <CloseOutlined onClick={() => props.setOpenExercisesId()} />
                 </div>
             ) : (
