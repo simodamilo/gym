@@ -11,10 +11,10 @@ export type DraftState = {
 
 export interface Workout {
     id: string;
-    name: string;
-    description?: string;
     status: string;
     createdAt?: number;
+    startDate?: number;
+    endDate?: number;
     days: Day[];
 }
 
@@ -76,10 +76,10 @@ export interface UpsertSetPayload {
 /* Types used for reponse returned from be */
 export interface WorkoutResponse {
     id: string;
-    name: string;
-    description?: string;
     status: string;
     created_at: number;
+    start_date?: number;
+    end_date?: number;
     days: DayResponse[];
 }
 
