@@ -23,6 +23,8 @@ const getDraftWorkoutDataMapper = (response: any): Workout => {
                         orderNumber: day_exercise.order_number,
                         rest: day_exercise.rest,
                         notes: day_exercise.notes,
+                        repsType: day_exercise.reps_type,
+                        customType: day_exercise.custom_type,
                         sets: day_exercise.day_exercise_sets.map((set) => {
                             return {
                                 id: set.id,

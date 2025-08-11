@@ -11,7 +11,7 @@ import { draftSelectors } from "../../../../store/draft/draft.selectors";
 import TextArea from "antd/es/input/TextArea";
 import { v4 as uuidv4 } from "uuid";
 import type { ExerciseCatalog } from "../../../../store/exercisesCatalog/types";
-import { Categories } from "../../../../utils/constants";
+import { Categories, RepsTypes } from "../../../../utils/constants";
 
 export interface ExerciseContentProps {
     dayId: string;
@@ -62,6 +62,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
             newSets.push({
                 id: uuidv4(),
                 setNumber: newSetNumber,
+                reps: dayExercise.repsType === 'max' ? 'Max' : ''
             });
             setDayExercise((prevState) => {
                 return {
@@ -109,6 +110,19 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
         }
     };
 
+    const getAddon = () => {
+        switch (dayExercise.repsType) {
+            case 'reps':
+                return t('workouts.exercises.kg');
+            case 'time':
+                return t('workouts.exercises.secs');
+            case 'max':
+                return t('workouts.exercises.reps');
+            default:
+                return;
+        }
+    }
+
     return (
         <div className="flex flex-col gap-4">
             {!props.isReadOnly && (
@@ -154,45 +168,81 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                 </div>
             )}
             <div className="flex flex-col gap-2 border rounded-md border-[#FFEAD8] p-3">
-                <p className="text-lg/5 text-left">{t("workouts.exercises.set_title")}</p>
-                {[...(dayExercise.sets ?? [])]
-                    .sort((a, b) => a.setNumber - b.setNumber)
-                    .map((set: Set) => {
-                        if (props.isReadOnly) {
+                {!props.isReadOnly && <Select
+                    className="w-full md:w-xl text-left !text-[16px]"
+                    placeholder={t("workouts.exercises.reps_type_placeholder")}
+                    value={dayExercise.repsType}
+                    onChange={(value) => {
+                        setDayExercise({
+                            ...dayExercise,
+                            id: props.dayExercise.id,
+                            orderNumber: props.dayExercise.orderNumber,
+                            repsType: value,
+                            sets: []
+                        });
+                    }}
+                    options={RepsTypes}
+                    disabled={isLoadingExercises}
+                />}
+                {dayExercise.repsType === 'custom' ? (
+                    <TextArea
+                        rows={4}
+                        value={dayExercise.customType}
+                        onChange={(input) => {
+                            setDayExercise((prevState) => {
+                                return {
+                                    ...prevState,
+                                    customType: input.target.value,
+                                };
+                            });
+                            setIsExerciseUpdated(true);
+                        }}
+                        onBlur={saveWeights}
+                        placeholder={t("workouts.exercises.notes_placeholder")}
+                        disabled={isLoadingExercises}
+                        readOnly={props.isReadOnly}
+                    />
+                ) : (
+                    [...(dayExercise.sets ?? [])]
+                        .sort((a, b) => a.setNumber - b.setNumber)
+                        .map((set: Set) => {
+                            if (props.isReadOnly) {
+                                return (
+                                    <div key={set.id} className="flex gap-4 w-full">
+                                        <div className="w-[40%]">
+                                            <Input readOnly addonBefore={set.setNumber} value={set.reps} />
+                                        </div>
+                                        <div className="w-[60%]">
+                                            <Input
+                                                key={set.id}
+                                                addonBefore={getAddon()}
+                                                value={set.weight}
+                                                onChange={(input) => updateSet("weight", input.target.value, set.id)}
+                                                onBlur={saveWeights}
+                                                disabled={isLoadingExercises}
+                                            />
+                                        </div>
+                                    </div>
+                                );
+                            }
                             return (
-                                <div key={set.id} className="flex gap-4 w-full">
-                                    <div className="w-[40%]">
-                                        <Input readOnly addonBefore={set.setNumber} value={set.reps} />
-                                    </div>
-                                    <div className="w-[60%]">
-                                        <Input
-                                            key={set.id}
-                                            addonBefore={t("workouts.exercises.kg")}
-                                            placeholder={t("workouts.exercises.reps_placeholder")}
-                                            value={set.weight}
-                                            onChange={(input) => updateSet("weight", input.target.value, set.id)}
-                                            onBlur={saveWeights}
-                                            disabled={isLoadingExercises}
-                                        />
-                                    </div>
-                                </div>
+                                <Input
+                                    key={set.id}
+                                    addonBefore={set.setNumber}
+                                    placeholder={t("workouts.exercises.reps_placeholder")}
+                                    value={set.reps}
+                                    onChange={(input) => updateSet("reps", input.target.value, set.id)}
+                                    disabled={isLoadingExercises}
+                                    readOnly={dayExercise.repsType === 'max'}
+                                />
                             );
-                        }
-                        return (
-                            <Input
-                                key={set.id}
-                                addonBefore={set.setNumber}
-                                placeholder={t("workouts.exercises.reps_placeholder")}
-                                value={set.reps}
-                                onChange={(input) => updateSet("reps", input.target.value, set.id)}
-                                disabled={isLoadingExercises}
-                            />
-                        );
-                    })}
-                {!props.isReadOnly && (
+                        })
+                )
+                }
+                {!props.isReadOnly && dayExercise.repsType !== 'custom' && (
                     <div className="flex justify-between">
-                        <Button type="primary" icon={<MinusOutlined />} shape="circle" onClick={removeSet} disabled={dayExercise.sets.length === 0 || isLoadingExercises} />
-                        <Button type="primary" icon={<PlusOutlined />} shape="circle" onClick={addSet} disabled={isLoadingExercises} />
+                        <Button type="primary" icon={<MinusOutlined />} shape="circle" onClick={removeSet} disabled={dayExercise.sets.length === 0 || !dayExercise.repsType || isLoadingExercises} />
+                        <Button type="primary" icon={<PlusOutlined />} shape="circle" onClick={addSet} disabled={!dayExercise.repsType || isLoadingExercises} />
                     </div>
                 )}
             </div>
@@ -209,7 +259,6 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                         };
                     });
                 }}
-                type="number"
                 disabled={isLoadingExercises}
             />
             <TextArea

@@ -1,85 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <base href="/gym/" />
-        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <!-- Enable full-screen standalone PWA mode -->
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <!-- Status bar style: can be default / black / black-translucent -->
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <!-- Background color behind the status bar -->
-        <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
-        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#242424" />
-        <title>Gym</title>
-        <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" href="/gym/apple-splash-1125x2436.png" />
-        <link rel="apple-touch-startup-image" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" href="/gym/apple-splash-1170x2532.png" />
-        <link rel="apple-touch-icon" href="/gym/pwa-192x192.png" />
-    </head>
 
-    <style>
-        #splash-screen {
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+<head>
+    <meta charset="UTF-8" />
+    <base href="/gym/" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Enable full-screen standalone PWA mode -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!-- Status bar style: can be default / black / black-translucent -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <!-- Background color behind the status bar -->
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#242424" />
+    <title>Gym</title>
+    <link rel="apple-touch-startup-image"
+        media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)"
+        href="/gym/apple-splash-1125x2436.png" />
+    <link rel="apple-touch-startup-image"
+        media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)"
+        href="/gym/apple-splash-1170x2532.png" />
+    <link rel="apple-touch-icon" href="/gym/pwa-192x192.png" />
+</head>
+
+<style>
+    #splash-screen {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .splash-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    #splash-screen img {
+        width: 180px;
+        height: 180px;
+        border-radius: 20px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .splash-text {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+        text-align: center;
+        font-weight: 600;
+        font-size: 1.5rem;
+        color: #333;
+        letter-spacing: 0.03em;
+        margin: 0;
+        line-height: 1.2;
+    }
+
+    .splash-text .bigger {
+        display: block;
+        font-size: 2.4rem;
+        font-weight: 700;
+        margin-top: 0.2rem;
+        color: #1a202c;
+        /* Slightly darker */
+        letter-spacing: 0.05em;
+    }
+
+    #splash-screen.fade-out {
+        opacity: 0;
+        transition: opacity 0.5s ease-out;
+    }
+</style>
+
+<body>
+    <script>
+        const theme = localStorage.getItem('theme');
+        if (
+            theme === 'dark' ||
+            (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        ) {
+            document.documentElement.classList.add('dark');
         }
-
-        .splash-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        #splash-screen img {
-            width: 180px;
-            height: 180px;
-            border-radius: 20px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .splash-text {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-            text-align: center;
-            font-weight: 600;
-            font-size: 1.5rem;
-            color: #333;
-            letter-spacing: 0.03em;
-            margin: 0;
-            line-height: 1.2;
-        }
-
-        .splash-text .bigger {
-            display: block;
-            font-size: 2.4rem;
-            font-weight: 700;
-            margin-top: 0.2rem;
-            color: #1a202c; /* Slightly darker */
-            letter-spacing: 0.05em;
-        }
-
-        #splash-screen.fade-out {
-            opacity: 0;
-            transition: opacity 0.5s ease-out;
-        }
-    </style>
-
-    <body>
-        <div id="splash-screen">
-            <div class="splash-content">
-                <img src="/gym/pwa-192x192.png" alt="logo" />
-                <p class="splash-text">
-                    Dream Big,<br />
-                    <span class="bigger">Do Bigger</span>
-                </p>
-            </div>
+    </script>
+    <div id="splash-screen">
+        <div class="splash-content">
+            <img src="/gym/pwa-192x192.png" alt="logo" />
+            <p class="splash-text">
+                Dream Big<br />
+                <span class="bigger">Do Bigger</span>
+            </p>
         </div>
-        <div id="root"></div>
-        <script type="module" src="/src/main.tsx"></script>
-    </body>
+    </div>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>

@@ -14,6 +14,8 @@ const fetchCurrentWorkout = createAsyncThunk("data/fetchCurrentWorkout", async (
                             order_number,
                             rest, 
                             notes,
+                            reps_type,
+                            custom_type,
                             created_at,
                             exercises_catalog (
                                 id, name, category, description, created_at

@@ -28,3 +28,22 @@ export const Categories = [
         label: "Extra"
     }
 ]
+
+export const RepsTypes = [
+    {
+        value: 'reps',
+        label: 'Reps'
+    },
+    {
+        value: 'time',
+        label: 'Time'
+    },
+    {
+        value: 'max',
+        label: 'Max'
+    },
+    {
+        value: 'custom',
+        label: 'Custom'
+    }
+]

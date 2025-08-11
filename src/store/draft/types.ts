@@ -34,6 +34,8 @@ export interface DayExercise {
     rest?: string;
     orderNumber: number;
     notes?: string;
+    repsType?: string;
+    customType?: string;
     exercise?: ExerciseCatalog;
     sets: Set[];
 }
@@ -63,13 +65,15 @@ export interface UpsertDayExercisePayload {
     order_number: number;
     rest?: string;
     notes?: string;
+    reps_type?: string;
+    custom_type?: string;
 }
 
 export interface UpsertSetPayload {
     id: string;
     day_exercise_id: string;
     set_number: number;
-    reps: string;
+    reps?: string;
     weight?: number;
 }
 
@@ -99,6 +103,8 @@ export interface DayExerciseResponse {
     order_number: number;
     rest?: string;
     notes?: string;
+    reps_type?: string;
+    custom_type?: string;
     exercises_catalog: ExerciseCatalogResponse;
     day_exercise_sets: SetResponse[];
 }
@@ -114,7 +120,7 @@ export interface ExerciseCatalogResponse {
 export interface SetResponse {
     id: string;
     set_number: number;
-    reps: string;
+    reps?: string;
     weight?: number;
     created_at: number;
 }
