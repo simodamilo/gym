@@ -21,6 +21,8 @@ const fetchDraftWorkout = createAsyncThunk("data/fetchDraftWorkout", async (_arg
                             order_number,
                             rest, 
                             notes,
+                            reps_type,
+                            custom_type,
                             created_at,
                             exercises_catalog (
                                 id, name, category, description, created_at
@@ -61,7 +63,7 @@ const createDraftWorkout = createAsyncThunk("data/createDraftWorkout", async (_a
             .insert([{ id: uuidv4(), status: "draft" }])
             .select(
                 `
-                    id, name, description, status, created_at, days (
+                    id, status, created_at, days (
                         id, name, created_at
                     )
                 `
@@ -171,6 +173,8 @@ const upsertExercises = createAsyncThunk("data/upsertExercise", async (payloadDa
                 order_number: dayExercise.orderNumber,
                 rest: dayExercise.rest,
                 notes: dayExercise.notes,
+                reps_type: dayExercise.repsType,
+                custom_type: dayExercise.customType
             };
         });
 
@@ -184,7 +188,7 @@ const upsertExercises = createAsyncThunk("data/upsertExercise", async (payloadDa
                     id: set.id,
                     day_exercise_id: payloadData.dayExercises[0].id,
                     set_number: set.setNumber,
-                    reps: set.reps!,
+                    reps: set.reps,
                     weight: set.weight,
                 };
             });

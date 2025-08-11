@@ -23,7 +23,6 @@
             "description": "This is the list of exercises",
             "category_placeholder": "Select a category",
             "exercise_placeholder": "Select an exercise",
-            "set_title": "Sets",
             "reps_placeholder": "Add the number of reps",
             "rest_placeholder": "Add the rest",
             "rest_label": "Rest",
@@ -31,7 +30,13 @@
             "save_btn": "Save",
             "new_exercise_title": "New exercise",
             "kg": "Kg",
-            "start_workout": "Start Workout"
+            "reps": "Reps",
+            "secs": "Secs",
+            "start_workout": "Start Workout",
+            "reps_type_placeholder": "Select the type of reps"
         }
+    },
+    "profile": {
+        "settings_title": "Settings"
     }
 }
