@@ -3,6 +3,7 @@ import { supabase } from "../../store/supabaseClient";
 import { useEffect, useState } from "react";
 import DarkModeToggle from "../../components/darkModeToggle/DarkModeToggle";
 import { useTranslation } from "react-i18next";
+import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 export const Profile = () => {
     const { t } = useTranslation();
@@ -38,8 +39,14 @@ export const Profile = () => {
         }
     };
 
+    const data = [
+        { name: 'Jan', value: 400 },
+        { name: 'Feb', value: 300 },
+        { name: 'Mar', value: 500 },
+    ];
+
     return (
-        <div className="h-full flex flex-col justify-between pb-22">
+        <div className="flex flex-col gap-4 justify-between pb-25">
             <div className="flex flex-col gap-2">
                 <div className="flex gap-2">
                     <div className="w-[40%] bg-[var(--primary-color)] color-[var(--white-color)] rounded-md p-2">
@@ -49,6 +56,14 @@ export const Profile = () => {
                 </div>
                 <div className="bg-[var(--primary-color)] color-[var(--white-color)] rounded-md p-2">
                     Weight graph
+                    <ResponsiveContainer width="100%" height={300}>
+                        <LineChart data={data}>
+                            <XAxis dataKey="name" />
+                            <YAxis />
+                            <Tooltip />
+                            <Line type="monotone" dataKey="value" stroke="#4d4d4d" />
+                        </LineChart>
+                    </ResponsiveContainer>
                 </div>
                 <div className="bg-[var(--primary-color)] color-[var(--white-color)] rounded-md p-2">
                     Max graph
