@@ -24,6 +24,10 @@ export const Categories = [
         label: "Legs"
     },
     {
+        value: "abs",
+        label: "Abs"
+    },
+    {
         value: "extra",
         label: "Extra"
     }
