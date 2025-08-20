@@ -13,14 +13,14 @@ import { currentActions } from "../../../../store/current/current.actions";
 import { closestCenter, DndContext, MouseSensor, TouchSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { SortableItem } from "../../../../components/sortableItem/SortableItem";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { currentSelectors } from "../../../../store/current/current.selectors";
 import { DayContent } from "../dayContent/DayContent";
 import { MoveIcon } from "../moveIcon/MoveIcon";
+import { historySelectors } from "../../../../store/history/history.selectors";
 
 interface WorkoutProps {
     isDraft?: boolean;
-    workoutId?: string;
     isReadOnly?: boolean;
 }
 
@@ -28,6 +28,7 @@ export const WorkoutComponent = (props: WorkoutProps) => {
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const { workoutId } = useParams();
 
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const [openExercisesId, setOpenExercisesId] = useState<string>();
@@ -41,6 +42,7 @@ export const WorkoutComponent = (props: WorkoutProps) => {
 
     const draftWorkout = useSelector((state: RootState) => draftSelectors.getDraftWorkout(state));
     const currentWorkout = useSelector((state: RootState) => currentSelectors.getCurrentWorkout(state));
+    const archivedWorkouts = useSelector(historySelectors.getHistoryWorkouts);
     const isLoadingWorkout = useSelector((state: RootState) => draftSelectors.isLoadingWorkout(state));
     const isLoadingCurrentWorkout = useSelector((state: RootState) => currentSelectors.isLoading(state));
 
@@ -49,6 +51,10 @@ export const WorkoutComponent = (props: WorkoutProps) => {
     }, [openExercisesId, dispatch]);
 
     useEffect(() => {
+        if (workoutId) {
+            return;
+        }
+
         if (props.isDraft) {
             getDraft();
         } else {
@@ -58,13 +64,21 @@ export const WorkoutComponent = (props: WorkoutProps) => {
     }, [props.isDraft]);
 
     useEffect(() => {
+        if (workoutId) {
+            const currentWorkout = archivedWorkouts.find(workout => workout.id === workoutId);
+            setWorkout(currentWorkout);
+            const newDays = [...currentWorkout!.days];
+            setDays(newDays.sort((a, b) => (a.order || 0) - (b.order || 0)));
+            return;
+        }
+
         const workout = props.isDraft ? draftWorkout : currentWorkout;
         if (workout) {
             setWorkout(workout);
             const newDays = [...workout.days];
             setDays(newDays.sort((a, b) => (a.order || 0) - (b.order || 0)));
         }
-    }, [draftWorkout, currentWorkout, props.isDraft]);
+    }, [draftWorkout, currentWorkout, archivedWorkouts, workoutId, props.isDraft]);
 
     const getDraft = async () => {
         await dispatch(draftActions.fetchDraftWorkout());
@@ -199,20 +213,23 @@ export const WorkoutComponent = (props: WorkoutProps) => {
                     {!props.isReadOnly && (
                         <div className="flex flex-col gap-4">
                             <div className="flex justify-between w-full">
-                                <div className="flex items-center gap-4">
-                                    <Button size="large" type="primary" shape="circle" icon={<PlusOutlined />} onClick={() => setIsEditModalOpen(true)} />
-                                    {days && days.length > 0 && <Button size="large" type="primary" shape="circle" icon={<UploadOutlined />} onClick={() => setIsPublishModalOpen(true)} />}
-                                    {days && days.length > 1 && (
-                                        <Button
-                                            size="large"
-                                            type={isDragEnable ? "default" : "primary"}
-                                            shape="circle"
-                                            icon={<MoveIcon style={{ fontSize: "20px" }} />}
-                                            onClick={() => setIsDragEnable(!isDragEnable)}
-                                        />
-                                    )}
-                                </div>
-                                <CloseOutlined onClick={() => navigate("/gym/workouts")} />
+                                {!workoutId &&
+                                    <div className="flex items-center gap-4">
+                                        <Button size="large" type="primary" shape="circle" icon={<PlusOutlined />} onClick={() => setIsEditModalOpen(true)} />
+                                        {days && days.length > 0 && <Button size="large" type="primary" shape="circle" icon={<UploadOutlined />} onClick={() => setIsPublishModalOpen(true)} />}
+                                        {days && days.length > 1 && (
+                                            <Button
+                                                size="large"
+                                                type={isDragEnable ? "default" : "primary"}
+                                                shape="circle"
+                                                icon={<MoveIcon style={{ fontSize: "20px" }} />}
+                                                onClick={() => setIsDragEnable(!isDragEnable)}
+                                            />
+                                        )}
+                                    </div>
+                                }
+                                <div></div>
+                                <CloseOutlined onClick={() => navigate(workoutId ? "/gym/workouts/history" : "/gym/workouts")} />
                             </div>
                             {days && days.length > 0 && <p className="text-left text-[12px] italic">{t("workouts.workout_page.description")}</p>}
                         </div>
@@ -221,7 +238,7 @@ export const WorkoutComponent = (props: WorkoutProps) => {
                         <div ref={scrollContainerRef} className="flex-1 overflow-y-auto flex flex-col gap-2 hide-scrollbar">
                             {props.isReadOnly || !isDragEnable ? (
                                 days.map((day, index) => {
-                                    return <DayContent key={index} day={day} isReadOnly={props.isReadOnly} setOpenExercisesId={setOpenExercisesId} handleDayUpdate={handleDayUpdate} />;
+                                    return <DayContent key={index} day={day} isReadOnly={props.isReadOnly || !!workoutId} setOpenExercisesId={setOpenExercisesId} handleDayUpdate={handleDayUpdate} />;
                                 })
                             ) : (
                                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>

@@ -16,7 +16,7 @@ export const progressesReducer = {
             })
             .addCase(progressHistoryActions.fetchProgressesByType.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.progresses = action.payload;
+                state.progresses = action.payload.sort((a, b) => new Date(a.period).getTime() - new Date(b.period).getTime());
             })
             .addCase(progressHistoryActions.fetchProgressesByType.rejected, (state) => {
                 state.isLoading = false;
@@ -27,7 +27,16 @@ export const progressesReducer = {
             })
             .addCase(progressHistoryActions.addWeight.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.progresses = [...state.progresses, action.payload[0]];
+                if (state.progresses.find((progress) => progress.id === action.payload[0].id)) {
+                    state.progresses = state.progresses.map((progress) => {
+                        if (progress.id === action.payload[0].id) {
+                            return action.payload[0];
+                        }
+                        return progress;
+                    });
+                } else {
+                    state.progresses = [...state.progresses, action.payload[0]];
+                }
             })
             .addCase(progressHistoryActions.addWeight.rejected, (state) => {
                 state.isLoading = false;

@@ -109,25 +109,48 @@ export const Profile = () => {
                     <div className="w-[40%] bg-[var(--primary-color)] color-[var(--white-color)] rounded-md p-2">
                         <img src={'https://api.dicebear.com/8.x/pixel-art/svg?seed=t7xz3urh'} alt="User Avatar" />
                     </div>
-                    <div className="w-[60%] bg-[var(--primary-color)] color-[var(--white-color)] rounded-md p-2">{email}</div>
+                    <div className="w-[60%] bg-[var(--primary-color)] color-[var(--white-color)] rounded-md p-2">
+                        <p className="font-bold text-xl">{t('profile.personal_info_title')}</p>
+                        {email}
+                    </div>
                 </div>
                 <div className="bg-[var(--primary-color)] color-[var(--white-color)] rounded-md p-4">
                     <div className="flex justify-between items-center mb-4">
-                        <p>Weight graph</p>
+                        <p className="font-bold text-xl">{t('profile.weight_title')}</p>
                         <Button size="large" icon={<EditOutlined />} type="primary" shape="circle" onClick={() => setOpenWeightModal(true)} />
                     </div>
 
-                    <ResponsiveContainer width="100%" height={300}>
-                        <LineChart data={dataWeights}>
+                    <ResponsiveContainer width="100%" height={200}>
+                        <LineChart data={dataWeights} margin={{ top: 20, right: 20, left: 0 }}>
                             <XAxis dataKey="name" />
-                            <YAxis />
-                            <Tooltip />
-                            <Line type="monotone" dataKey="value" stroke="#4d4d4d" />
+                            <YAxis width={30} domain={[40, 'auto']} />
+                            <Tooltip
+                                content={({ active, payload, label }) => {
+                                    if (active && payload && payload.length) {
+                                        return (
+                                            <div
+                                                style={{
+                                                    background: 'rgba(0,0,0,0.75)',
+                                                    color: '#fff',
+                                                    padding: '8px 12px',
+                                                    borderRadius: '8px',
+                                                    fontSize: '14px',
+                                                }}
+                                            >
+                                                <p style={{ margin: 0 }}>{`Date: ${label}`}</p>
+                                                <p style={{ margin: 0 }}>{`Weight: ${payload[0].value} kg`}</p>
+                                            </div>
+                                        );
+                                    }
+                                    return null;
+                                }}
+                            />
+                            <Line type="monotone" dataKey="value" stroke="#FFFFFF" />
                         </LineChart>
                     </ResponsiveContainer>
                 </div>
                 <div className="bg-[var(--primary-color)] color-[var(--white-color)] rounded-md p-2">
-                    Max graph
+                    <p className="font-bold text-xl">{t('profile.one_rep_max')}</p>
                 </div>
                 <div className="flex flex-col gap-2 bg-[var(--primary-color)] color-[var(--white-color)] rounded-md p-2">
                     <p className="font-bold text-xl">{t('profile.settings_title')}</p>

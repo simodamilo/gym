@@ -57,3 +57,7 @@ body {
     scrollbar-width: none;
     /* Firefox */
 }
+
+.recharts-surface:focus {
+    outline: none;
+}
