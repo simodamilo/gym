@@ -33,7 +33,8 @@
             "reps": "Reps",
             "secs": "Secs",
             "start_workout": "Start Workout",
-            "reps_type_placeholder": "Select the type of reps"
+            "reps_type_placeholder": "Select the type of reps",
+            "superset": "Superset with next exercise"
         }
     },
     "profile": {
