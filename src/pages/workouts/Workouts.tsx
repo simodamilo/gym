@@ -25,7 +25,7 @@ export const Workouts = () => {
 
             <Outlet />
 
-            {showSwitcher && <FloatButton icon={<PlusOutlined />} onClick={() => navigate(routes.workoutsCreate)} style={{ bottom: 100 }} />}
+            {showSwitcher && page === 'current' && <FloatButton icon={<PlusOutlined />} onClick={() => navigate(routes.workoutsCreate)} style={{ bottom: 100 }} />}
         </div>
     );
 };

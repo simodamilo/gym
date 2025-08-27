@@ -11,6 +11,7 @@ import { draftActions } from "../../../../store/draft/draft.actions";
 import { v4 as uuidv4 } from "uuid";
 import { useTranslation } from "react-i18next";
 import { MoveIcon } from "../moveIcon/MoveIcon";
+import { useParams } from "react-router-dom";
 
 interface ExercisesProps {
     workoutId: string;
@@ -25,6 +26,7 @@ interface ExercisesProps {
 export const ExercisesList = (props: ExercisesProps) => {
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
+    const { workoutId } = useParams();
 
     const [activeKey, setActiveKey] = useState<string>();
     const [mutableDayExercises, setMutableDayExercises] = useState<DayExercise[]>([]);
@@ -187,7 +189,7 @@ export const ExercisesList = (props: ExercisesProps) => {
             ) : (
                 <div className="flex flex-col gap-4">
                     <div className="flex justify-between w-full">
-                        <div className="flex items-center gap-4">
+                        {!workoutId && <div className="flex items-center gap-4">
                             <Button size="large" type="primary" shape="circle" icon={<PlusOutlined />} onClick={handleAddExercise} />
                             {mutableDayExercises && mutableDayExercises.length > 1 && (
                                 <Button
@@ -203,7 +205,8 @@ export const ExercisesList = (props: ExercisesProps) => {
                                     }}
                                 />
                             )}
-                        </div>
+                        </div>}
+                        <div></div>
                         <CloseOutlined onClick={() => props.setOpenExercisesId()} />
                     </div>
                     {mutableDayExercises && mutableDayExercises.length > 0 && <p className="text-left text-[12px] italic">{t("workouts.exercises.description")}</p>}
