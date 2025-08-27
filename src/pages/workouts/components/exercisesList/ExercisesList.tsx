@@ -59,7 +59,7 @@ export const ExercisesList = (props: ExercisesProps) => {
             const oldIndex = mutableDayExercises.findIndex((item) => item.id.toString() === active.id);
             const newIndex = mutableDayExercises.findIndex((item) => item.id.toString() === over?.id);
 
-            const newItems = arrayMove(mutableDayExercises, oldIndex, newIndex).map((item, index) => ({ ...item, orderNumber: index }));
+            const newItems = arrayMove(mutableDayExercises, oldIndex, newIndex).map((item, index) => ({ ...item, orderNumber: index, isLinkedToNext: false }));
             setMutableDayExercises(newItems);
             saveNewOrder(newItems);
         }
@@ -122,6 +122,29 @@ export const ExercisesList = (props: ExercisesProps) => {
             return savedDate.getFullYear() === today.getFullYear() && savedDate.getMonth() === today.getMonth() && savedDate.getDate() === today.getDate();
         }
     };
+
+    const groupLinkedItems = (items: DayExercise[]) => {
+        const groups: DayExercise[][] = [];
+        let currentGroup: DayExercise[] = [];
+
+        for (let i = 0; i < items.length; i++) {
+            const current = items[i];
+            currentGroup.push(current);
+
+            if (!current.isLinkedToNext) {
+                groups.push(currentGroup);
+                currentGroup = [];
+            }
+        }
+
+        // in caso ci sia un gruppo non pushato
+        if (currentGroup.length > 0) {
+            groups.push(currentGroup);
+        }
+
+        return groups;
+    }
+
 
     const renderItem = (exercise: DayExercise) => ({
         key: exercise.id,
@@ -192,15 +215,19 @@ export const ExercisesList = (props: ExercisesProps) => {
                     <>
                         {props.isReadOnly || activeKey !== undefined || !isDragEnable ? (
                             <>
-                                {mutableDayExercises.map((mutableDayExercise) => {
-                                    const item = renderItem(mutableDayExercise);
+                                {groupLinkedItems(mutableDayExercises).map((group) => {
+                                    const renderedItems = group.map((exercise) => renderItem(exercise));
+                                    const groupKey = group.map((g) => g.id).join("-");
+
                                     return (
-                                        <Collapse
-                                            key={mutableDayExercise.id}
-                                            items={[item]}
-                                            activeKey={item.key === activeKey ? item.key : undefined}
-                                            onChange={() => setActiveKey(item.key !== activeKey ? (item.key as string) : undefined)}
-                                        />
+                                        <SortableItem key={groupKey} id={group[0].id.toString()}>
+                                            <Collapse
+                                                accordion
+                                                items={renderedItems}
+                                                activeKey={activeKey}
+                                                onChange={(key) => setActiveKey(Array.isArray(key) ? key[0] : key)}
+                                            />
+                                        </SortableItem>
                                     );
                                 })}
                             </>

@@ -13,9 +13,11 @@ const fetchHistoryWorkout = createAsyncThunk("data/fetchHistoryWorkout", async (
                             order_number,
                             rest, 
                             notes,
+                            creation_notes,
                             reps_type,
                             custom_type,
                             created_at,
+                            is_linked_to_next,
                             exercises_catalog (
                                 id, name, category, description, created_at
                             ), 

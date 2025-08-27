@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { exercisesSelectors } from "../../../../store/exercisesCatalog/exercisesCatalog.selector";
 import { exercisesCatalogActions } from "../../../../store/exercisesCatalog/exercisesCatalog.action";
-import { Button, Input, Select } from "antd";
+import { Button, Checkbox, Input, Select } from "antd";
 import type { DayExercise, Set } from "../../../../store/draft/types";
 import { DeleteOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { draftSelectors } from "../../../../store/draft/draft.selectors";
@@ -124,6 +124,13 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
 
     return (
         <div className="flex flex-col gap-4">
+            {!props.isReadOnly && (
+                <Checkbox
+                    checked={dayExercise.isLinkedToNext}
+                    onChange={() => setDayExercise({ ...dayExercise, isLinkedToNext: !dayExercise.isLinkedToNext })}>
+                    {t('workouts.exercises.superset')}
+                </Checkbox>
+            )}
             {!props.isReadOnly && (
                 <ExerciseSelects
                     selectedExercise={dayExercise.exercise}

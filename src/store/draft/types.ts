@@ -34,6 +34,8 @@ export interface DayExercise {
     rest?: string;
     orderNumber: number;
     notes?: string;
+    creationNotes?: string;
+    isLinkedToNext?: boolean;
     repsType?: string;
     customType?: string;
     exercise?: ExerciseCatalog;
@@ -65,6 +67,8 @@ export interface UpsertDayExercisePayload {
     order_number: number;
     rest?: string;
     notes?: string;
+    creation_notes?: string;
+    is_linked_to_next?: boolean;
     reps_type?: string;
     custom_type?: string;
 }
@@ -103,6 +107,8 @@ export interface DayExerciseResponse {
     order_number: number;
     rest?: string;
     notes?: string;
+    creation_notes?: string;
+    is_linked_to_next?: boolean;
     reps_type?: string;
     custom_type?: string;
     exercises_catalog: ExerciseCatalogResponse;
