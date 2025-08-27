@@ -160,7 +160,7 @@ export const Profile = () => {
             <Button type="primary" danger onClick={handleLogout}>Logout</Button>
 
             <Modal
-                title={t("workouts.workout_page.add_day_modal_title")}
+                title={t("profile.weight_modal.title")}
                 closable={{ "aria-label": "Custom Close Button" }}
                 open={openWeightModal}
                 onOk={saveWeight}
@@ -170,7 +170,7 @@ export const Profile = () => {
                 }}
             >
                 <Input
-                    placeholder={t("workouts.workout_page.day_name_placeholder")}
+                    placeholder={t("profile.weight_modal.placeholder")}
                     value={newWeight}
                     onChange={(input) => setNewWeight(input.target.value)}
                 />

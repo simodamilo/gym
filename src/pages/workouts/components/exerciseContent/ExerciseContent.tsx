@@ -13,6 +13,7 @@ import { v4 as uuidv4 } from "uuid";
 import type { ExerciseCatalog } from "../../../../store/exercisesCatalog/types";
 import { RepsTypes } from "../../../../utils/constants";
 import { ExerciseSelects } from "../../../../components/exerciseSelects/ExerciseSelects";
+import { useParams } from "react-router-dom";
 
 export interface ExerciseContentProps {
     dayId: string;
@@ -27,6 +28,7 @@ export interface ExerciseContentProps {
 export const ExerciseContent = (props: ExerciseContentProps) => {
     const dispatch = useAppDispatch();
     const { t } = useTranslation();
+    const { workoutId } = useParams();
 
     const [dayExercise, setDayExercise] = useState<DayExercise>(props.dayExercise);
     const [isExerciseUpdated, setIsExerciseUpdated] = useState<boolean>(false);
@@ -124,14 +126,14 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
 
     return (
         <div className="flex flex-col gap-4">
-            {!props.isReadOnly && (
+            {!props.isReadOnly && !workoutId && (
                 <Checkbox
                     checked={dayExercise.isLinkedToNext}
                     onChange={() => setDayExercise({ ...dayExercise, isLinkedToNext: !dayExercise.isLinkedToNext })}>
                     {t('workouts.exercises.superset')}
                 </Checkbox>
             )}
-            {!props.isReadOnly && (
+            {!props.isReadOnly && !workoutId && (
                 <ExerciseSelects
                     selectedExercise={dayExercise.exercise}
                     isReadOnly={props.isReadOnly}
@@ -145,7 +147,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                     }} />
             )}
             <div className="flex flex-col gap-2 border rounded-md border-[#FFEAD8] p-3">
-                {!props.isReadOnly && <Select
+                {!props.isReadOnly && !workoutId && <Select
                     className="w-full md:w-xl text-left !text-[16px]"
                     placeholder={t("workouts.exercises.reps_type_placeholder")}
                     value={dayExercise.repsType}
@@ -177,13 +179,13 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                         onBlur={saveWeights}
                         placeholder={t("workouts.exercises.notes_placeholder")}
                         disabled={isLoadingExercises}
-                        readOnly={props.isReadOnly}
+                        readOnly={props.isReadOnly || !!workoutId}
                     />
                 ) : (
                     [...(dayExercise.sets ?? [])]
                         .sort((a, b) => a.setNumber - b.setNumber)
                         .map((set: Set) => {
-                            if (props.isReadOnly) {
+                            if (props.isReadOnly || !!workoutId) {
                                 return (
                                     <div key={set.id} className="flex gap-4 w-full">
                                         <div className="w-[40%]">
@@ -197,6 +199,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                                                 onChange={(input) => updateSet("weight", input.target.value, set.id)}
                                                 onBlur={saveWeights}
                                                 disabled={isLoadingExercises}
+                                                readOnly={!!workoutId}
                                             />
                                         </div>
                                     </div>
@@ -216,7 +219,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                         })
                 )
                 }
-                {!props.isReadOnly && dayExercise.repsType !== 'custom' && (
+                {!props.isReadOnly && !workoutId && dayExercise.repsType !== 'custom' && (
                     <div className="flex justify-between">
                         <Button type="primary" icon={<MinusOutlined />} shape="circle" onClick={removeSet} disabled={dayExercise.sets.length === 0 || !dayExercise.repsType || isLoadingExercises} />
                         <Button type="primary" icon={<PlusOutlined />} shape="circle" onClick={addSet} disabled={!dayExercise.repsType || isLoadingExercises} />
@@ -225,7 +228,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
             </div>
             <div className="flex gap-4">
                 <Input
-                    readOnly={props.isReadOnly}
+                    readOnly={props.isReadOnly || !!workoutId}
                     addonBefore={t("workouts.exercises.rest_label")}
                     placeholder={t("workouts.exercises.rest_placeholder")}
                     value={dayExercise.rest}
@@ -247,7 +250,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                     )
                 }
             </div>
-            <TextArea
+            {!workoutId && (<TextArea
                 rows={4}
                 value={props.isReadOnly ? dayExercise.notes : dayExercise.creationNotes}
                 onChange={(input) => {
@@ -262,8 +265,8 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                 onBlur={saveWeights}
                 placeholder={t("workouts.exercises.notes_placeholder")}
                 disabled={isLoadingExercises}
-            />
-            {!props.isReadOnly && (
+            />)}
+            {!props.isReadOnly && !workoutId && (
                 <div className="flex gap-4">
                     <Button type="primary" icon={<DeleteOutlined />} danger shape="circle" disabled={props.isNew} onClick={() => props.deleteExercise(props.exerciseId)} />
                     <Button type="primary" block onClick={() => props.saveExercises(dayExercise)} disabled={!hasValidFields()}>
