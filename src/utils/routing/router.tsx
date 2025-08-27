@@ -6,6 +6,7 @@ import { Workouts } from "../../pages/workouts/Workouts";
 import { WorkoutComponent } from "../../pages/workouts/components/workout/Workout.component";
 import { Profile } from "../../pages/profile/Profile";
 import { Exercises } from "../../pages/exercises/Exercises";
+import { History } from "../../pages/workouts/components/history/History";
 
 export const router = createBrowserRouter([
     {
@@ -27,7 +28,8 @@ export const router = createBrowserRouter([
                         children: [
                             { index: true, element: <Navigate to="current" replace /> },
                             { path: "current", element: <WorkoutComponent isReadOnly /> },
-                            { path: "history", element: <div>Something</div> },
+                            { path: "history", element: <History /> },
+                            { path: "history/:workoutId", element: <WorkoutComponent /> }
                         ],
                     },
                 ],

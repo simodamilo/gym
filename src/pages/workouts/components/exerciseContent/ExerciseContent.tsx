@@ -11,7 +11,8 @@ import { draftSelectors } from "../../../../store/draft/draft.selectors";
 import TextArea from "antd/es/input/TextArea";
 import { v4 as uuidv4 } from "uuid";
 import type { ExerciseCatalog } from "../../../../store/exercisesCatalog/types";
-import { Categories, RepsTypes } from "../../../../utils/constants";
+import { RepsTypes } from "../../../../utils/constants";
+import { ExerciseSelects } from "../../../../components/exerciseSelects/ExerciseSelects";
 
 export interface ExerciseContentProps {
     dayId: string;
@@ -28,7 +29,6 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
     const { t } = useTranslation();
 
     const [dayExercise, setDayExercise] = useState<DayExercise>(props.dayExercise);
-    const [selectedCategory, setSelectedCategory] = useState<string>();
     const [isExerciseUpdated, setIsExerciseUpdated] = useState<boolean>(false);
 
     const exercises: ExerciseCatalog[] = useSelector((state: RootState) => exercisesSelectors.getExercises(state));
@@ -37,7 +37,6 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
     useEffect(() => {
         if (props.dayExercise) {
             setDayExercise(props.dayExercise);
-            setSelectedCategory(props.dayExercise.exercise?.category);
             setIsExerciseUpdated(false);
         }
     }, [props.dayExercise]);
@@ -52,7 +51,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
     };
 
     const hasValidFields = (): boolean => {
-        return !!selectedCategory;
+        return !!dayExercise.exercise;
     };
 
     const addSet = () => {
@@ -126,46 +125,17 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
     return (
         <div className="flex flex-col gap-4">
             {!props.isReadOnly && (
-                <div className="flex flex-col gap-2">
-                    <Select
-                        allowClear
-                        className="w-full md:w-xl text-left !text-[16px]"
-                        placeholder={t("workouts.exercises.category_placeholder")}
-                        value={selectedCategory}
-                        onChange={(value) => {
-                            setSelectedCategory(value ?? undefined);
-                            setDayExercise({
-                                ...dayExercise,
-                                id: props.dayExercise.id,
-                                orderNumber: props.dayExercise.orderNumber,
-                                exercise: undefined,
-                            });
-                        }}
-                        options={Categories}
-                        disabled={props.isReadOnly || isLoadingExercises}
-                    />
-                    <Select
-                        allowClear
-                        className="w-full md:w-xl text-left !text-[16px]"
-                        placeholder={t("workouts.exercises.exercise_placeholder")}
-                        value={dayExercise.exercise?.name}
-                        onChange={(value) => {
-                            setDayExercise({
-                                ...dayExercise,
-                                id: props.dayExercise.id,
-                                orderNumber: props.dayExercise.orderNumber,
-                                exercise: exercises.find((ex) => ex.id === value),
-                            });
-                        }}
-                        options={exercises
-                            .filter((exercise) => exercise.category === selectedCategory)
-                            .map((exercise: ExerciseCatalog) => ({
-                                label: exercise.name[0].toUpperCase() + exercise.name.slice(1),
-                                value: exercise.id,
-                            }))}
-                        disabled={props.isReadOnly || !selectedCategory || isLoadingExercises}
-                    />
-                </div>
+                <ExerciseSelects
+                    selectedExercise={dayExercise.exercise}
+                    isReadOnly={props.isReadOnly}
+                    onChange={(value) => {
+                        setDayExercise({
+                            ...dayExercise,
+                            id: props.dayExercise.id,
+                            orderNumber: props.dayExercise.orderNumber,
+                            exercise: exercises.find((ex) => ex.id === value),
+                        });
+                    }} />
             )}
             <div className="flex flex-col gap-2 border rounded-md border-[#FFEAD8] p-3">
                 {!props.isReadOnly && <Select

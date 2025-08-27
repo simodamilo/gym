@@ -37,6 +37,9 @@
         }
     },
     "profile": {
+        "personal_info_title": "Personal info",
+        "weight_title": "Weight graph",
+        "one_rep_max": "1RM",
         "settings_title": "Settings"
     }
 }
