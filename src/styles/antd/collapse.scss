@@ -1,9 +1,6 @@
-.ant-collapse-content > .ant-collapse-content-box {
-    -webkit-overflow-scrolling: touch;
-    /* smooth momentum scroll on iOS */
-    overflow-y: auto;
-    max-height: 80vh;
-    /* or suitable max height */
-    touch-action: pan-y;
-    /* allow vertical scrolling */
+.ant-collapse-content>.ant-collapse-content-box {
+    overflow-y: visible;
+    /* let content flow */
+    max-height: none;
+    /* remove height cap */
 }
