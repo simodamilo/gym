@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { exercisesSelectors } from "../../../../store/exercisesCatalog/exercisesCatalog.selector";
 import { exercisesCatalogActions } from "../../../../store/exercisesCatalog/exercisesCatalog.action";
-import { Button, Checkbox, Input, Select } from "antd";
+import { Button, Checkbox, Input, Select, Tooltip } from "antd";
 import type { DayExercise, Set } from "../../../../store/draft/types";
-import { DeleteOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined, InfoCircleOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { draftSelectors } from "../../../../store/draft/draft.selectors";
 import TextArea from "antd/es/input/TextArea";
 import { v4 as uuidv4 } from "uuid";
@@ -223,29 +223,38 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                     </div>
                 )}
             </div>
-            <Input
-                readOnly={props.isReadOnly}
-                addonBefore={t("workouts.exercises.rest_label")}
-                placeholder={t("workouts.exercises.rest_placeholder")}
-                value={dayExercise.rest}
-                onChange={(input) => {
-                    setDayExercise((prevState) => {
-                        return {
-                            ...prevState,
-                            rest: input.target.value,
-                        };
-                    });
-                }}
-                disabled={isLoadingExercises}
-            />
+            <div className="flex gap-4">
+                <Input
+                    readOnly={props.isReadOnly}
+                    addonBefore={t("workouts.exercises.rest_label")}
+                    placeholder={t("workouts.exercises.rest_placeholder")}
+                    value={dayExercise.rest}
+                    onChange={(input) => {
+                        setDayExercise((prevState) => {
+                            return {
+                                ...prevState,
+                                rest: input.target.value,
+                            };
+                        });
+                    }}
+                    disabled={isLoadingExercises}
+                />
+                {
+                    props.isReadOnly && dayExercise.creationNotes && (
+                        <Tooltip title={dayExercise.creationNotes}>
+                            <InfoCircleOutlined className="text-[20px]" />
+                        </Tooltip>
+                    )
+                }
+            </div>
             <TextArea
                 rows={4}
-                value={dayExercise.notes}
+                value={props.isReadOnly ? dayExercise.notes : dayExercise.creationNotes}
                 onChange={(input) => {
                     setDayExercise((prevState) => {
                         return {
                             ...prevState,
-                            notes: input.target.value,
+                            [props.isReadOnly ? 'notes' : 'creationNotes']: input.target.value,
                         };
                     });
                     setIsExerciseUpdated(true);

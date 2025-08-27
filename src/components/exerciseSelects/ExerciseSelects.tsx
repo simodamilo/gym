@@ -18,6 +18,8 @@ export const ExerciseSelects = (props: ExerciseSelectsProps) => {
     const { t } = useTranslation();
     const [selectedCategory, setSelectedCategory] = useState<string>();
 
+    console.log('TEST', props.selectedExercise);
+
     const exercises: ExerciseCatalog[] = useSelector((state: RootState) => exercisesSelectors.getExercises(state));
     const isLoadingExercises: boolean = useSelector((state: RootState) => draftSelectors.isLoadingExercises(state));
 
