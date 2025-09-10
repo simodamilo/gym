@@ -27,9 +27,9 @@ export const router = createBrowserRouter([
                         element: <Workouts />,
                         children: [
                             { index: true, element: <Navigate to="current" replace /> },
-                            { path: "current", element: <WorkoutComponent isReadOnly /> },
+                            { path: "current", element: <WorkoutComponent isCurrent /> },
                             { path: "history", element: <History /> },
-                            { path: "history/:workoutId", element: <WorkoutComponent /> }
+                            { path: "history/:workoutId", element: <WorkoutComponent isHistory /> },
                         ],
                     },
                 ],

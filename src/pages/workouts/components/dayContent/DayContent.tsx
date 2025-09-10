@@ -1,7 +1,7 @@
 import { ArrowRightOutlined, DeleteOutlined, EditOutlined, HolderOutlined } from "@ant-design/icons";
 import type { Day } from "../../../../store/draft/types";
 import { useTranslation } from "react-i18next";
-import { Button } from "antd";
+import { IconButton } from "../../../../components/iconButton/IconButton";
 
 interface DayContentProps {
     day: Day;
@@ -34,9 +34,9 @@ export const DayContent = (props: DayContentProps) => {
             </div>
 
             <div className="flex justify-between items-center gap-4">
-                <Button className="bg-amber-950" size="large" icon={<DeleteOutlined />} type="primary" danger shape="circle" onClick={() => props.handleDayUpdate?.(props.day, "DELETE")} />
-                <Button size="large" icon={<EditOutlined />} type="primary" shape="circle" onClick={() => props.handleDayUpdate?.(props.day, "UPDATE")} />
-                <Button size="large" icon={<ArrowRightOutlined />} type="primary" shape="circle" onClick={() => props.setOpenExercisesId(props.day.id)} />
+                <IconButton icon={<DeleteOutlined />} onClick={() => props.handleDayUpdate?.(props.day, "DELETE")} />
+                <IconButton icon={<EditOutlined />} onClick={() => props.handleDayUpdate?.(props.day, "UPDATE")} />
+                <IconButton icon={<ArrowRightOutlined />} onClick={() => props.setOpenExercisesId(props.day.id)} />
             </div>
         </div>
     );
