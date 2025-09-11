@@ -16,9 +16,8 @@
     background-color: #f9fafb;
 
     --primary-color: #4d4d4d;
-    --secondary-color: #e69500;
+    --secondary-color: #242424;
     --white-color: #f5f5f5;
-    --black-color: #2a2a2a;
 }
 
 .dark {
@@ -26,11 +25,9 @@
     background-color: #242424;
 
     --primary-color: #4d4d4d;
-    --secondary-color: #e69500;
+    --secondary-color: #242424;
     --white-color: #f5f5f5;
-    --black-color: #2a2a2a;
 }
-
 
 body {
     margin: 0;

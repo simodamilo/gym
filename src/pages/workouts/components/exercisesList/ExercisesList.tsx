@@ -12,6 +12,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useTranslation } from "react-i18next";
 import { MoveIcon } from "../moveIcon/MoveIcon";
 import { useParams } from "react-router-dom";
+import { IconButton } from "../../../../components/iconButton/IconButton";
 
 interface ExercisesProps {
     workoutId: string;
@@ -145,8 +146,7 @@ export const ExercisesList = (props: ExercisesProps) => {
         }
 
         return groups;
-    }
-
+    };
 
     const renderItem = (exercise: DayExercise) => ({
         key: exercise.id,
@@ -171,7 +171,7 @@ export const ExercisesList = (props: ExercisesProps) => {
 
     return (
         <>
-            {props.isReadOnly ? (
+            {props.isReadOnly ? ( // TODO
                 <div className="flex justify-between w-full mb-2">
                     <Button
                         size="large"
@@ -189,24 +189,23 @@ export const ExercisesList = (props: ExercisesProps) => {
             ) : (
                 <div className="flex flex-col gap-4">
                     <div className="flex justify-between w-full">
-                        {!workoutId && <div className="flex items-center gap-4">
-                            <Button size="large" type="primary" shape="circle" icon={<PlusOutlined />} onClick={handleAddExercise} />
-                            {mutableDayExercises && mutableDayExercises.length > 1 && (
-                                <Button
-                                    size="large"
-                                    type={isDragEnable ? "default" : "primary"}
-                                    shape="circle"
-                                    icon={<MoveIcon style={{ fontSize: "20px" }} />}
-                                    onClick={() => {
-                                        if (!isDragEnable) {
-                                            setActiveKey(undefined);
-                                        }
-                                        setIsDragEnable(!isDragEnable);
-                                    }}
-                                />
-                            )}
-                        </div>}
-                        <div></div>
+                        {!workoutId && (
+                            <div className={`flex items-center gap-4 ${!workoutId ? "justify-between" : "justify-end"}`}>
+                                <IconButton icon={<PlusOutlined />} onClick={handleAddExercise} />
+                                {mutableDayExercises && mutableDayExercises.length > 1 && (
+                                    <IconButton
+                                        active={isDragEnable}
+                                        icon={<MoveIcon style={{ fontSize: "20px" }} />}
+                                        onClick={() => {
+                                            if (!isDragEnable) {
+                                                setActiveKey(undefined);
+                                            }
+                                            setIsDragEnable(!isDragEnable);
+                                        }}
+                                    />
+                                )}
+                            </div>
+                        )}
                         <CloseOutlined onClick={() => props.setOpenExercisesId()} />
                     </div>
                     {mutableDayExercises && mutableDayExercises.length > 0 && <p className="text-left text-[12px] italic">{t("workouts.exercises.description")}</p>}
@@ -224,12 +223,7 @@ export const ExercisesList = (props: ExercisesProps) => {
 
                                     return (
                                         <SortableItem key={groupKey} id={group[0].id.toString()}>
-                                            <Collapse
-                                                accordion
-                                                items={renderedItems}
-                                                activeKey={activeKey}
-                                                onChange={(key) => setActiveKey(Array.isArray(key) ? key[0] : key)}
-                                            />
+                                            <Collapse accordion items={renderedItems} activeKey={activeKey} onChange={(key) => setActiveKey(Array.isArray(key) ? key[0] : key)} />
                                         </SortableItem>
                                     );
                                 })}

@@ -20,7 +20,7 @@ export const DayContent = (props: DayContentProps) => {
                 <p className="font-bold">{props.day.name}</p>
                 <div className="flex items-center gap-4">
                     {props.day.isLast && <div className="text-[10px] border border-[var(--secondary-color)] px-2 py-[2px] rounded-md">{t("workouts.workout_page.is_last")}</div>}
-                    <div className="text-[10px] border border-[var(--secondary-color)] px-2 py-[2px] rounded-md">{`${props.day.counter}`}</div>
+                    <div className="text-[10px] border px-2 py-[2px] rounded-md">{`${props.day.counter}`}</div>
                 </div>
             </div>
         );
