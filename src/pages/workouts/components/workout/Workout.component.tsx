@@ -205,7 +205,9 @@ export const WorkoutComponent = (props: WorkoutProps) => {
                     workoutId={workout!.id}
                     dayId={openExercisesId}
                     dayExercises={workout?.days.find((day: Day) => day.id === openExercisesId)?.dayExercises ?? []}
-                    isReadOnly={props.isCurrent || props.isHistory}
+                    isDraft={props.isDraft}
+                    isCurrent={props.isCurrent}
+                    isHistory={props.isHistory}
                     setOpenExercisesId={setOpenExercisesId}
                     handleStartClick={handleStartClick}
                     lastWorkout={workout?.days.find((day: Day) => day.id === openExercisesId)?.lastWorkout}
