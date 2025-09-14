@@ -17,9 +17,9 @@ export const IconButton = ({ onClick, icon, active, size, disabled }: IconButton
     const borderStyle = active
         ? "white"
         : `conic-gradient(
-             from 60deg, transparent 0deg, #242424 0deg, white 90deg, #242424 180deg, transparent 180deg),
+             from 60deg, transparent 0deg, var(--secondary-color) 0deg, var(--white-color) 90deg, var(--secondary-color) 180deg, transparent 180deg),
            conic-gradient(
-             from 240deg, transparent 0deg, #242424 0deg, white 90deg, #242424 180deg, transparent 180deg)`;
+             from 240deg, transparent 0deg, var(--secondary-color) 0deg, var(--white-color) 90deg, var(--secondary-color) 180deg, transparent 180deg)`;
 
     return (
         <button
@@ -33,8 +33,8 @@ export const IconButton = ({ onClick, icon, active, size, disabled }: IconButton
             }}
             aria-label="Icon button"
         >
-            <div className={`w-full h-full bg-[${disabled ? "rgba(36,36,36,0.5)" : "rgba(36,36,36,0.9)"}] rounded-2xl flex items-center justify-center`}>
-                <span className="text-white">{icon}</span>
+            <div className={`w-full h-full ${disabled ? "bg-[rgba(36,36,36,0.5)]" : "bg-[rgba(36,36,36,0.9)]"} rounded-2xl flex items-center justify-center`}>
+                <span className="text-[var(--white-color)]">{icon}</span>
             </div>
         </button>
     );
