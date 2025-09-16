@@ -1,10 +1,10 @@
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, type RootState } from "../../../../store";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { exercisesSelectors } from "../../../../store/exercisesCatalog/exercisesCatalog.selector";
 import { exercisesCatalogActions } from "../../../../store/exercisesCatalog/exercisesCatalog.action";
-import { Button, Checkbox, Input, Select, Tooltip } from "antd";
+import { Checkbox, Input, Select, Tooltip } from "antd";
 import type { DayExercise, Set } from "../../../../store/draft/types";
 import { DeleteOutlined, InfoCircleOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { draftSelectors } from "../../../../store/draft/draft.selectors";
@@ -13,7 +13,8 @@ import { v4 as uuidv4 } from "uuid";
 import type { ExerciseCatalog } from "../../../../store/exercisesCatalog/types";
 import { RepsTypes } from "../../../../utils/constants";
 import { ExerciseSelects } from "../../../../components/exerciseSelects/ExerciseSelects";
-import { useParams } from "react-router-dom";
+import { IconButton } from "../../../../components/iconButton/IconButton";
+import { Button } from "../../../../components/button/Button";
 
 export interface ExerciseContentProps {
     dayId: string;
@@ -21,20 +22,44 @@ export interface ExerciseContentProps {
     dayExercise: DayExercise;
     saveExercises: (dayExercise: DayExercise) => void;
     deleteExercise: (dayExerciseId: string) => void;
-    isReadOnly?: boolean;
+    isDraft?: boolean;
+    isCurrent?: boolean;
+    isHistory?: boolean;
     isNew?: boolean;
 }
 
 export const ExerciseContent = (props: ExerciseContentProps) => {
     const dispatch = useAppDispatch();
     const { t } = useTranslation();
-    const { workoutId } = useParams();
+    const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     const [dayExercise, setDayExercise] = useState<DayExercise>(props.dayExercise);
     const [isExerciseUpdated, setIsExerciseUpdated] = useState<boolean>(false);
 
     const exercises: ExerciseCatalog[] = useSelector((state: RootState) => exercisesSelectors.getExercises(state));
     const isLoadingExercises: boolean = useSelector((state: RootState) => draftSelectors.isLoadingExercises(state));
+
+    useEffect(() => {
+        if (!props.isCurrent || !isExerciseUpdated) return;
+
+        // Clear previous timer if user types again
+        if (saveTimeoutRef.current) {
+            clearTimeout(saveTimeoutRef.current);
+        }
+
+        // Start a new 5s timer
+        saveTimeoutRef.current = setTimeout(() => {
+            saveWeights();
+        }, 5000);
+
+        // Cleanup on unmount or when dependency changes
+        return () => {
+            if (saveTimeoutRef.current) {
+                clearTimeout(saveTimeoutRef.current);
+            }
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dayExercise, isExerciseUpdated, props.isCurrent]);
 
     useEffect(() => {
         if (props.dayExercise) {
@@ -63,7 +88,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
             newSets.push({
                 id: uuidv4(),
                 setNumber: newSetNumber,
-                reps: dayExercise.repsType === 'max' ? 'Max' : ''
+                reps: dayExercise.repsType === "max" ? "Max" : "",
             });
             setDayExercise((prevState) => {
                 return {
@@ -106,37 +131,35 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
     };
 
     const saveWeights = () => {
-        if (props.isReadOnly && isExerciseUpdated) {
+        if (props.isCurrent && isExerciseUpdated) {
             props.saveExercises(dayExercise);
+            setIsExerciseUpdated(false);
         }
     };
 
     const getAddon = () => {
         switch (dayExercise.repsType) {
-            case 'reps':
-                return t('workouts.exercises.kg');
-            case 'time':
-                return t('workouts.exercises.secs');
-            case 'max':
-                return t('workouts.exercises.reps');
+            case "reps":
+                return t("workouts.exercises.kg");
+            case "time":
+                return t("workouts.exercises.secs");
+            case "max":
+                return t("workouts.exercises.reps");
             default:
                 return;
         }
-    }
+    };
 
     return (
         <div className="flex flex-col gap-4">
-            {!props.isReadOnly && !workoutId && (
-                <Checkbox
-                    checked={dayExercise.isLinkedToNext}
-                    onChange={() => setDayExercise({ ...dayExercise, isLinkedToNext: !dayExercise.isLinkedToNext })}>
-                    {t('workouts.exercises.superset')}
+            {props.isDraft && (
+                <Checkbox checked={dayExercise.isLinkedToNext} onChange={() => setDayExercise({ ...dayExercise, isLinkedToNext: !dayExercise.isLinkedToNext })}>
+                    {t("workouts.exercises.superset")}
                 </Checkbox>
             )}
-            {!props.isReadOnly && !workoutId && (
+            {props.isDraft && (
                 <ExerciseSelects
                     selectedExercise={dayExercise.exercise}
-                    isReadOnly={props.isReadOnly}
                     onChange={(value) => {
                         setDayExercise({
                             ...dayExercise,
@@ -144,26 +167,39 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                             orderNumber: props.dayExercise.orderNumber,
                             exercise: exercises.find((ex) => ex.id === value),
                         });
-                    }} />
-            )}
-            <div className="flex flex-col gap-2 border rounded-md border-[#FFEAD8] p-3">
-                {!props.isReadOnly && !workoutId && <Select
-                    className="w-full md:w-xl text-left !text-[16px]"
-                    placeholder={t("workouts.exercises.reps_type_placeholder")}
-                    value={dayExercise.repsType}
-                    onChange={(value) => {
-                        setDayExercise({
-                            ...dayExercise,
-                            id: props.dayExercise.id,
-                            orderNumber: props.dayExercise.orderNumber,
-                            repsType: value,
-                            sets: []
-                        });
                     }}
-                    options={RepsTypes}
-                    disabled={isLoadingExercises}
-                />}
-                {dayExercise.repsType === 'custom' ? (
+                />
+            )}
+            <div className="flex flex-col gap-2 border rounded-md border-none bg-[#ededed] p-3">
+                {props.isDraft && (
+                    <div className="flex justify-between gap-2 items-center">
+                        <div className="w-full">
+                            <Select
+                                className="text-left !text-[16px] w-full"
+                                placeholder={t("workouts.exercises.reps_type_placeholder")}
+                                value={dayExercise.repsType}
+                                onChange={(value) => {
+                                    setDayExercise({
+                                        ...dayExercise,
+                                        id: props.dayExercise.id,
+                                        orderNumber: props.dayExercise.orderNumber,
+                                        repsType: value,
+                                        sets: [],
+                                    });
+                                }}
+                                options={RepsTypes}
+                                disabled={isLoadingExercises}
+                            />
+                        </div>
+                        {props.isDraft && dayExercise.repsType !== "custom" && (
+                            <div className="flex justify-end gap-2 ">
+                                <IconButton size="SMALL" icon={<MinusOutlined />} onClick={removeSet} disabled={dayExercise.sets.length === 0 || !dayExercise.repsType || isLoadingExercises} />
+                                <IconButton size="SMALL" icon={<PlusOutlined />} onClick={addSet} disabled={!dayExercise.repsType || isLoadingExercises} />
+                            </div>
+                        )}
+                    </div>
+                )}
+                {dayExercise.repsType === "custom" ? (
                     <TextArea
                         rows={4}
                         value={dayExercise.customType}
@@ -176,16 +212,15 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                             });
                             setIsExerciseUpdated(true);
                         }}
-                        onBlur={saveWeights}
                         placeholder={t("workouts.exercises.notes_placeholder")}
                         disabled={isLoadingExercises}
-                        readOnly={props.isReadOnly || !!workoutId}
+                        readOnly={props.isCurrent || props.isHistory}
                     />
                 ) : (
                     [...(dayExercise.sets ?? [])]
                         .sort((a, b) => a.setNumber - b.setNumber)
                         .map((set: Set) => {
-                            if (props.isReadOnly || !!workoutId) {
+                            if (props.isCurrent || props.isHistory) {
                                 return (
                                     <div key={set.id} className="flex gap-4 w-full">
                                         <div className="w-[40%]">
@@ -193,13 +228,13 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                                         </div>
                                         <div className="w-[60%]">
                                             <Input
+                                                type="number"
                                                 key={set.id}
                                                 addonBefore={getAddon()}
                                                 value={set.weight}
                                                 onChange={(input) => updateSet("weight", input.target.value, set.id)}
-                                                onBlur={saveWeights}
                                                 disabled={isLoadingExercises}
-                                                readOnly={!!workoutId}
+                                                readOnly={props.isHistory}
                                             />
                                         </div>
                                     </div>
@@ -209,26 +244,19 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                                 <Input
                                     key={set.id}
                                     addonBefore={set.setNumber}
-                                    placeholder={t("workouts.exercises.reps_placeholder")}
+                                    placeholder={t(`workouts.exercises.reps_placeholder_${dayExercise.repsType}`)}
                                     value={set.reps}
                                     onChange={(input) => updateSet("reps", input.target.value, set.id)}
                                     disabled={isLoadingExercises}
-                                    readOnly={dayExercise.repsType === 'max'}
+                                    readOnly={dayExercise.repsType === "max"}
                                 />
                             );
                         })
-                )
-                }
-                {!props.isReadOnly && !workoutId && dayExercise.repsType !== 'custom' && (
-                    <div className="flex justify-between">
-                        <Button type="primary" icon={<MinusOutlined />} shape="circle" onClick={removeSet} disabled={dayExercise.sets.length === 0 || !dayExercise.repsType || isLoadingExercises} />
-                        <Button type="primary" icon={<PlusOutlined />} shape="circle" onClick={addSet} disabled={!dayExercise.repsType || isLoadingExercises} />
-                    </div>
                 )}
             </div>
             <div className="flex gap-4">
                 <Input
-                    readOnly={props.isReadOnly || !!workoutId}
+                    readOnly={props.isCurrent || props.isHistory}
                     addonBefore={t("workouts.exercises.rest_label")}
                     placeholder={t("workouts.exercises.rest_placeholder")}
                     value={dayExercise.rest}
@@ -242,36 +270,34 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                     }}
                     disabled={isLoadingExercises}
                 />
-                {
-                    props.isReadOnly && dayExercise.creationNotes && (
-                        <Tooltip title={dayExercise.creationNotes}>
-                            <InfoCircleOutlined className="text-[20px]" />
-                        </Tooltip>
-                    )
-                }
+                {(props.isCurrent || props.isHistory) && dayExercise.creationNotes && (
+                    <Tooltip title={dayExercise.creationNotes}>
+                        <InfoCircleOutlined className="text-[20px]" />
+                    </Tooltip>
+                )}
             </div>
-            {!workoutId && (<TextArea
-                rows={4}
-                value={props.isReadOnly ? dayExercise.notes : dayExercise.creationNotes}
-                onChange={(input) => {
-                    setDayExercise((prevState) => {
-                        return {
-                            ...prevState,
-                            [props.isReadOnly ? 'notes' : 'creationNotes']: input.target.value,
-                        };
-                    });
-                    setIsExerciseUpdated(true);
-                }}
-                onBlur={saveWeights}
-                placeholder={t("workouts.exercises.notes_placeholder")}
-                disabled={isLoadingExercises}
-            />)}
-            {!props.isReadOnly && !workoutId && (
-                <div className="flex gap-4">
-                    <Button type="primary" icon={<DeleteOutlined />} danger shape="circle" disabled={props.isNew} onClick={() => props.deleteExercise(props.exerciseId)} />
-                    <Button type="primary" block onClick={() => props.saveExercises(dayExercise)} disabled={!hasValidFields()}>
-                        {t("workouts.exercises.save_btn")}
-                    </Button>
+            {!props.isHistory && (
+                <TextArea
+                    rows={4}
+                    value={props.isDraft ? dayExercise.creationNotes : dayExercise.notes}
+                    onChange={(input) => {
+                        setDayExercise((prevState) => {
+                            return {
+                                ...prevState,
+                                [props.isDraft ? "creationNotes" : "notes"]: input.target.value,
+                            };
+                        });
+                        setIsExerciseUpdated(true);
+                    }}
+                    onBlur={saveWeights}
+                    placeholder={t("workouts.exercises.notes_placeholder")}
+                    disabled={isLoadingExercises}
+                />
+            )}
+            {props.isDraft && (
+                <div className="flex items-center gap-4">
+                    <IconButton size="SMALL" icon={<DeleteOutlined />} disabled={props.isNew} onClick={() => props.deleteExercise(props.exerciseId)} />
+                    <Button label={t("workouts.exercises.save_btn")} onClick={() => props.saveExercises(dayExercise)} disabled={!hasValidFields()} />
                 </div>
             )}
         </div>

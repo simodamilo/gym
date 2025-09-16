@@ -2,7 +2,7 @@ import { CloseOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, type RootState } from "../../../../store";
-import { Button, Input, Modal, Skeleton } from "antd";
+import { Input, Modal, Skeleton } from "antd";
 import { ExercisesList } from "../exercisesList/ExercisesList";
 import { draftActions } from "../../../../store/draft/draft.actions";
 import type { Day, Workout } from "../../../../store/draft/types";
@@ -18,10 +18,12 @@ import { currentSelectors } from "../../../../store/current/current.selectors";
 import { DayContent } from "../dayContent/DayContent";
 import { MoveIcon } from "../moveIcon/MoveIcon";
 import { historySelectors } from "../../../../store/history/history.selectors";
+import { IconButton } from "../../../../components/iconButton/IconButton";
 
 interface WorkoutProps {
     isDraft?: boolean;
-    isReadOnly?: boolean;
+    isCurrent?: boolean;
+    isHistory?: boolean;
 }
 
 export const WorkoutComponent = (props: WorkoutProps) => {
@@ -65,7 +67,7 @@ export const WorkoutComponent = (props: WorkoutProps) => {
 
     useEffect(() => {
         if (workoutId) {
-            const currentWorkout = archivedWorkouts.find(workout => workout.id === workoutId);
+            const currentWorkout = archivedWorkouts.find((workout) => workout.id === workoutId);
             setWorkout(currentWorkout);
             const newDays = [...currentWorkout!.days];
             setDays(newDays.sort((a, b) => (a.order || 0) - (b.order || 0)));
@@ -197,38 +199,33 @@ export const WorkoutComponent = (props: WorkoutProps) => {
     }
 
     return (
-        <div className={`w-full h-full max-h-full md:w-3xl flex flex-col ${props.isReadOnly ? "justify-around" : "justify-between"} gap-2 pb-22`}>
+        <div className={`w-full h-full max-h-full md:w-3xl flex flex-col ${props.isCurrent || props.isHistory ? "justify-around" : "justify-between"} gap-2 pb-22`}>
             {openExercisesId ? (
                 <ExercisesList
                     workoutId={workout!.id}
                     dayId={openExercisesId}
                     dayExercises={workout?.days.find((day: Day) => day.id === openExercisesId)?.dayExercises ?? []}
-                    isReadOnly={props.isReadOnly}
+                    isDraft={props.isDraft}
+                    isCurrent={props.isCurrent}
+                    isHistory={props.isHistory}
                     setOpenExercisesId={setOpenExercisesId}
                     handleStartClick={handleStartClick}
                     lastWorkout={workout?.days.find((day: Day) => day.id === openExercisesId)?.lastWorkout}
                 />
             ) : (
                 <>
-                    {!props.isReadOnly && (
+                    {(props.isDraft || props.isHistory) && (
                         <div className="flex flex-col gap-4">
-                            <div className="flex justify-between w-full">
-                                {!workoutId &&
+                            <div className={`flex w-full ${props.isDraft ? "justify-between" : "justify-end"}`}>
+                                {props.isDraft && (
                                     <div className="flex items-center gap-4">
-                                        <Button size="large" type="primary" shape="circle" icon={<PlusOutlined />} onClick={() => setIsEditModalOpen(true)} />
-                                        {days && days.length > 0 && <Button size="large" type="primary" shape="circle" icon={<UploadOutlined />} onClick={() => setIsPublishModalOpen(true)} />}
+                                        <IconButton icon={<PlusOutlined />} onClick={() => setIsEditModalOpen(true)} />
+                                        {days && days.length > 0 && <IconButton icon={<UploadOutlined />} onClick={() => setIsPublishModalOpen(true)} />}
                                         {days && days.length > 1 && (
-                                            <Button
-                                                size="large"
-                                                type={isDragEnable ? "default" : "primary"}
-                                                shape="circle"
-                                                icon={<MoveIcon style={{ fontSize: "20px" }} />}
-                                                onClick={() => setIsDragEnable(!isDragEnable)}
-                                            />
+                                            <IconButton active={isDragEnable} icon={<MoveIcon style={{ fontSize: "20px" }} />} onClick={() => setIsDragEnable(!isDragEnable)} />
                                         )}
                                     </div>
-                                }
-                                <div></div>
+                                )}
                                 <CloseOutlined onClick={() => navigate(workoutId ? "/gym/workouts/history" : "/gym/workouts")} />
                             </div>
                             {days && days.length > 0 && <p className="text-left text-[12px] italic">{t("workouts.workout_page.description")}</p>}
@@ -236,9 +233,17 @@ export const WorkoutComponent = (props: WorkoutProps) => {
                     )}
                     {days && days.length > 0 ? (
                         <div ref={scrollContainerRef} className="flex-1 overflow-y-auto flex flex-col gap-2 hide-scrollbar">
-                            {props.isReadOnly || !isDragEnable ? (
+                            {props.isCurrent || props.isHistory || !isDragEnable ? (
                                 days.map((day, index) => {
-                                    return <DayContent key={index} day={day} isReadOnly={props.isReadOnly || !!workoutId} setOpenExercisesId={setOpenExercisesId} handleDayUpdate={handleDayUpdate} />;
+                                    return (
+                                        <DayContent
+                                            key={index}
+                                            day={day}
+                                            isReadOnly={props.isCurrent || props.isHistory || !!workoutId}
+                                            setOpenExercisesId={setOpenExercisesId}
+                                            handleDayUpdate={handleDayUpdate}
+                                        />
+                                    );
                                 })
                             ) : (
                                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
