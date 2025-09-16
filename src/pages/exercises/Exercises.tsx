@@ -4,11 +4,13 @@ import { exercisesCatalogActions } from "../../store/exercisesCatalog/exercisesC
 import { useSelector } from "react-redux";
 import { exercisesSelectors } from "../../store/exercisesCatalog/exercisesCatalog.selector";
 import type { ExerciseCatalog } from "../../store/exercisesCatalog/types";
-import { Button, Input, Modal, Select } from "antd";
+import { Input, Modal, Select } from "antd";
 import { useTranslation } from "react-i18next";
 import { v4 as uuidv4 } from "uuid";
 import { Categories } from "../../utils/constants";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { Button } from "../../components/button/Button";
+import { IconButton } from "../../components/iconButton/IconButton";
 
 export const Exercises = () => {
     const dispatch = useAppDispatch();
@@ -50,11 +52,11 @@ export const Exercises = () => {
             setIsEditExerciseModalOpen(false);
             setSelectedExercise(undefined);
         }
-    }
+    };
 
     const deleteExercise = async (exerciseId: string) => {
         dispatch(exercisesCatalogActions.deleteExercise(exerciseId));
-    }
+    };
 
     return (
         <div className="w-full h-screen md:w-3xl flex flex-col gap-4">
@@ -71,10 +73,7 @@ export const Exercises = () => {
                 />
 
                 <Input placeholder={t("exercises.name_placeholder")} value={newExerciseName} onChange={(input) => setNewExerciseName(input.target.value)} />
-
-                <Button className="w-full md:w-lg" type="primary" onClick={addExercise}>
-                    {t("exercises.add_exercise_btn")}
-                </Button>
+                <Button label={t("exercises.add_exercise_btn")} onClick={addExercise} />
             </div>
 
             <div className="flex flex-col gap-2 pb-24">
@@ -82,18 +81,21 @@ export const Exercises = () => {
                     .filter((exercise: ExerciseCatalog) => {
                         return !selectedCategory || exercise.category === selectedCategory;
                     })
-                    .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
+                    .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" }))
                     .map((exercise: ExerciseCatalog) => {
                         return (
                             <div key={exercise.id} className="flex justify-between items-center border-solid border-amber-50 border-1 rounded-lg p-4">
                                 <div>{exercise.name}</div>
-
                                 <div className="flex justify-between items-center gap-4">
-                                    <Button size="large" icon={<DeleteOutlined />} type="primary" danger shape="circle" onClick={() => deleteExercise(exercise.id)} />
-                                    <Button size="large" icon={<EditOutlined />} type="primary" shape="circle" onClick={() => {
-                                        setIsEditExerciseModalOpen(true);
-                                        setSelectedExercise(exercise)
-                                    }} />
+                                    <IconButton size="SMALL" icon={<DeleteOutlined />} onClick={() => deleteExercise(exercise.id)} />
+                                    <IconButton
+                                        size="SMALL"
+                                        icon={<EditOutlined />}
+                                        onClick={() => {
+                                            setIsEditExerciseModalOpen(true);
+                                            setSelectedExercise(exercise);
+                                        }}
+                                    />
                                 </div>
                             </div>
                         );

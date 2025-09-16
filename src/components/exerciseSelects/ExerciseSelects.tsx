@@ -18,8 +18,6 @@ export const ExerciseSelects = (props: ExerciseSelectsProps) => {
     const { t } = useTranslation();
     const [selectedCategory, setSelectedCategory] = useState<string>();
 
-    console.log('TEST', props.selectedExercise);
-
     const exercises: ExerciseCatalog[] = useSelector((state: RootState) => exercisesSelectors.getExercises(state));
     const isLoadingExercises: boolean = useSelector((state: RootState) => draftSelectors.isLoadingExercises(state));
 
@@ -51,7 +49,7 @@ export const ExerciseSelects = (props: ExerciseSelectsProps) => {
                 onChange={(value) => props.onChange(value)}
                 options={exercises
                     .filter((exercise) => exercise.category === selectedCategory)
-                    .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
+                    .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" }))
                     .map((exercise: ExerciseCatalog) => ({
                         label: exercise.name[0].toUpperCase() + exercise.name.slice(1),
                         value: exercise.id,
@@ -60,4 +58,4 @@ export const ExerciseSelects = (props: ExerciseSelectsProps) => {
             />
         </div>
     );
-}
+};
