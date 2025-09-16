@@ -13,7 +13,6 @@ import { useTranslation } from "react-i18next";
 import { MoveIcon } from "../moveIcon/MoveIcon";
 import { useParams } from "react-router-dom";
 import { IconButton } from "../../../../components/iconButton/IconButton";
-import { Button } from "../../../../components/button/Button";
 
 interface ExercisesProps {
     workoutId: string;
@@ -174,18 +173,11 @@ export const ExercisesList = (props: ExercisesProps) => {
         ),
     });
 
-    console.log("TEST", props.isCurrent);
-
     return (
         <>
             {props.isCurrent ? (
                 <div className="flex justify-between w-full mb-2">
-                    {isAlreadyStarted() ? (
-                        <Button disabled label="Workout Started" onClick={() => props.handleStartClick?.(props.dayId)} />
-                    ) : (
-                        <IconButton icon={<PlayCircleOutlined />} onClick={() => props.handleStartClick?.(props.dayId)} />
-                    )}
-
+                    {isAlreadyStarted() ? <div className="font-bold">Workout Started</div> : <IconButton icon={<PlayCircleOutlined />} onClick={() => props.handleStartClick?.(props.dayId)} />}
                     <CloseOutlined onClick={() => props.setOpenExercisesId()} />
                 </div>
             ) : props.isDraft ? (

@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, type RootState } from "../../../../store";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { exercisesSelectors } from "../../../../store/exercisesCatalog/exercisesCatalog.selector";
 import { exercisesCatalogActions } from "../../../../store/exercisesCatalog/exercisesCatalog.action";
@@ -31,12 +31,35 @@ export interface ExerciseContentProps {
 export const ExerciseContent = (props: ExerciseContentProps) => {
     const dispatch = useAppDispatch();
     const { t } = useTranslation();
+    const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     const [dayExercise, setDayExercise] = useState<DayExercise>(props.dayExercise);
     const [isExerciseUpdated, setIsExerciseUpdated] = useState<boolean>(false);
 
     const exercises: ExerciseCatalog[] = useSelector((state: RootState) => exercisesSelectors.getExercises(state));
     const isLoadingExercises: boolean = useSelector((state: RootState) => draftSelectors.isLoadingExercises(state));
+
+    useEffect(() => {
+        if (!props.isCurrent || !isExerciseUpdated) return;
+
+        // Clear previous timer if user types again
+        if (saveTimeoutRef.current) {
+            clearTimeout(saveTimeoutRef.current);
+        }
+
+        // Start a new 5s timer
+        saveTimeoutRef.current = setTimeout(() => {
+            saveWeights();
+        }, 5000);
+
+        // Cleanup on unmount or when dependency changes
+        return () => {
+            if (saveTimeoutRef.current) {
+                clearTimeout(saveTimeoutRef.current);
+            }
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dayExercise, isExerciseUpdated, props.isCurrent]);
 
     useEffect(() => {
         if (props.dayExercise) {
@@ -110,6 +133,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
     const saveWeights = () => {
         if (props.isCurrent && isExerciseUpdated) {
             props.saveExercises(dayExercise);
+            setIsExerciseUpdated(false);
         }
     };
 
@@ -188,7 +212,6 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                             });
                             setIsExerciseUpdated(true);
                         }}
-                        onBlur={saveWeights}
                         placeholder={t("workouts.exercises.notes_placeholder")}
                         disabled={isLoadingExercises}
                         readOnly={props.isCurrent || props.isHistory}
@@ -205,11 +228,11 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                                         </div>
                                         <div className="w-[60%]">
                                             <Input
+                                                type="number"
                                                 key={set.id}
                                                 addonBefore={getAddon()}
                                                 value={set.weight}
                                                 onChange={(input) => updateSet("weight", input.target.value, set.id)}
-                                                onBlur={saveWeights}
                                                 disabled={isLoadingExercises}
                                                 readOnly={props.isHistory}
                                             />
