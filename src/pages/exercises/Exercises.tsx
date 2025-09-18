@@ -11,7 +11,6 @@ import { Categories } from "../../utils/constants";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Button } from "../../components/button/Button";
 import { IconButton } from "../../components/iconButton/IconButton";
-import LiquidGlass from "../../components/liquidGlass/LiquidGlass";
 
 export const Exercises = () => {
     const dispatch = useAppDispatch();
@@ -75,18 +74,6 @@ export const Exercises = () => {
 
                 <Input placeholder={t("exercises.name_placeholder")} value={newExerciseName} onChange={(input) => setNewExerciseName(input.target.value)} />
                 <Button label={t("exercises.add_exercise_btn")} onClick={addExercise} />
-                <LiquidGlass
-                    displacementScale={64}
-                    blurAmount={0.1}
-                    saturation={130}
-                    aberrationIntensity={2}
-                    elasticity={0.35}
-                    cornerRadius={100}
-                    padding="8px 16px"
-                    onClick={() => console.log("Button clicked!")}
-                >
-                    <span className="text-white font-medium">Click Me</span>
-                </LiquidGlass>
             </div>
 
             <div className="flex flex-col gap-2 pb-24">
