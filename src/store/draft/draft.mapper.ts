@@ -33,6 +33,7 @@ const getDraftWorkoutDataMapper = (response: any): Workout => {
                                 setNumber: set.set_number,
                                 reps: set.reps,
                                 weight: set.weight,
+                                baseWeight: set.base_weight
                             } as Set;
                         }),
                         exercise: {

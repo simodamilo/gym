@@ -255,6 +255,21 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                 )}
             </div>
             <div className="flex gap-4">
+                <Tooltip title={
+                    <div>
+                        {
+                            [...(dayExercise.sets ?? [])]
+                                .sort((a, b) => a.setNumber - b.setNumber)
+                                .map((set: Set) => {
+                                    return <div>{set.setNumber} - {set.baseWeight}</div>
+                                })
+                        }
+                    </div>
+                }>
+                    <div className="flex items-center border border-[#EDEDED] rounded-md px-2">
+                        <p>{t('workouts.exercises.initial')}</p>
+                    </div>
+                </Tooltip>
                 <Input
                     readOnly={props.isCurrent || props.isHistory}
                     addonBefore={t("workouts.exercises.rest_label")}

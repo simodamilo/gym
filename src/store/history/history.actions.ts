@@ -22,7 +22,7 @@ const fetchHistoryWorkout = createAsyncThunk("data/fetchHistoryWorkout", async (
                                 id, name, category, description, created_at
                             ), 
                             day_exercise_sets (
-                                id, set_number, reps, weight, created_at
+                                id, set_number, reps, weight, base_weight, created_at
                             )
                         )
                     )

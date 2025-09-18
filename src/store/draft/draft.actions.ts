@@ -194,6 +194,7 @@ const upsertExercises = createAsyncThunk("data/upsertExercise", async (payloadDa
                     set_number: set.setNumber,
                     reps: set.reps,
                     weight: set.weight,
+                    base_weight: set.baseWeight
                 };
             });
 
