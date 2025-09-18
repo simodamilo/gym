@@ -35,7 +35,10 @@
             "secs": "Secs",
             "start_workout": "Start Workout",
             "reps_type_placeholder": "Select the type of reps",
-            "superset": "Superset with next exercise"
+            "superset": "Superset with next exercise",
+            "confirm_save_base": "Are you sure you want to save actual weights as base?",
+            "workout_started": "Workout Started",
+            "initial": "Initial"
         }
     },
     "profile": {
