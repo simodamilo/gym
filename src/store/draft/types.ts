@@ -47,6 +47,7 @@ export interface Set {
     setNumber: number;
     reps?: string;
     weight?: number;
+    baseWeight?: number;
 }
 
 /* Types used for payload to sent to be */
@@ -79,6 +80,7 @@ export interface UpsertSetPayload {
     set_number: number;
     reps?: string;
     weight?: number;
+    base_weight?: number;
 }
 
 /* Types used for reponse returned from be */
@@ -128,5 +130,6 @@ export interface SetResponse {
     set_number: number;
     reps?: string;
     weight?: number;
+    base_weight?: number;
     created_at: number;
 }

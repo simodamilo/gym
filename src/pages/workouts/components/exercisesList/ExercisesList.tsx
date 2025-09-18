@@ -1,9 +1,9 @@
-import { CloseOutlined, HolderOutlined, PlayCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { CloseOutlined, HolderOutlined, PlayCircleOutlined, PlusOutlined, SaveOutlined } from "@ant-design/icons";
 import { useAppDispatch } from "../../../../store";
 import { useEffect, useState } from "react";
 import { DndContext, closestCenter, useSensor, useSensors, type DragEndEvent, MouseSensor, TouchSensor } from "@dnd-kit/core";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { Collapse } from "antd";
+import { Collapse, Modal } from "antd";
 import { ExerciseContent } from "../exerciseContent/ExerciseContent";
 import { SortableItem } from "../../../../components/sortableItem/SortableItem";
 import type { DayExercise } from "../../../../store/draft/types";
@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import { MoveIcon } from "../moveIcon/MoveIcon";
 import { useParams } from "react-router-dom";
 import { IconButton } from "../../../../components/iconButton/IconButton";
+import { currentActions } from "../../../../store/current/current.actions";
 
 interface ExercisesProps {
     workoutId: string;
@@ -34,6 +35,7 @@ export const ExercisesList = (props: ExercisesProps) => {
     const [activeKey, setActiveKey] = useState<string>();
     const [mutableDayExercises, setMutableDayExercises] = useState<DayExercise[]>([]);
     const [isDragEnable, setIsDragEnable] = useState<boolean>(false);
+    const [showConfirmSaveBase, setShowConfirmSaveBase] = useState<boolean>(false);
 
     useEffect(() => {
         const mutable: DayExercise[] = [...props.dayExercises];
@@ -119,6 +121,10 @@ export const ExercisesList = (props: ExercisesProps) => {
         await dispatch(draftActions.deleteExercise(exerciseId));
     };
 
+    const saveAsBaseWeight = async () => {
+        await dispatch(currentActions.saveBaseWeight({ dayExercises: mutableDayExercises, dayId: props.dayId }))
+    }
+
     const isAlreadyStarted = () => {
         if (props.lastWorkout) {
             const savedDate = new Date(props.lastWorkout);
@@ -177,7 +183,10 @@ export const ExercisesList = (props: ExercisesProps) => {
         <>
             {props.isCurrent ? (
                 <div className="flex justify-between w-full mb-2">
-                    {isAlreadyStarted() ? <div className="font-bold">Workout Started</div> : <IconButton icon={<PlayCircleOutlined />} onClick={() => props.handleStartClick?.(props.dayId)} />}
+                    <div className="flex gap-4">
+                        {!mutableDayExercises[0].sets[0].baseWeight && <IconButton icon={<SaveOutlined />} onClick={() => setShowConfirmSaveBase(true)} />}
+                        {isAlreadyStarted() ? <div className="font-bold flex items-center">{t('workouts.exercises.workout_started')}</div> : <IconButton icon={<PlayCircleOutlined />} onClick={() => props.handleStartClick?.(props.dayId)} />}
+                    </div>
                     <CloseOutlined onClick={() => props.setOpenExercisesId()} />
                 </div>
             ) : props.isDraft ? (
@@ -248,6 +257,17 @@ export const ExercisesList = (props: ExercisesProps) => {
                     </>
                 )}
             </div>
+
+            <Modal
+                closable={{ "aria-label": "Custom Close Button" }}
+                open={showConfirmSaveBase}
+                onOk={() => saveAsBaseWeight()}
+                onCancel={() => {
+                    setShowConfirmSaveBase(false);
+                }}
+            >
+                <div className="px-2">{t("workouts.exercises.confirm_save_base")}</div>
+            </Modal>
         </>
     );
 };
