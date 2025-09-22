@@ -20,7 +20,7 @@ export const Workouts = () => {
     }, [page, navigate]);
 
     return (
-        <div className="w-full h-dvh md:w-3xl flex flex-col gap-2">
+        <div className="w-full h-dvh md:w-3xl flex flex-col gap-2 p-4">
             {showSwitcher && <PageSwitcher active={page} onChange={(key) => setPage(key)} />}
 
             <Outlet />

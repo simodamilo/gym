@@ -1,5 +1,4 @@
 import "./utils/i18n/i18n";
-import { Navbar } from "./components/navbar/Navbar";
 import { NotificationProvider } from "./components/notificationProvider/NotificationProvider";
 import { Outlet } from "react-router-dom";
 import { useEffect } from "react";
@@ -23,7 +22,7 @@ function App() {
 
     return (
         <NotificationProvider>
-            <div className="w-screen h-dvh flex flex-col p-4">
+            <div className="w-screen flex flex-col">
                 {user && <BottomBar />}
                 <Outlet />
             </div>

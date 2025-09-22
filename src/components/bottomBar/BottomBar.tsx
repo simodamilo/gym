@@ -1,93 +1,153 @@
 import { PlayCircleOutlined, UnorderedListOutlined, UserOutlined } from "@ant-design/icons";
 import { useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
+import { useLocation, useNavigate } from "react-router-dom";
+import { motion, useAnimation } from "framer-motion";
+
+const menus: MenuItem[] = [
+    { name: "Profile", icon: <UserOutlined />, path: "/gym/profile", xPosition: 0 },
+    { name: "Workout", icon: <PlayCircleOutlined />, path: "/gym/workouts", xPosition: 0 },
+    { name: "Exercise", icon: <UnorderedListOutlined />, path: "/gym/exercises", xPosition: 0 },
+];
+
+interface MenuItem {
+    name: string;
+    icon: React.ReactNode;
+    path: string;
+    xPosition: number;
+}
 
 export const BottomBar = () => {
-    const [active, setActive] = useState(0);
-    const menuRef = useRef<HTMLUListElement>(null);
-    const [translateX, setTranslateX] = useState(0);
     const location = useLocation();
-    const [width, setWidth] = useState(window.innerWidth);
+    const navigate = useNavigate();
 
+    const [active, setActive] = useState(0);
+    const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+    const menuRef = useRef<HTMLUListElement>(null);
+
+    const controls = useAnimation();
+
+    // Used to calculate position of each item
     useEffect(() => {
-        const handleResize = () => setWidth(window.innerWidth);
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
+        const updatePositions = () => {
+            const containerWidth = menuRef.current?.offsetWidth ?? 0;
+            setMenuItems(
+                menus.map((menu) => {
+                    switch (menu.name) {
+                        case "Profile":
+                            return { ...menu, xPosition: 4 };
+                        case "Workout":
+                            return { ...menu, xPosition: containerWidth / 2 - 24 };
+                        case "Exercise":
+                            return { ...menu, xPosition: containerWidth - 52 };
+                        default:
+                            return menu;
+                    }
+                })
+            );
+        };
+
+        updatePositions();
+
+        const resizeObserver = new ResizeObserver(updatePositions);
+        if (menuRef.current) {
+            resizeObserver.observe(menuRef.current);
+        }
+
+        return () => resizeObserver.disconnect();
     }, []);
 
-    const menus = [
-        { name: "Profile", icon: <UserOutlined />, dis: "translate-x-0", path: "/gym/profile" },
-        { name: "Workout", icon: <PlayCircleOutlined />, dis: "translate-x-16", path: "/gym/workouts" },
-        { name: "Exercise", icon: <UnorderedListOutlined />, dis: "translate-x-32", path: "/gym/exercises" },
-    ];
-
+    // used to set active tab from navigation
     useEffect(() => {
+        const containerWidth = menuRef.current?.offsetWidth;
         switch (location.pathname) {
             case "/gym/profile":
                 setActive(0);
+                controls.start({ x: 4, transition: { type: "spring", stiffness: 300, damping: 30 } });
                 break;
-            case "/gym/workouts":
+            case "/gym/workouts": {
                 setActive(1);
+                const newPos = containerWidth ? containerWidth / 2 - 24 : 4;
+                controls.start({ x: newPos, transition: { type: "spring", stiffness: 300, damping: 30 } });
                 break;
-            case "/gym/exercises":
+            }
+            case "/gym/exercises": {
                 setActive(2);
+                const newPos = containerWidth ? containerWidth - 52 : 4;
+                controls.start({ x: newPos, transition: { type: "spring", stiffness: 300, damping: 30 } });
                 break;
+            }
             default:
                 setActive(1);
         }
-    }, [location.pathname]);
+    }, [controls, location.pathname]);
 
+    // used to navigate to active tab
     useEffect(() => {
-        if (menuRef.current) {
-            const items = menuRef.current.querySelectorAll("li");
-            if (items.length > 0) {
-                const item = items[active];
-                const itemRect = item.getBoundingClientRect();
-                const containerRect = menuRef.current.getBoundingClientRect();
-
-                const center = itemRect.left + itemRect.width / 2 - containerRect.left - 4; // 16 is the padding
-                setTranslateX(center - 24);
+        const containerWidth = menuRef.current?.offsetWidth;
+        switch (active) {
+            case 0:
+                navigate("/gym/profile");
+                controls.start({ x: 4, transition: { type: "spring", stiffness: 300, damping: 30 } });
+                break;
+            case 1: {
+                navigate("/gym/workouts");
+                const newPos = containerWidth ? containerWidth / 2 - 24 : 4;
+                controls.start({ x: newPos, transition: { type: "spring", stiffness: 300, damping: 30 } });
+                break;
+            }
+            case 2: {
+                navigate("/gym/exercises");
+                const newPos = containerWidth ? containerWidth - 52 : 4;
+                controls.start({ x: newPos, transition: { type: "spring", stiffness: 300, damping: 30 } });
+                break;
             }
         }
-    }, [active]);
+    }, [active, controls, navigate]);
 
     return (
         <div className="fixed h-14 bottom-4 left-4 right-20 width-full md:hidden z-9998 backdrop-blur-sm bg-white/10 border border-white/20 rounded-4xl shadow-lg">
-            <ul className="flex relative w-full justify-between px-1" ref={menuRef}>
-                <motion.span
-                    drag="x"
-                    dragConstraints={menuRef}
-                    whileTap={{ scale: 1.2 }}
-                    className="z-9999 absolute h-12 w-12 rounded-full bg-white/20 border border-white/40 shadow-lg"
-                    animate={{ x: translateX }}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            <motion.div
+                drag="x"
+                dragConstraints={menuRef}
+                whileTap={{ scale: 1.2 }}
+                className="z-9999 absolute h-12 w-12 rounded-full bg-white/10 top-[3px] border border-white/30 shadow-lg"
+                animate={controls}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                onDragEnd={(_, info) => {
+                    if (!menuRef.current) return;
 
-                    onDragEnd={(e, info) => {
-                        if (!menuRef.current) return;
+                    const items = menuRef.current.querySelectorAll("li");
+                    let closestIndex = 0;
+                    let closestDistance = Infinity;
 
-                        const items = menuRef.current.querySelectorAll("li");
-                        let closestIndex = 0;
-                        let closestDistance = Infinity;
+                    items.forEach((item, index) => {
+                        const rect = item.getBoundingClientRect();
+                        const center = rect.left + rect.width / 2;
+                        const distance = Math.abs(info.point.x - center);
+                        if (distance < closestDistance) {
+                            closestDistance = distance;
+                            closestIndex = index;
+                        }
+                    });
 
-                        items.forEach((item, index) => {
-                            const rect = item.getBoundingClientRect();
-                            const center = rect.left + rect.width / 2;
-                            const distance = Math.abs(info.point.x - center);
-                            if (distance < closestDistance) {
-                                closestDistance = distance;
-                                closestIndex = index;
-                            }
-                        });
+                    const newKnobPos = menuItems[closestIndex]?.xPosition ?? 0;
 
+                    // always animate to the new position
+                    controls.start({ x: newKnobPos, transition: { type: "spring", stiffness: 300, damping: 30 } });
+
+                    // update active for highlighting/navigation
+                    if (closestIndex !== active) {
                         setActive(closestIndex);
-                    }}
-                />
+                    }
+                }}
+            />
+
+            <ul className="flex relative w-full justify-between px-1" ref={menuRef}>
                 {menus.map((menu, index) => (
                     <li key={index} className="w-12 h-13.5 flex flex-col items-center justify-center">
-                        <Link to={menu.path} className="flex flex-col text-center" onClick={() => setActive(index)}>
-                            <span className={`text-[var(--white-color)] z-100 text-xl cursor-pointer duration-500`}>{menu.icon}</span>
-                        </Link>
+                        <span onClick={() => setActive(index)} className={`text-[var(--white-color)] z-100 text-xl cursor-pointer duration-500`}>
+                            {menu.icon}
+                        </span>
                     </li>
                 ))}
             </ul>
