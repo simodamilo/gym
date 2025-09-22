@@ -4,6 +4,7 @@ import { NotificationProvider } from "./components/notificationProvider/Notifica
 import { Outlet } from "react-router-dom";
 import { useEffect } from "react";
 import { useAuth } from "./utils/auth/AuthProvider";
+import { BottomBar } from "./components/bottomBar/BottomBar";
 
 function App() {
     const { user } = useAuth();
@@ -23,7 +24,7 @@ function App() {
     return (
         <NotificationProvider>
             <div className="w-screen h-dvh flex flex-col p-4">
-                {user && <Navbar />}
+                {user && <BottomBar />}
                 <Outlet />
             </div>
         </NotificationProvider>
