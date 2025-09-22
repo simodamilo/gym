@@ -38,6 +38,10 @@ body {
     display: flex;
     place-items: center;
     min-width: 320px;
+
+    background: radial-gradient(circle at 20% 30%, rgba(180, 230, 255, 0.15), transparent 40%), radial-gradient(circle at 80% 70%, white, transparent 40%),
+        linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    background-attachment: fixed;
 }
 
 /* override auth-login-page */
