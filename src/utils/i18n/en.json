@@ -4,6 +4,13 @@
     },
     "exercises": {
         "category_placeholder": "Select a category",
+        "create_exercise_modal": {
+            "title": "Create a new exercise"
+        },
+        "edit_exercise_modal": {
+            "title": "Edit exercise",
+            "name_placeholder": "Name"
+        },
         "name_placeholder": "Add a new exercise",
         "add_exercise_btn": "Add"
     },

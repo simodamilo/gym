@@ -9,19 +9,21 @@ import { useTranslation } from "react-i18next";
 import { v4 as uuidv4 } from "uuid";
 import { Categories } from "../../utils/constants";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button } from "../../components/button/Button";
 import { IconButton } from "../../components/iconButton/IconButton";
 
 export const Exercises = () => {
     const dispatch = useAppDispatch();
     const { t } = useTranslation();
 
-    const [newExerciseName, setNewExerciseName] = useState("");
     const [selectedCategory, setSelectedCategory] = useState<string>();
+    // new exercise
+    const [newExerciseCategory, setNewExerciseCategory] = useState<string>();
+    const [newExerciseName, setNewExerciseName] = useState("");
     const [isEditExerciseModalOpen, setIsEditExerciseModalOpen] = useState<boolean>(false);
     const [selectedExercise, setSelectedExercise] = useState<ExerciseCatalog>();
 
     const exercises: ExerciseCatalog[] = useSelector((state: RootState) => exercisesSelectors.getExercises(state));
+    const isCreateModalOpen: boolean = useSelector(exercisesSelectors.isModalOpen);
 
     useEffect(() => {
         getExercises();
@@ -71,12 +73,9 @@ export const Exercises = () => {
                     }}
                     options={Categories}
                 />
-
-                <Input placeholder={t("exercises.name_placeholder")} value={newExerciseName} onChange={(input) => setNewExerciseName(input.target.value)} />
-                <Button label={t("exercises.add_exercise_btn")} onClick={addExercise} />
             </div>
 
-            <div className="flex flex-col gap-2 pb-24">
+            <div className="flex flex-col gap-2 pb-28">
                 {exercises
                     .filter((exercise: ExerciseCatalog) => {
                         return !selectedCategory || exercise.category === selectedCategory;
@@ -102,10 +101,36 @@ export const Exercises = () => {
                     })}
             </div>
 
+            {/* Create exercise */}
+            <Modal
+                title={t("exercises.create_exercise_modal.title")}
+                open={isCreateModalOpen}
+                onOk={() => addExercise()}
+                onCancel={() => {
+                    dispatch(exercisesCatalogActions.manageCreateModal(false));
+                    setSelectedCategory(undefined);
+                    setNewExerciseName("");
+                }}
+            >
+                <div>
+                    <Select
+                        allowClear
+                        className="w-full md:w-xl"
+                        placeholder={t("exercises.category_placeholder")}
+                        value={selectedCategory}
+                        onChange={(value) => {
+                            setSelectedCategory(value ?? undefined);
+                        }}
+                        options={Categories}
+                    />
+
+                    <Input placeholder={t("exercises.name_placeholder")} value={newExerciseName} onChange={(input) => setNewExerciseName(input.target.value)} />
+                </div>
+            </Modal>
+
             {/* Edit exercise */}
             <Modal
-                title={t("workouts.workout_page.add_day_modal_title")}
-                closable={{ "aria-label": "Custom Close Button" }}
+                title={t("exercises.edit_exercise_modal.title")}
                 open={isEditExerciseModalOpen}
                 onOk={() => updateExercise()}
                 onCancel={() => {
@@ -114,7 +139,7 @@ export const Exercises = () => {
                 }}
             >
                 <Input
-                    placeholder={t("workouts.workout_page.day_name_placeholder")}
+                    placeholder={t("exercises.edit_exercise_modal.name_placeholder")}
                     value={selectedExercise?.name || ""}
                     onChange={(input) =>
                         setSelectedExercise((prevState) => {

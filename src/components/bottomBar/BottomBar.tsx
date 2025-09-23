@@ -1,8 +1,11 @@
-import { PlayCircleOutlined, PlusOutlined, UnorderedListOutlined, UserOutlined } from "@ant-design/icons";
+import { LogoutOutlined, PlayCircleOutlined, PlusOutlined, UnorderedListOutlined, UserOutlined } from "@ant-design/icons";
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion, useAnimation } from "framer-motion";
 import { routes } from "../../utils/routing/routes";
+import { supabase } from "../../store/supabaseClient";
+import { exercisesCatalogActions } from "../../store/exercisesCatalog/exercisesCatalog.action";
+import { useAppDispatch } from "../../store";
 
 const menus: MenuItem[] = [
     { name: "Profile", icon: <UserOutlined />, path: "/gym/profile", xPosition: 0 },
@@ -20,6 +23,7 @@ interface MenuItem {
 export const BottomBar = () => {
     const location = useLocation();
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
 
     const [active, setActive] = useState(0);
     const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
@@ -105,26 +109,50 @@ export const BottomBar = () => {
         }
     }, [active, controls, navigate]);
 
+    const handleLogout = async () => {
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+            console.error("Logout error:", error.message);
+        } else {
+            console.log("User logged out");
+        }
+    };
+
     const handleActionButtonClick = () => {
         switch (active) {
             case 0:
+                handleLogout();
                 break;
             case 1:
                 navigate(routes.workoutsCreate);
                 break;
             case 2:
+                dispatch(exercisesCatalogActions.manageCreateModal(true));
                 break;
+        }
+    };
+
+    const getActionButtonIcon = () => {
+        switch (active) {
+            case 0:
+                return <LogoutOutlined className="text-2xl" />;
+            case 1:
+                return <PlusOutlined className="text-2xl" />;
+            case 2:
+                return <PlusOutlined className="text-2xl" />;
+            default:
+                return <PlusOutlined className="text-2xl" />;
         }
     };
 
     return (
         <>
-            <div className="fixed h-18 bottom-8 left-4 right-26 width-full md:hidden z-9998 backdrop-blur-sm bg-white/10 border border-white/20 rounded-[36px] shadow-lg">
+            <div className="fixed h-16 bottom-8 left-4 right-26 width-full md:hidden z-9998 backdrop-blur-sm bg-white/10 border border-white/20 rounded-[36px] shadow-lg">
                 <motion.div
                     drag="x"
                     dragConstraints={menuRef}
-                    whileTap={{ scale: 1.2, borderRadius: "16px", opacity: 0.9, border: "1px solid white", backgroundColor: "rgba(255, 255, 255, 0.2)" }}
-                    className="z-9999 absolute h-16 w-16 rounded-full bg-white/40 top-[3px]"
+                    whileTap={{ scale: 1.2, opacity: 0.9, border: "1px solid white", backgroundColor: "rgba(255, 255, 255, 0.2)" }}
+                    className="z-9999 absolute h-14 w-16 rounded-full bg-white/40 top-[3px]"
                     animate={controls}
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     onDragEnd={(_, info) => {
@@ -158,7 +186,7 @@ export const BottomBar = () => {
 
                 <ul className="flex relative w-full justify-between px-3" ref={menuRef}>
                     {menus.map((menu, index) => (
-                        <li key={index} className="w-12 h-17.5 flex flex-col items-center justify-center">
+                        <li key={index} className="w-12 h-15.5 flex flex-col items-center justify-center">
                             <span onClick={() => setActive(index)} className={`text-[var(--white-color)] z-100 text-xl cursor-pointer duration-500`}>
                                 {menu.icon}
                             </span>
@@ -166,11 +194,14 @@ export const BottomBar = () => {
                     ))}
                 </ul>
             </div>
+
             <div
-                className="fixed z-9999 flex justify-around m-auto h-18 w-18 bottom-8 right-4 p-4 backdrop-blur-md bg-white/10 border border-white/20 rounded-[36px]"
+                className={`fixed z-9999 flex justify-around m-auto h-16 w-16 bottom-8 right-4 p-4 backdrop-blur-md ${
+                    active === 0 ? "bg-red-600/60" : "bg-white/10"
+                } border border-white/20 rounded-[36px]`}
                 onClick={handleActionButtonClick}
             >
-                <PlusOutlined className="text-2xl" />
+                {getActionButtonIcon()}
             </div>
         </>
     );

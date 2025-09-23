@@ -72,15 +72,6 @@ export const Profile = () => {
         }
     }, [progresses]);
 
-    const handleLogout = async () => {
-        const { error } = await supabase.auth.signOut();
-        if (error) {
-            console.error("Logout error:", error.message);
-        } else {
-            console.log("User logged out");
-        }
-    };
-
     const saveWeight = () => {
         const weights = progresses.filter((progress) => progress.type === "weight");
         const today = new Date();
@@ -103,7 +94,7 @@ export const Profile = () => {
     };
 
     return (
-        <div className="flex flex-col gap-4 justify-between p-4">
+        <div className="flex flex-col gap-4 justify-between p-4 pb-28">
             <div className="flex flex-col gap-2">
                 <div className="flex gap-2">
                     <div className="w-[40%] bg-[var(--primary-color)] color-[var(--white-color)] rounded-md p-2">
@@ -160,9 +151,6 @@ export const Profile = () => {
                     </div>
                 </div>
             </div>
-            <Button type="primary" danger onClick={handleLogout}>
-                Logout
-            </Button>
 
             <Modal
                 title={t("profile.weight_modal.title")}
