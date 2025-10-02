@@ -20,6 +20,7 @@ export const Exercises = () => {
     const [newExerciseCategory, setNewExerciseCategory] = useState<string>();
     const [newExerciseName, setNewExerciseName] = useState("");
     const [isEditExerciseModalOpen, setIsEditExerciseModalOpen] = useState<boolean>(false);
+    const [isDeleteExerciseModalOpen, setIsDeleteExerciseModalOpen] = useState<boolean>(false);
     const [selectedExercise, setSelectedExercise] = useState<ExerciseCatalog>();
 
     const exercises: ExerciseCatalog[] = useSelector((state: RootState) => exercisesSelectors.getExercises(state));
@@ -35,17 +36,19 @@ export const Exercises = () => {
     };
 
     const addExercise = async () => {
-        if (!newExerciseName.trim() || !selectedCategory) {
+        if (!newExerciseName.trim() || !newExerciseCategory) {
             return;
         }
         await dispatch(
             exercisesCatalogActions.addExercise({
                 id: uuidv4(),
                 name: newExerciseName,
-                category: selectedCategory,
+                category: newExerciseCategory,
             })
         );
         setNewExerciseName("");
+        setNewExerciseCategory(undefined);
+        dispatch(exercisesCatalogActions.manageCreateModal(false));
     };
 
     const updateExercise = async () => {
@@ -56,8 +59,11 @@ export const Exercises = () => {
         }
     };
 
-    const deleteExercise = async (exerciseId: string) => {
-        dispatch(exercisesCatalogActions.deleteExercise(exerciseId));
+    const deleteExercise = async () => {
+        if (selectedExercise) {
+            dispatch(exercisesCatalogActions.deleteExercise(selectedExercise.id));
+            setIsDeleteExerciseModalOpen(false);
+        }
     };
 
     return (
@@ -83,10 +89,17 @@ export const Exercises = () => {
                     .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" }))
                     .map((exercise: ExerciseCatalog) => {
                         return (
-                            <div key={exercise.id} className="flex justify-between items-center border-solid border-amber-50 border-1 rounded-lg p-4">
+                            <div key={exercise.id} className="bg-[var(--primary-color)] shadow-lg rounded-lg flex justify-between items-center p-3">
                                 <div>{exercise.name}</div>
                                 <div className="flex justify-between items-center gap-4">
-                                    <IconButton size="SMALL" icon={<DeleteOutlined />} onClick={() => deleteExercise(exercise.id)} />
+                                    <IconButton
+                                        size="SMALL"
+                                        icon={<DeleteOutlined />}
+                                        onClick={() => {
+                                            setIsDeleteExerciseModalOpen(true);
+                                            setSelectedExercise(exercise);
+                                        }}
+                                    />
                                     <IconButton
                                         size="SMALL"
                                         icon={<EditOutlined />}
@@ -108,18 +121,18 @@ export const Exercises = () => {
                 onOk={() => addExercise()}
                 onCancel={() => {
                     dispatch(exercisesCatalogActions.manageCreateModal(false));
-                    setSelectedCategory(undefined);
+                    setNewExerciseCategory(undefined);
                     setNewExerciseName("");
                 }}
             >
-                <div>
+                <div className="flex flex-col gap-2">
                     <Select
                         allowClear
                         className="w-full md:w-xl"
                         placeholder={t("exercises.category_placeholder")}
-                        value={selectedCategory}
+                        value={newExerciseCategory}
                         onChange={(value) => {
-                            setSelectedCategory(value ?? undefined);
+                            setNewExerciseCategory(value ?? undefined);
                         }}
                         options={Categories}
                     />
@@ -152,6 +165,20 @@ export const Exercises = () => {
                         })
                     }
                 />
+            </Modal>
+
+            {/* Delete exercise */}
+            <Modal
+                open={isDeleteExerciseModalOpen}
+                onOk={() => deleteExercise()}
+                onCancel={() => {
+                    setIsDeleteExerciseModalOpen(false);
+                    setSelectedExercise(undefined);
+                }}
+            >
+                <div className="w-[90%]">
+                    <p>{t("exercises.delete_exercise_modal.description")}</p>
+                </div>
             </Modal>
         </div>
     );
