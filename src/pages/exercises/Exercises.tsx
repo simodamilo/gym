@@ -9,19 +9,22 @@ import { useTranslation } from "react-i18next";
 import { v4 as uuidv4 } from "uuid";
 import { Categories } from "../../utils/constants";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button } from "../../components/button/Button";
 import { IconButton } from "../../components/iconButton/IconButton";
 
 export const Exercises = () => {
     const dispatch = useAppDispatch();
     const { t } = useTranslation();
 
-    const [newExerciseName, setNewExerciseName] = useState("");
     const [selectedCategory, setSelectedCategory] = useState<string>();
+    // new exercise
+    const [newExerciseCategory, setNewExerciseCategory] = useState<string>();
+    const [newExerciseName, setNewExerciseName] = useState("");
     const [isEditExerciseModalOpen, setIsEditExerciseModalOpen] = useState<boolean>(false);
+    const [isDeleteExerciseModalOpen, setIsDeleteExerciseModalOpen] = useState<boolean>(false);
     const [selectedExercise, setSelectedExercise] = useState<ExerciseCatalog>();
 
     const exercises: ExerciseCatalog[] = useSelector((state: RootState) => exercisesSelectors.getExercises(state));
+    const isCreateModalOpen: boolean = useSelector(exercisesSelectors.isModalOpen);
 
     useEffect(() => {
         getExercises();
@@ -33,17 +36,19 @@ export const Exercises = () => {
     };
 
     const addExercise = async () => {
-        if (!newExerciseName.trim() || !selectedCategory) {
+        if (!newExerciseName.trim() || !newExerciseCategory) {
             return;
         }
         await dispatch(
             exercisesCatalogActions.addExercise({
                 id: uuidv4(),
                 name: newExerciseName,
-                category: selectedCategory,
+                category: newExerciseCategory,
             })
         );
         setNewExerciseName("");
+        setNewExerciseCategory(undefined);
+        dispatch(exercisesCatalogActions.manageCreateModal(false));
     };
 
     const updateExercise = async () => {
@@ -54,8 +59,11 @@ export const Exercises = () => {
         }
     };
 
-    const deleteExercise = async (exerciseId: string) => {
-        dispatch(exercisesCatalogActions.deleteExercise(exerciseId));
+    const deleteExercise = async () => {
+        if (selectedExercise) {
+            dispatch(exercisesCatalogActions.deleteExercise(selectedExercise.id));
+            setIsDeleteExerciseModalOpen(false);
+        }
     };
 
     return (
@@ -71,12 +79,9 @@ export const Exercises = () => {
                     }}
                     options={Categories}
                 />
-
-                <Input placeholder={t("exercises.name_placeholder")} value={newExerciseName} onChange={(input) => setNewExerciseName(input.target.value)} />
-                <Button label={t("exercises.add_exercise_btn")} onClick={addExercise} />
             </div>
 
-            <div className="flex flex-col gap-2 pb-24">
+            <div className="flex flex-col gap-2 pb-28">
                 {exercises
                     .filter((exercise: ExerciseCatalog) => {
                         return !selectedCategory || exercise.category === selectedCategory;
@@ -84,10 +89,17 @@ export const Exercises = () => {
                     .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" }))
                     .map((exercise: ExerciseCatalog) => {
                         return (
-                            <div key={exercise.id} className="flex justify-between items-center border-solid border-amber-50 border-1 rounded-lg p-4">
+                            <div key={exercise.id} className="bg-[var(--primary-color)] shadow-lg rounded-lg flex justify-between items-center p-3">
                                 <div>{exercise.name}</div>
                                 <div className="flex justify-between items-center gap-4">
-                                    <IconButton size="SMALL" icon={<DeleteOutlined />} onClick={() => deleteExercise(exercise.id)} />
+                                    <IconButton
+                                        size="SMALL"
+                                        icon={<DeleteOutlined />}
+                                        onClick={() => {
+                                            setIsDeleteExerciseModalOpen(true);
+                                            setSelectedExercise(exercise);
+                                        }}
+                                    />
                                     <IconButton
                                         size="SMALL"
                                         icon={<EditOutlined />}
@@ -102,10 +114,36 @@ export const Exercises = () => {
                     })}
             </div>
 
+            {/* Create exercise */}
+            <Modal
+                title={t("exercises.create_exercise_modal.title")}
+                open={isCreateModalOpen}
+                onOk={() => addExercise()}
+                onCancel={() => {
+                    dispatch(exercisesCatalogActions.manageCreateModal(false));
+                    setNewExerciseCategory(undefined);
+                    setNewExerciseName("");
+                }}
+            >
+                <div className="flex flex-col gap-2">
+                    <Select
+                        allowClear
+                        className="w-full md:w-xl"
+                        placeholder={t("exercises.category_placeholder")}
+                        value={newExerciseCategory}
+                        onChange={(value) => {
+                            setNewExerciseCategory(value ?? undefined);
+                        }}
+                        options={Categories}
+                    />
+
+                    <Input placeholder={t("exercises.name_placeholder")} value={newExerciseName} onChange={(input) => setNewExerciseName(input.target.value)} />
+                </div>
+            </Modal>
+
             {/* Edit exercise */}
             <Modal
-                title={t("workouts.workout_page.add_day_modal_title")}
-                closable={{ "aria-label": "Custom Close Button" }}
+                title={t("exercises.edit_exercise_modal.title")}
                 open={isEditExerciseModalOpen}
                 onOk={() => updateExercise()}
                 onCancel={() => {
@@ -114,7 +152,7 @@ export const Exercises = () => {
                 }}
             >
                 <Input
-                    placeholder={t("workouts.workout_page.day_name_placeholder")}
+                    placeholder={t("exercises.edit_exercise_modal.name_placeholder")}
                     value={selectedExercise?.name || ""}
                     onChange={(input) =>
                         setSelectedExercise((prevState) => {
@@ -127,6 +165,20 @@ export const Exercises = () => {
                         })
                     }
                 />
+            </Modal>
+
+            {/* Delete exercise */}
+            <Modal
+                open={isDeleteExerciseModalOpen}
+                onOk={() => deleteExercise()}
+                onCancel={() => {
+                    setIsDeleteExerciseModalOpen(false);
+                    setSelectedExercise(undefined);
+                }}
+            >
+                <div className="w-[90%]">
+                    <p>{t("exercises.delete_exercise_modal.description")}</p>
+                </div>
             </Modal>
         </div>
     );

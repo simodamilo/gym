@@ -1,4 +1,4 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAction, createAsyncThunk } from "@reduxjs/toolkit";
 import type { AddExercisePayload, ExerciseCatalog } from "./types";
 import { supabase } from "../supabaseClient";
 
@@ -42,11 +42,14 @@ const deleteExercise = createAsyncThunk("data/deleteExercise", async (id: string
     }
 });
 
+const manageCreateModal = createAction<boolean>("data/manageCreateModal");
+
 const exercisesCatalogActions = {
     fetchExercisesCatalog,
     addExercise,
     updateExercise,
-    deleteExercise
+    deleteExercise,
+    manageCreateModal,
 };
 
 export { exercisesCatalogActions };

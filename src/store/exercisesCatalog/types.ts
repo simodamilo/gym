@@ -1,5 +1,6 @@
 export type ExercisesState = {
     exercises: ExerciseCatalog[];
+    showCreationModal: boolean;
     isLoading: boolean;
     isError: boolean;
 };
