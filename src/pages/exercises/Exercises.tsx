@@ -67,7 +67,7 @@ export const Exercises = () => {
     };
 
     return (
-        <div className="w-full h-screen md:w-3xl flex flex-col gap-4 p-4">
+        <div className="w-full h-screen md:w-3xl flex flex-col gap-4 p-4 overflow-hidden">
             <div className="flex flex-col text-left md:flex-row items-start gap-2">
                 <Select
                     allowClear
@@ -81,7 +81,7 @@ export const Exercises = () => {
                 />
             </div>
 
-            <div className="flex flex-col gap-2 pb-28">
+            <div className="flex flex-col gap-2 pb-28 overflow-auto hide-scrollbar rounded-b-xl">
                 {exercises
                     .filter((exercise: ExerciseCatalog) => {
                         return !selectedCategory || exercise.category === selectedCategory;
