@@ -29,7 +29,7 @@ export const Login = () => {
     }, [navigate]);
 
     return (
-        <div>
+        <div className="p-4 h-dvh">
             <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} providers={[]} />
         </div>
     );
