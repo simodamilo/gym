@@ -199,7 +199,7 @@ export const WorkoutComponent = (props: WorkoutProps) => {
     }
 
     return (
-        <div className={`w-full h-full max-h-full md:w-3xl flex flex-col ${props.isCurrent || props.isHistory ? "justify-around" : "justify-between"} gap-2 pb-22`}>
+        <div className={`w-full h-full max-h-full md:w-3xl flex flex-col gap-2 ${props.isCurrent || props.isHistory ? "justify-around" : "justify-between"} ${props.isDraft && "p-4"}`}>
             {openExercisesId ? (
                 <ExercisesList
                     workoutId={workout!.id}
@@ -232,7 +232,7 @@ export const WorkoutComponent = (props: WorkoutProps) => {
                         </div>
                     )}
                     {days && days.length > 0 ? (
-                        <div ref={scrollContainerRef} className="flex-1 overflow-y-auto flex flex-col gap-2 hide-scrollbar">
+                        <div ref={scrollContainerRef} className="flex-1 overflow-y-auto flex flex-col gap-2 hide-scrollbar pb-28 rounded-b-xl">
                             {props.isCurrent || props.isHistory || !isDragEnable ? (
                                 days.map((day, index) => {
                                     return (

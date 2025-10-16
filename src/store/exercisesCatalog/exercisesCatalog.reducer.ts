@@ -4,6 +4,7 @@ import { exercisesCatalogActions } from "./exercisesCatalog.action";
 
 const exercisesState: ExercisesState = {
     exercises: [],
+    showCreationModal: false,
     isLoading: false,
     isError: false,
 };
@@ -38,7 +39,7 @@ export const exercisesReducer = {
             })
             .addCase(exercisesCatalogActions.updateExercise.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.exercises = [...state.exercises.map(exercise => exercise.id === action.payload[0].id ? action.payload[0] : exercise)];
+                state.exercises = [...state.exercises.map((exercise) => (exercise.id === action.payload[0].id ? action.payload[0] : exercise))];
             })
             .addCase(exercisesCatalogActions.updateExercise.rejected, (state) => {
                 state.isLoading = false;
@@ -49,11 +50,14 @@ export const exercisesReducer = {
             })
             .addCase(exercisesCatalogActions.deleteExercise.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.exercises = [...state.exercises.filter(exercise => exercise.id !== action.payload)];
+                state.exercises = [...state.exercises.filter((exercise) => exercise.id !== action.payload)];
             })
             .addCase(exercisesCatalogActions.deleteExercise.rejected, (state) => {
                 state.isLoading = false;
                 state.isError = true;
+            })
+            .addCase(exercisesCatalogActions.manageCreateModal, (state, action) => {
+                state.showCreationModal = action.payload;
             });
     }),
 };

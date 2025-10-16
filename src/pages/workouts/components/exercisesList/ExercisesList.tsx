@@ -122,8 +122,8 @@ export const ExercisesList = (props: ExercisesProps) => {
     };
 
     const saveAsBaseWeight = async () => {
-        await dispatch(currentActions.saveBaseWeight({ dayExercises: mutableDayExercises, dayId: props.dayId }))
-    }
+        await dispatch(currentActions.saveBaseWeight({ dayExercises: mutableDayExercises, dayId: props.dayId }));
+    };
 
     const isAlreadyStarted = () => {
         if (props.lastWorkout) {
@@ -184,8 +184,14 @@ export const ExercisesList = (props: ExercisesProps) => {
             {props.isCurrent ? (
                 <div className="flex justify-between w-full mb-2">
                     <div className="flex gap-4">
-                        {mutableDayExercises.length > 0 && mutableDayExercises[0].sets.length > 0 && !mutableDayExercises[0].sets[0].baseWeight && <IconButton icon={<SaveOutlined />} onClick={() => setShowConfirmSaveBase(true)} />}
-                        {isAlreadyStarted() ? <div className="font-bold flex items-center">{t('workouts.exercises.workout_started')}</div> : <IconButton icon={<PlayCircleOutlined />} onClick={() => props.handleStartClick?.(props.dayId)} />}
+                        {mutableDayExercises.length > 0 && mutableDayExercises[0].sets.length > 0 && !mutableDayExercises[0].sets[0].baseWeight && (
+                            <IconButton icon={<SaveOutlined />} onClick={() => setShowConfirmSaveBase(true)} />
+                        )}
+                        {isAlreadyStarted() ? (
+                            <div className="font-bold flex items-center">{t("workouts.exercises.workout_started")}</div>
+                        ) : (
+                            <IconButton icon={<PlayCircleOutlined />} onClick={() => props.handleStartClick?.(props.dayId)} />
+                        )}
                     </div>
                     <CloseOutlined onClick={() => props.setOpenExercisesId()} />
                 </div>
@@ -217,7 +223,7 @@ export const ExercisesList = (props: ExercisesProps) => {
                 </div>
             )}
 
-            <div className="flex-1 overflow-y-auto flex flex-col gap-2 hide-scrollbar">
+            <div className="flex-1 overflow-y-auto flex flex-col gap-2 hide-scrollbar pb-28 rounded-b-xl">
                 {mutableDayExercises.length > 0 && (
                     <>
                         {props.isCurrent || props.isHistory || activeKey !== undefined || !isDragEnable ? (
