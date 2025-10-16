@@ -7,6 +7,7 @@ import { WorkoutComponent } from "../../pages/workouts/components/workout/Workou
 import { Profile } from "../../pages/profile/Profile";
 import { Exercises } from "../../pages/exercises/Exercises";
 import { History } from "../../pages/workouts/components/history/History";
+import ResetPassword from "../../pages/reset/Reset";
 
 export const router = createBrowserRouter([
     {
@@ -18,6 +19,10 @@ export const router = createBrowserRouter([
             {
                 path: "login",
                 element: <Login />,
+            },
+            {
+                path: "reset",
+                element: <ResetPassword />,
             },
             {
                 path: "workouts",
