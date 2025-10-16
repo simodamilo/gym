@@ -63,3 +63,23 @@ A modern Progressive Web App (PWA) for tracking workouts, exercises, and fitness
 ```bash
 git clone https://github.com/your-username/gym.git
 ```
+
+2. Install dependencies:
+
+```bash
+npm i
+```
+
+3. Set up environment variables.
+   Create a .env.local file with your Supabase credentials:
+
+```javascript
+VITE_SUPABASE_URL = your_supabase_url;
+VITE_SUPABASE_ANON_KEY = your_supabase_anon_key;
+```
+
+4. Run development server:
+
+```bash
+npm run dev
+```
