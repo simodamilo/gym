@@ -8,12 +8,26 @@ export const Login = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Check if already logged in on mount and redirect
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            if (session) {
-                navigate("/gym/workouts");
-            }
-        });
+        // Parse tokens returned in the URL by Supabase (magic-link / redirect flows)
+        supabase.auth
+            .getSession()
+            .then(({ data: { session } }) => {
+                if (session) {
+                    navigate("/gym/workouts");
+                    return;
+                }
+
+                // Fallback: check existing session if no tokens in URL
+                supabase.auth.getSession().then(({ data: { session } }) => {
+                    if (session) navigate("/gym/workouts");
+                });
+            })
+            .catch(() => {
+                // If parsing fails, still try the normal session check
+                supabase.auth.getSession().then(({ data: { session } }) => {
+                    if (session) navigate("/gym/workouts");
+                });
+            });
 
         // Listen for auth changes
         const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
