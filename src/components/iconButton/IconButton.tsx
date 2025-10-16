@@ -28,7 +28,7 @@ export const IconButton = ({ onClick, icon, active, size, disabled }: IconButton
             className={`${sizeStyle} rounded-3xl flex items-center justify-center transition-all duration-300 ease-out relative overflow-hidden group active:scale-95`}
             style={{
                 background: disabled ? undefined : borderStyle,
-                padding: "2px",
+                padding: "1px",
                 transition: "background 1s ease-out ease-in",
             }}
             aria-label="Icon button"
