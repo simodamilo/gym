@@ -74,3 +74,7 @@ body::before {
 .recharts-surface:focus {
     outline: none;
 }
+
+a[href*="forgot-password"] {
+    display: none !important;
+}
