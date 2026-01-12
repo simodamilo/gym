@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { exercisesSelectors } from "../../../../store/exercisesCatalog/exercisesCatalog.selector";
 import { exercisesCatalogActions } from "../../../../store/exercisesCatalog/exercisesCatalog.action";
-import { Checkbox, Input, Select, Tooltip } from "antd";
+import { Checkbox, Input, InputNumber, Select, Tooltip } from "antd";
 import type { DayExercise, Set } from "../../../../store/draft/types";
 import { DeleteOutlined, InfoCircleOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { draftSelectors } from "../../../../store/draft/draft.selectors";
@@ -227,12 +227,12 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                                             <Input readOnly addonBefore={set.setNumber} value={set.reps} />
                                         </div>
                                         <div className="w-[60%]">
-                                            <Input
+                                            <InputNumber
                                                 type="number"
                                                 key={set.id}
                                                 addonBefore={getAddon()}
                                                 value={set.weight}
-                                                onChange={(input) => updateSet("weight", input.target.value, set.id)}
+                                                onChange={(value) => updateSet("weight", value?.toString() ?? "", set.id)}
                                                 disabled={isLoadingExercises}
                                                 readOnly={props.isHistory}
                                             />
@@ -255,19 +255,23 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                 )}
             </div>
             <div className="flex gap-4">
-                <Tooltip title={
-                    <div>
-                        {
-                            [...(dayExercise.sets ?? [])]
+                <Tooltip
+                    title={
+                        <div>
+                            {[...(dayExercise.sets ?? [])]
                                 .sort((a, b) => a.setNumber - b.setNumber)
                                 .map((set: Set) => {
-                                    return <div>{set.setNumber} - {set.baseWeight}</div>
-                                })
-                        }
-                    </div>
-                }>
+                                    return (
+                                        <div>
+                                            {set.setNumber} - {set.baseWeight}
+                                        </div>
+                                    );
+                                })}
+                        </div>
+                    }
+                >
                     <div className="flex items-center border border-[#EDEDED] rounded-md px-2">
-                        <p>{t('workouts.exercises.initial')}</p>
+                        <p>{t("workouts.exercises.initial")}</p>
                     </div>
                 </Tooltip>
                 <Input
