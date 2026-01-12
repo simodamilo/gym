@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { exercisesSelectors } from "../../../../store/exercisesCatalog/exercisesCatalog.selector";
 import { exercisesCatalogActions } from "../../../../store/exercisesCatalog/exercisesCatalog.action";
-import { Checkbox, Input, InputNumber, Select, Tooltip } from "antd";
+import { Checkbox, Input, Select, Tooltip } from "antd";
 import type { DayExercise, Set } from "../../../../store/draft/types";
 import { DeleteOutlined, InfoCircleOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { draftSelectors } from "../../../../store/draft/draft.selectors";
@@ -227,12 +227,14 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                                             <Input readOnly addonBefore={set.setNumber} value={set.reps} />
                                         </div>
                                         <div className="w-[60%]">
-                                            <InputNumber
-                                                type="number"
+                                            <Input
+                                                type="tel"
+                                                inputMode="numeric"
+                                                pattern="[0-9]*"
                                                 key={set.id}
                                                 addonBefore={getAddon()}
                                                 value={set.weight}
-                                                onChange={(value) => updateSet("weight", value?.toString() ?? "", set.id)}
+                                                onChange={(input) => updateSet("weight", input.target.value, set.id)}
                                                 disabled={isLoadingExercises}
                                                 readOnly={props.isHistory}
                                             />
