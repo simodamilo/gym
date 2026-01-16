@@ -18,10 +18,18 @@ export const Workouts = () => {
     }, [page, navigate]);
 
     return (
-        <div className="w-full h-dvh md:w-3xl flex flex-col gap-2 p-4 overflow-hidden">
-            {showSwitcher && <PageSwitcher active={page} onChange={(key) => setPage(key)} />}
+        <div
+            className="w-full h-full flex flex-col overflow-hidden"
+            style={{ backgroundColor: 'var(--bg-secondary)' }}
+        >
+            {/* Container with max width for desktop */}
+            <div className="w-full h-full flex flex-col px-4 md:px-8 py-6 md:py-8 overflow-hidden max-w-7xl mx-auto">
+                {showSwitcher && <PageSwitcher active={page} onChange={(key) => setPage(key)} />}
 
-            <Outlet />
+                <div className="flex-1 overflow-auto pb-24 md:pb-8">
+                    <Outlet />
+                </div>
+            </div>
         </div>
     );
 };

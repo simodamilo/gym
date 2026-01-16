@@ -1,23 +1,23 @@
 import { LogoutOutlined, PlayCircleOutlined, PlusOutlined, UnorderedListOutlined, UserOutlined } from "@ant-design/icons";
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { motion, useAnimation } from "framer-motion";
+import { motion } from "framer-motion";
+import type { PanInfo } from "framer-motion";
 import { routes } from "../../utils/routing/routes";
 import { supabase } from "../../store/supabaseClient";
 import { exercisesCatalogActions } from "../../store/exercisesCatalog/exercisesCatalog.action";
 import { useAppDispatch } from "../../store";
 
 const menus: MenuItem[] = [
-    { name: "Profile", icon: <UserOutlined />, path: "/gym/profile", xPosition: 0 },
-    { name: "Workout", icon: <PlayCircleOutlined />, path: "/gym/workouts", xPosition: 0 },
-    { name: "Exercise", icon: <UnorderedListOutlined />, path: "/gym/exercises", xPosition: 0 },
+    { name: "Profile", icon: <UserOutlined />, path: "/gym/profile" },
+    { name: "Workout", icon: <PlayCircleOutlined />, path: "/gym/workouts" },
+    { name: "Exercise", icon: <UnorderedListOutlined />, path: "/gym/exercises" },
 ];
 
 interface MenuItem {
     name: string;
     icon: React.ReactNode;
     path: string;
-    xPosition: number;
 }
 
 export const BottomBar = () => {
@@ -25,96 +25,68 @@ export const BottomBar = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
 
-    const [active, setActive] = useState(0);
-    const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-    const menuRef = useRef<HTMLUListElement>(null);
+    const [active, setActive] = useState(1);
+    const [pillX, setPillX] = useState(0);
+    const [pillWidth, setPillWidth] = useState(52);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-    const controls = useAnimation();
-
-    // Used to calculate position of each item
+    // Update active state based on current route
     useEffect(() => {
-        const updatePositions = () => {
-            const containerWidth = menuRef.current?.offsetWidth ?? 0;
-            setMenuItems(
-                menus.map((menu) => {
-                    switch (menu.name) {
-                        case "Profile":
-                            return { ...menu, xPosition: 4 };
-                        case "Workout":
-                            return { ...menu, xPosition: containerWidth / 2 - 32 };
-                        case "Exercise":
-                            return { ...menu, xPosition: containerWidth - 68 };
-                        default:
-                            return menu;
-                    }
-                })
-            );
+        const path = location.pathname;
+        if (path.startsWith("/gym/profile")) {
+            setActive(0);
+        } else if (path.startsWith("/gym/workouts")) {
+            setActive(1);
+        } else if (path.startsWith("/gym/exercises")) {
+            setActive(2);
+        }
+    }, [location.pathname]);
+
+    // Update pill position and width when active changes
+    useEffect(() => {
+        const updatePillPosition = () => {
+            const activeItem = itemRefs.current[active];
+            const container = containerRef.current;
+
+            if (activeItem && container) {
+                const containerRect = container.getBoundingClientRect();
+                const itemRect = activeItem.getBoundingClientRect();
+
+                // Get the left position of the item relative to container
+                const itemLeft = itemRect.left - containerRect.left;
+
+                // Use the item's width as the pill width
+                const itemWidth = itemRect.width;
+
+                // Add padding inside the pill for comfortable fit
+                const pillInnerPadding = 4;
+                const newPillWidth = itemWidth - pillInnerPadding * 2;
+
+                // Center the pill over the item with padding
+                const x = itemLeft + pillInnerPadding;
+
+                setPillX(x);
+                setPillWidth(newPillWidth);
+            }
         };
 
-        updatePositions();
+        updatePillPosition();
 
-        const resizeObserver = new ResizeObserver(updatePositions);
-        if (menuRef.current) {
-            resizeObserver.observe(menuRef.current);
-        }
+        // Add slight delay for initial render
+        const timer = setTimeout(updatePillPosition, 50);
 
-        return () => resizeObserver.disconnect();
-    }, []);
-
-    // used to set active tab from navigation
-    useEffect(() => {
-        const containerWidth = menuRef.current?.offsetWidth;
-        switch (location.pathname) {
-            case "/gym/profile":
-                setActive(0);
-                controls.start({ x: 4, transition: { type: "spring", stiffness: 300, damping: 30 } });
-                break;
-            case "/gym/workouts": {
-                setActive(1);
-                const newPos = containerWidth ? containerWidth / 2 - 32 : 4;
-                controls.start({ x: newPos, transition: { type: "spring", stiffness: 300, damping: 30 } });
-                break;
-            }
-            case "/gym/exercises": {
-                setActive(2);
-                const newPos = containerWidth ? containerWidth - 68 : 4;
-                controls.start({ x: newPos, transition: { type: "spring", stiffness: 300, damping: 30 } });
-                break;
-            }
-            default:
-                setActive(1);
-        }
-    }, [controls, location.pathname]);
-
-    // used to navigate to active tab
-    useEffect(() => {
-        const containerWidth = menuRef.current?.offsetWidth;
-        switch (active) {
-            case 0:
-                navigate("/gym/profile");
-                controls.start({ x: 4, transition: { type: "spring", stiffness: 300, damping: 30 } });
-                break;
-            case 1: {
-                navigate("/gym/workouts");
-                const newPos = containerWidth ? containerWidth / 2 - 32 : 4;
-                controls.start({ x: newPos, transition: { type: "spring", stiffness: 300, damping: 30 } });
-                break;
-            }
-            case 2: {
-                navigate("/gym/exercises");
-                const newPos = containerWidth ? containerWidth - 68 : 4;
-                controls.start({ x: newPos, transition: { type: "spring", stiffness: 300, damping: 30 } });
-                break;
-            }
-        }
-    }, [active, controls, navigate]);
+        window.addEventListener("resize", updatePillPosition);
+        return () => {
+            clearTimeout(timer);
+            window.removeEventListener("resize", updatePillPosition);
+        };
+    }, [active]);
 
     const handleLogout = async () => {
         const { error } = await supabase.auth.signOut();
         if (error) {
             console.error("Logout error:", error.message);
-        } else {
-            console.log("User logged out");
         }
     };
 
@@ -135,74 +107,106 @@ export const BottomBar = () => {
     const getActionButtonIcon = () => {
         switch (active) {
             case 0:
-                return <LogoutOutlined className="text-2xl" />;
+                return <LogoutOutlined />;
             case 1:
-                return <PlusOutlined className="text-2xl" />;
+                return <PlusOutlined />;
             case 2:
-                return <PlusOutlined className="text-2xl" />;
+                return <PlusOutlined />;
             default:
-                return <PlusOutlined className="text-2xl" />;
+                return <PlusOutlined />;
+        }
+    };
+
+    const handleItemClick = (index: number) => {
+        setActive(index);
+        navigate(menus[index].path);
+    };
+
+    const handleDragEnd = (_: MouseEvent, info: PanInfo) => {
+        if (!containerRef.current) return;
+
+        let closestIndex = 0;
+        let closestDistance = Infinity;
+
+        itemRefs.current.forEach((item, index) => {
+            if (item) {
+                const rect = item.getBoundingClientRect();
+                const center = rect.left + rect.width / 2;
+                const distance = Math.abs(info.point.x - center);
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestIndex = index;
+                }
+            }
+        });
+
+        if (closestIndex !== active) {
+            handleItemClick(closestIndex);
         }
     };
 
     return (
         <>
-            <div className="fixed h-16 bottom-8 left-4 right-26 width-full md:hidden z-9998 backdrop-blur-sm bg-white/10 border border-white/20 rounded-[36px] shadow-lg">
+            {/* Main Navigation Bar - Mobile Only */}
+            <div
+                ref={containerRef}
+                className="fixed bottom-6 left-4 right-[88px] md:hidden z-[9998] h-[60px] rounded-[30px] flex items-center"
+                style={{
+                    backgroundColor: "var(--bg-elevated)",
+                    border: "1px solid var(--border-default)",
+                    boxShadow: "var(--shadow-lg)",
+                }}
+            >
+                {/* Draggable Indicator Pill */}
                 <motion.div
                     drag="x"
-                    dragConstraints={menuRef}
-                    whileTap={{ scale: 1.2, opacity: 0.9, border: "1px solid white", backgroundColor: "rgba(255, 255, 255, 0.2)" }}
-                    className="z-9999 absolute h-14 w-16 rounded-full bg-white/40 top-[3px]"
-                    animate={controls}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    onDragEnd={(_, info) => {
-                        if (!menuRef.current) return;
-
-                        const items = menuRef.current.querySelectorAll("li");
-                        let closestIndex = 0;
-                        let closestDistance = Infinity;
-
-                        items.forEach((item, index) => {
-                            const rect = item.getBoundingClientRect();
-                            const center = rect.left + rect.width / 2;
-                            const distance = Math.abs(info.point.x - center);
-                            if (distance < closestDistance) {
-                                closestDistance = distance;
-                                closestIndex = index;
-                            }
-                        });
-
-                        const newKnobPos = menuItems[closestIndex]?.xPosition ?? 0;
-
-                        // always animate to the new position
-                        controls.start({ x: newKnobPos, transition: { type: "spring", stiffness: 300, damping: 30 } });
-
-                        // update active for highlighting/navigation
-                        if (closestIndex !== active) {
-                            setActive(closestIndex);
-                        }
+                    dragConstraints={containerRef}
+                    dragElastic={0.1}
+                    onDragEnd={handleDragEnd}
+                    className="absolute h-[52px] rounded-full cursor-grab active:cursor-grabbing"
+                    style={{
+                        background: "linear-gradient(135deg, var(--brand-primary) 0%, var(--accent) 100%)",
+                        left: `${pillX}px`,
+                        width: `${pillWidth}px`,
                     }}
+                    animate={{
+                        left: pillX,
+                        width: pillWidth,
+                    }}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    whileTap={{ scale: 1.05 }}
                 />
 
-                <ul className="flex relative w-full justify-between px-3" ref={menuRef}>
+                {/* Menu Items */}
+                <div className="flex w-full justify-around items-center relative z-10 px-0">
                     {menus.map((menu, index) => (
-                        <li key={index} className="w-12 h-15.5 flex flex-col items-center justify-center">
-                            <span onClick={() => setActive(index)} className={`text-[var(--white-color)] z-100 text-xl cursor-pointer duration-500`}>
-                                {menu.icon}
-                            </span>
-                        </li>
+                        <div
+                            key={menu.path}
+                            ref={(el) => {
+                                itemRefs.current[index] = el;
+                            }}
+                            onClick={() => handleItemClick(index)}
+                            className="flex flex-col items-center justify-center gap-0.5 cursor-pointer w-[85px]"
+                        >
+                            <span className={`text-xl transition-colors duration-200 ${active === index ? "text-white" : "text-[var(--text-tertiary)]"}`}>{menu.icon}</span>
+                            <span className={`text-[10px] font-medium transition-colors duration-200 ${active === index ? "text-white" : "text-[var(--text-tertiary)]"}`}>{menu.name}</span>
+                        </div>
                     ))}
-                </ul>
+                </div>
             </div>
 
-            <div
-                className={`fixed z-9999 flex justify-around m-auto h-16 w-16 bottom-8 right-4 p-4 backdrop-blur-md ${
-                    active === 0 ? "bg-red-600/60" : "bg-white/10"
-                } border border-white/20 rounded-[36px]`}
+            {/* Action Button (FAB) - Mobile Only */}
+            <motion.button
+                className="md:hidden fixed bottom-6 right-4 z-[9999] h-[60px] w-[60px] rounded-full flex items-center justify-center shadow-lg"
+                style={{
+                    background: active === 0 ? "var(--semantic-error)" : "linear-gradient(135deg, var(--brand-primary) 0%, var(--accent) 100%)",
+                }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={handleActionButtonClick}
             >
-                {getActionButtonIcon()}
-            </div>
+                <span className="text-white text-2xl">{getActionButtonIcon()}</span>
+            </motion.button>
         </>
     );
 };

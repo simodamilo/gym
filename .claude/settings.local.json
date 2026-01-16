@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs",
+      "Bash(npx create-next-app@latest . --yes)",
+      "Bash(npm install)",
+      "Bash(npx shadcn@latest add:*)",
+      "Bash(npx shadcn@latest init --yes)",
+      "Bash(npm run build:*)",
+      "Bash(if not exist \"docs\" mkdir docs)",
+      "Bash(npm run dev:*)",
+      "Bash(npm install:*)",
+      "Bash(taskkill /F /PID 28732)",
+      "Bash(taskkill //F //PID 28732)",
+      "Bash(time:*)",
+      "Bash(tasklist:*)",
+      "Bash(findstr:*)",
+      "Bash(netstat:*)",
+      "Bash(taskkill /F /PID 26228)",
+      "Bash(taskkill //F //PID 26228)",
+      "Bash(git mv:*)",
+      "Bash(powershell -Command \"Get-Date -Format ''yyyy-MM-dd-HH-mm-ss''\")",
+      "Bash(timeout:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run lint)",
+      "mcp__ide__getDiagnostics",
+      "Bash(npx shadcn@latest list)",
+      "Bash(dir:*)",
+      "Bash(taskkill:*)",
+      "Bash(curl:*)",
+      "Bash(test:*)",
+      "WebFetch(domain:github.com)",
+      "WebSearch"
+    ]
+  }
+}
