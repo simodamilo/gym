@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { lightTheme, darkTheme, type Theme, type ThemeMode } from './tokens';
 
 interface ThemeContextType {

@@ -4,6 +4,7 @@ import { historyActions } from "../../../../store/history/history.actions";
 import { useSelector } from "react-redux";
 import { historySelectors } from "../../../../store/history/history.selectors";
 import { useNavigate } from "react-router-dom";
+import { WorkoutCard } from "../../../../components/workoutCard/WorkoutCard";
 
 export const History = () => {
     const dispatch = useAppDispatch();
@@ -16,15 +17,57 @@ export const History = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    // Format date range for display
+    const formatDateRange = (startDate?: number, endDate?: number): string => {
+        if (!startDate || !endDate) {
+            return "Unknown Date";
+        }
+
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+
+        const startFormatted = start.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+        });
+
+        const endFormatted = end.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+        });
+
+        return `${startFormatted} - ${endFormatted}`;
+    };
+
+    if (!workouts || workouts.length === 0) {
+        return (
+            <div className="flex h-full items-center justify-center">
+                <span style={{ color: "var(--text-tertiary)" }}>
+                    No workout history yet. Complete a workout to see it here!
+                </span>
+            </div>
+        );
+    }
+
     return (
-        <div className="flex flex-col gap-2 pb-28 hide-scrollbar overflow-auto">
+        <div className="flex flex-col gap-3 pb-28 hide-scrollbar overflow-auto">
             {workouts.map((workout) => {
+                // Calculate total exercises across all days
+                const totalExercises = workout.days?.reduce(
+                    (sum, day) => sum + (day.dayExercises?.length || 0),
+                    0
+                ) || 0;
+
                 return (
-                    <div onClick={() => navigate(`${workout.id}`)} className="bg-[var(--primary-color)] shadow-lg rounded-lg flex items-center justify-between p-3 py-4">
-                        <p className="font-bold mb-0 leading-none">
-                            {new Date(workout.startDate || "").toDateString()} - {new Date(workout.endDate || "").toDateString()}
-                        </p>
-                    </div>
+                    <WorkoutCard
+                        key={workout.id}
+                        title={formatDateRange(workout.startDate, workout.endDate)}
+                        exerciseCount={totalExercises}
+                        borderColor="var(--brand-primary)"
+                        onClick={() => navigate(`${workout.id}`)}
+                    />
                 );
             })}
         </div>

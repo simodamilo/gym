@@ -34,7 +34,7 @@ export const PageSwitcher = ({ active, onChange }: IProps) => {
                     <motion.button
                         key={key}
                         onClick={() => onChange(key)}
-                        className="flex-1 h-12 rounded-[16px] font-semibold text-base transition-all duration-300 cursor-pointer"
+                        className="flex-1 h-10 rounded-[16px] font-semibold text-base transition-all duration-300 cursor-pointer"
                         style={{
                             backgroundColor: isActive ? 'var(--brand-primary)' : 'transparent',
                             color: isActive ? 'white' : 'var(--text-secondary)',

@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import { MoonOutlined, SunOutlined } from "@ant-design/icons";
+import { motion } from "framer-motion";
 import { PageSwitcher } from "../../components/pageSwitcher/PageSwitcher";
 import { useSelector } from "react-redux";
 import { currentSelectors } from "../../store/current/current.selectors";
 import type { RootState } from "../../store";
 import { routes } from "../../utils/routing/routes";
+import { useTheme } from "../../theme/ThemeProvider";
 
 export const Workouts = () => {
     const navigate = useNavigate();
+    const { mode, toggleTheme } = useTheme();
 
     const [page, setPage] = useState<string>("current");
 
@@ -24,9 +28,36 @@ export const Workouts = () => {
         >
             {/* Container with max width for desktop */}
             <div className="w-full h-full flex flex-col px-4 md:px-8 py-6 md:py-8 overflow-hidden max-w-7xl mx-auto">
+                {/* Header with title and dark mode toggle */}
+                <div className="flex items-center justify-between mb-6">
+                    <h1
+                        className="text-3xl font-bold m-0"
+                        style={{ color: "var(--text-primary)" }}
+                    >
+                        Workouts
+                    </h1>
+                    <motion.button
+                        onClick={toggleTheme}
+                        className="w-10 h-10 rounded-full flex items-center justify-center border-0 cursor-pointer"
+                        style={{
+                            backgroundColor: "var(--bg-tertiary)",
+                            color: "var(--text-primary)",
+                        }}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        {mode === "dark" ? (
+                            <SunOutlined style={{ fontSize: "18px" }} />
+                        ) : (
+                            <MoonOutlined style={{ fontSize: "18px" }} />
+                        )}
+                    </motion.button>
+                </div>
+
                 {showSwitcher && <PageSwitcher active={page} onChange={(key) => setPage(key)} />}
 
-                <div className="flex-1 overflow-auto pb-24 md:pb-8">
+                <div className="flex-1 overflow-auto pb-24 md:pb-8 hide-scrollbar">
                     <Outlet />
                 </div>
             </div>

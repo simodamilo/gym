@@ -1,8 +1,7 @@
 import { LogoutOutlined, PlayCircleOutlined, PlusOutlined, UnorderedListOutlined, UserOutlined } from "@ant-design/icons";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import type { PanInfo } from "framer-motion";
 import { routes } from "../../utils/routing/routes";
 import { supabase } from "../../store/supabaseClient";
 import { exercisesCatalogActions } from "../../store/exercisesCatalog/exercisesCatalog.action";
@@ -26,10 +25,6 @@ export const BottomBar = () => {
     const dispatch = useAppDispatch();
 
     const [active, setActive] = useState(1);
-    const [pillX, setPillX] = useState(0);
-    const [pillWidth, setPillWidth] = useState(52);
-    const containerRef = useRef<HTMLDivElement>(null);
-    const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
     // Update active state based on current route
     useEffect(() => {
@@ -42,46 +37,6 @@ export const BottomBar = () => {
             setActive(2);
         }
     }, [location.pathname]);
-
-    // Update pill position and width when active changes
-    useEffect(() => {
-        const updatePillPosition = () => {
-            const activeItem = itemRefs.current[active];
-            const container = containerRef.current;
-
-            if (activeItem && container) {
-                const containerRect = container.getBoundingClientRect();
-                const itemRect = activeItem.getBoundingClientRect();
-
-                // Get the left position of the item relative to container
-                const itemLeft = itemRect.left - containerRect.left;
-
-                // Use the item's width as the pill width
-                const itemWidth = itemRect.width;
-
-                // Add padding inside the pill for comfortable fit
-                const pillInnerPadding = 4;
-                const newPillWidth = itemWidth - pillInnerPadding * 2;
-
-                // Center the pill over the item with padding
-                const x = itemLeft + pillInnerPadding;
-
-                setPillX(x);
-                setPillWidth(newPillWidth);
-            }
-        };
-
-        updatePillPosition();
-
-        // Add slight delay for initial render
-        const timer = setTimeout(updatePillPosition, 50);
-
-        window.addEventListener("resize", updatePillPosition);
-        return () => {
-            clearTimeout(timer);
-            window.removeEventListener("resize", updatePillPosition);
-        };
-    }, [active]);
 
     const handleLogout = async () => {
         const { error } = await supabase.auth.signOut();
@@ -122,91 +77,56 @@ export const BottomBar = () => {
         navigate(menus[index].path);
     };
 
-    const handleDragEnd = (_: MouseEvent, info: PanInfo) => {
-        if (!containerRef.current) return;
-
-        let closestIndex = 0;
-        let closestDistance = Infinity;
-
-        itemRefs.current.forEach((item, index) => {
-            if (item) {
-                const rect = item.getBoundingClientRect();
-                const center = rect.left + rect.width / 2;
-                const distance = Math.abs(info.point.x - center);
-                if (distance < closestDistance) {
-                    closestDistance = distance;
-                    closestIndex = index;
-                }
-            }
-        });
-
-        if (closestIndex !== active) {
-            handleItemClick(closestIndex);
-        }
-    };
-
     return (
-        <>
-            {/* Main Navigation Bar - Mobile Only */}
-            <div
-                ref={containerRef}
-                className="fixed bottom-6 left-4 right-[88px] md:hidden z-[9998] h-[60px] rounded-[30px] flex items-center"
-                style={{
-                    backgroundColor: "var(--bg-elevated)",
-                    border: "1px solid var(--border-default)",
-                    boxShadow: "var(--shadow-lg)",
-                }}
-            >
-                {/* Draggable Indicator Pill */}
-                <motion.div
-                    drag="x"
-                    dragConstraints={containerRef}
-                    dragElastic={0.1}
-                    onDragEnd={handleDragEnd}
-                    className="absolute h-[52px] rounded-full cursor-grab active:cursor-grabbing"
-                    style={{
-                        background: "linear-gradient(135deg, var(--brand-primary) 0%, var(--accent) 100%)",
-                        left: `${pillX}px`,
-                        width: `${pillWidth}px`,
-                    }}
-                    animate={{
-                        left: pillX,
-                        width: pillWidth,
-                    }}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    whileTap={{ scale: 1.05 }}
-                />
-
-                {/* Menu Items */}
-                <div className="flex w-full justify-around items-center relative z-10 px-0">
-                    {menus.map((menu, index) => (
-                        <div
-                            key={menu.path}
-                            ref={(el) => {
-                                itemRefs.current[index] = el;
-                            }}
-                            onClick={() => handleItemClick(index)}
-                            className="flex flex-col items-center justify-center gap-0.5 cursor-pointer w-[85px]"
-                        >
-                            <span className={`text-xl transition-colors duration-200 ${active === index ? "text-white" : "text-[var(--text-tertiary)]"}`}>{menu.icon}</span>
-                            <span className={`text-[10px] font-medium transition-colors duration-200 ${active === index ? "text-white" : "text-[var(--text-tertiary)]"}`}>{menu.name}</span>
-                        </div>
-                    ))}
-                </div>
+        <div
+            className="fixed bottom-6 left-4 right-4 md:hidden z-[9998] h-[72px] rounded-4xl flex items-center px-3 gap-3"
+            style={{
+                backgroundColor: "var(--bg-elevated)",
+                border: "1px solid var(--border-default)",
+                boxShadow: "var(--shadow-lg)",
+            }}
+        >
+            {/* Navigation Icons */}
+            <div className="flex items-center gap-2 flex-1">
+                {menus.map((menu, index) => (
+                    <motion.div
+                        key={menu.path}
+                        onClick={() => handleItemClick(index)}
+                        className="flex flex-col items-center justify-center cursor-pointer px-4 py-2 rounded-xl flex-1"
+                        style={{
+                            backgroundColor: active === index ? "var(--bg-base)" : "transparent",
+                        }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        <span className={`text-xl mb-1 transition-colors duration-200 ${active === index ? "text-[var(--text-primary)]" : "text-[var(--text-tertiary)]"}`}>{menu.icon}</span>
+                        <span className={`text-[10px] font-medium transition-colors duration-200 ${active === index ? "text-[var(--text-primary)]" : "text-[var(--text-tertiary)]"}`}>{menu.name}</span>
+                    </motion.div>
+                ))}
             </div>
 
-            {/* Action Button (FAB) - Mobile Only */}
-            <motion.button
-                className="md:hidden fixed bottom-6 right-4 z-[9999] h-[60px] w-[60px] rounded-full flex items-center justify-center shadow-lg"
+            {/* Vertical Divider */}
+            <div
+                className="w-px h-10 flex-shrink-0"
                 style={{
-                    background: active === 0 ? "var(--semantic-error)" : "linear-gradient(135deg, var(--brand-primary) 0%, var(--accent) 100%)",
+                    backgroundColor: "var(--border-default)",
                 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleActionButtonClick}
-            >
-                <span className="text-white text-2xl">{getActionButtonIcon()}</span>
-            </motion.button>
-        </>
+            />
+
+            {/* Action Button */}
+            <div className="flex items-center justify-end w-14 pr-1">
+                <motion.button
+                    className="h-[42px] w-[42px] rounded-full flex items-center justify-center flex-shrink-0"
+                    style={{
+                        background: active === 0 ? "var(--semantic-error)" : "linear-gradient(135deg, var(--brand-primary) 0%, var(--accent) 100%)",
+                    }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleActionButtonClick}
+                >
+                    <span className="text-white text-l">{getActionButtonIcon()}</span>
+                </motion.button>
+            </div>
+        </div>
     );
 };

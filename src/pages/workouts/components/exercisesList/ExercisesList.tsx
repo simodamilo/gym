@@ -11,9 +11,8 @@ import { draftActions } from "../../../../store/draft/draft.actions";
 import { v4 as uuidv4 } from "uuid";
 import { useTranslation } from "react-i18next";
 import { MoveIcon } from "../moveIcon/MoveIcon";
-import { useParams } from "react-router-dom";
-import { IconButton } from "../../../../components/iconButton/IconButton";
 import { currentActions } from "../../../../store/current/current.actions";
+import styles from "./ExercisesList.module.css";
 
 interface ExercisesProps {
     workoutId: string;
@@ -30,7 +29,6 @@ interface ExercisesProps {
 export const ExercisesList = (props: ExercisesProps) => {
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
-    const { workoutId } = useParams();
 
     const [activeKey, setActiveKey] = useState<string>();
     const [mutableDayExercises, setMutableDayExercises] = useState<DayExercise[]>([]);
@@ -159,9 +157,9 @@ export const ExercisesList = (props: ExercisesProps) => {
     const renderItem = (exercise: DayExercise) => ({
         key: exercise.id,
         label: (
-            <div className="flex justify-end gap-4 items-center dark:text-white">
-                <div className="text-right">{exercise.exercise?.name}</div>
-                {props.isDraft && isDragEnable && <HolderOutlined />}
+            <div className={styles.exerciseLabelContainer}>
+                <span className={styles.exerciseName}>{exercise.exercise?.name}</span>
+                {props.isDraft && isDragEnable && <HolderOutlined className={styles.dragHandle} />}
             </div>
         ),
         children: (
@@ -180,51 +178,61 @@ export const ExercisesList = (props: ExercisesProps) => {
     });
 
     return (
-        <>
-            {props.isCurrent ? (
-                <div className="flex justify-between w-full mb-2">
-                    <div className="flex gap-4">
-                        {mutableDayExercises.length > 0 && mutableDayExercises[0].sets.length > 0 && !mutableDayExercises[0].sets[0].baseWeight && (
-                            <IconButton icon={<SaveOutlined />} onClick={() => setShowConfirmSaveBase(true)} />
-                        )}
-                        {isAlreadyStarted() ? (
-                            <div className="font-bold flex items-center">{t("workouts.exercises.workout_started")}</div>
-                        ) : (
-                            <IconButton icon={<PlayCircleOutlined />} onClick={() => props.handleStartClick?.(props.dayId)} />
-                        )}
-                    </div>
-                    <CloseOutlined onClick={() => props.setOpenExercisesId()} />
-                </div>
-            ) : props.isDraft ? (
-                <div className="flex flex-col gap-4">
-                    <div className="flex justify-between w-full">
-                        <div className={`flex items-center gap-4 ${!workoutId ? "justify-between" : "justify-end"}`}>
-                            <IconButton icon={<PlusOutlined />} onClick={handleAddExercise} />
+        <div className={styles.modalContainer}>
+            {/* Header with close button and action buttons */}
+            <div className={styles.header}>
+                <div className={styles.actionButtons}>
+                    {props.isCurrent ? (
+                        <>
+                            {mutableDayExercises.length > 0 && mutableDayExercises[0].sets.length > 0 && !mutableDayExercises[0].sets[0].baseWeight && (
+                                <button className={styles.iconButton} onClick={() => setShowConfirmSaveBase(true)} title="Save base weight">
+                                    <SaveOutlined />
+                                </button>
+                            )}
+                            {isAlreadyStarted() ? (
+                                <div className={styles.workoutStarted}>{t("workouts.exercises.workout_started")}</div>
+                            ) : (
+                                <button className={styles.iconButton} onClick={() => props.handleStartClick?.(props.dayId)} title="Start workout">
+                                    <PlayCircleOutlined />
+                                </button>
+                            )}
+                        </>
+                    ) : props.isDraft ? (
+                        <>
+                            <button className={styles.iconButton} onClick={handleAddExercise} title="Add exercise">
+                                <PlusOutlined />
+                            </button>
                             {mutableDayExercises && mutableDayExercises.length > 1 && (
-                                <IconButton
-                                    active={isDragEnable}
-                                    icon={<MoveIcon style={{ fontSize: "20px" }} />}
+                                <button
+                                    className={`${styles.iconButton} ${isDragEnable ? styles.active : ""}`}
                                     onClick={() => {
                                         if (!isDragEnable) {
                                             setActiveKey(undefined);
                                         }
                                         setIsDragEnable(!isDragEnable);
                                     }}
-                                />
+                                    title="Reorder exercises"
+                                >
+                                    <MoveIcon style={{ fontSize: "20px" }} />
+                                </button>
                             )}
-                        </div>
-                        <CloseOutlined onClick={() => props.setOpenExercisesId()} />
-                    </div>
-                    {mutableDayExercises && mutableDayExercises.length > 0 && <p className="text-left text-[12px] italic">{t("workouts.exercises.description")}</p>}
+                        </>
+                    ) : null}
                 </div>
-            ) : (
-                <div className="flex justify-end w-full mb-2">
-                    <CloseOutlined onClick={() => props.setOpenExercisesId()} />
-                </div>
+
+                <button className={styles.closeButton} onClick={() => props.setOpenExercisesId()} title="Close">
+                    <CloseOutlined />
+                </button>
+            </div>
+
+            {/* Info text for draft mode */}
+            {props.isDraft && mutableDayExercises && mutableDayExercises.length > 0 && (
+                <p className={styles.infoText}>{t("workouts.exercises.description")}</p>
             )}
 
-            <div className="flex-1 overflow-y-auto flex flex-col gap-2 hide-scrollbar pb-28 rounded-b-xl">
-                {mutableDayExercises.length > 0 && (
+            {/* Exercise list */}
+            <div className={`${styles.exercisesList} hide-scrollbar`}>
+                {mutableDayExercises.length > 0 ? (
                     <>
                         {props.isCurrent || props.isHistory || activeKey !== undefined || !isDragEnable ? (
                             <>
@@ -234,7 +242,13 @@ export const ExercisesList = (props: ExercisesProps) => {
 
                                     return (
                                         <SortableItem key={groupKey} id={group[0].id.toString()}>
-                                            <Collapse accordion items={renderedItems} activeKey={activeKey} onChange={(key) => setActiveKey(Array.isArray(key) ? key[0] : key)} />
+                                            <Collapse
+                                                accordion
+                                                items={renderedItems}
+                                                activeKey={activeKey}
+                                                onChange={(key) => setActiveKey(Array.isArray(key) ? key[0] : key)}
+                                                bordered={false}
+                                            />
                                         </SortableItem>
                                     );
                                 })}
@@ -253,6 +267,7 @@ export const ExercisesList = (props: ExercisesProps) => {
                                                     items={[item]}
                                                     activeKey={item.key === activeKey ? item.key : undefined}
                                                     onChange={() => setActiveKey(item.key !== activeKey ? (item.key as string) : undefined)}
+                                                    bordered={false}
                                                 />
                                             </SortableItem>
                                         );
@@ -261,9 +276,12 @@ export const ExercisesList = (props: ExercisesProps) => {
                             </DndContext>
                         )}
                     </>
+                ) : (
+                    <div className={styles.emptyState}>No exercises yet</div>
                 )}
             </div>
 
+            {/* Confirmation modal */}
             <Modal
                 closable={{ "aria-label": "Custom Close Button" }}
                 open={showConfirmSaveBase}
@@ -274,6 +292,6 @@ export const ExercisesList = (props: ExercisesProps) => {
             >
                 <div className="px-2">{t("workouts.exercises.confirm_save_base")}</div>
             </Modal>
-        </>
+        </div>
     );
 };
