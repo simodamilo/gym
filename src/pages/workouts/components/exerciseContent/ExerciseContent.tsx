@@ -153,8 +153,12 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
     return (
         <div className="flex flex-col gap-4">
             {props.isDraft && (
-                <Checkbox checked={dayExercise.isLinkedToNext} onChange={() => setDayExercise({ ...dayExercise, isLinkedToNext: !dayExercise.isLinkedToNext })}>
-                    {t("workouts.exercises.superset")}
+                <Checkbox
+                    checked={dayExercise.isLinkedToNext}
+                    onChange={() => setDayExercise({ ...dayExercise, isLinkedToNext: !dayExercise.isLinkedToNext })}
+                    style={{ color: 'var(--text-primary)' }}
+                >
+                    <span style={{ color: 'var(--text-primary)' }}>{t("workouts.exercises.superset")}</span>
                 </Checkbox>
             )}
             {props.isDraft && (
@@ -170,7 +174,13 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                     }}
                 />
             )}
-            <div className="flex flex-col gap-2 border rounded-md border-none bg-[#ededed] p-3">
+            <div
+                className="flex flex-col gap-2 border rounded-lg p-3 shadow-sm"
+                style={{
+                    backgroundColor: 'var(--bg-elevated)',
+                    borderColor: 'var(--border-light)',
+                }}
+            >
                 {props.isDraft && (
                     <div className="flex justify-between gap-2 items-center">
                         <div className="w-full">
@@ -264,7 +274,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                                 .sort((a, b) => a.setNumber - b.setNumber)
                                 .map((set: Set) => {
                                     return (
-                                        <div>
+                                        <div key={set.id}>
                                             {set.setNumber} - {set.baseWeight}
                                         </div>
                                     );
@@ -272,8 +282,13 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                         </div>
                     }
                 >
-                    <div className="flex items-center border border-[#EDEDED] rounded-md px-2">
-                        <p>{t("workouts.exercises.initial")}</p>
+                    <div
+                        className="flex items-center border rounded-md px-2"
+                        style={{ borderColor: 'var(--border-light)' }}
+                    >
+                        <p style={{ color: 'var(--text-secondary)', margin: 0 }}>
+                            {t("workouts.exercises.initial")}
+                        </p>
                     </div>
                 </Tooltip>
                 <Input
@@ -293,7 +308,10 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                 />
                 {(props.isCurrent || props.isHistory) && dayExercise.creationNotes && (
                     <Tooltip title={dayExercise.creationNotes}>
-                        <InfoCircleOutlined className="text-[20px]" />
+                        <InfoCircleOutlined
+                            className="text-[20px]"
+                            style={{ color: 'var(--text-tertiary)' }}
+                        />
                     </Tooltip>
                 )}
             </div>

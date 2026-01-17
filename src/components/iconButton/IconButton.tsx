@@ -1,8 +1,8 @@
 import type React from "react";
-import { useMemo } from "react";
+import { useMemo, type SyntheticEvent } from "react";
 
 interface IconButtonProps {
-    onClick: () => void;
+    onClick: (e: SyntheticEvent) => void;
     icon: React.ReactNode;
     active?: boolean;
     size?: "SMALL" | "LARGE";
@@ -24,7 +24,7 @@ export const IconButton = ({ onClick, icon, active, size, disabled }: IconButton
     return (
         <button
             disabled={disabled}
-            onClick={onClick}
+            onClick={(e) => onClick(e)}
             className={`${sizeStyle} rounded-3xl flex items-center justify-center transition-all duration-300 ease-out relative overflow-hidden group active:scale-95`}
             style={{
                 background: disabled ? undefined : borderStyle,

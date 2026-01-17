@@ -3,22 +3,23 @@ import { motion } from "framer-motion";
 import type { Day } from "../../../../store/draft/types";
 import { useTranslation } from "react-i18next";
 import { IconButton } from "../../../../components/iconButton/IconButton";
+import { useNavigate } from "react-router-dom";
 
 interface DayContentProps {
     day: Day;
     isReadOnly?: boolean;
     isDraggable?: boolean;
-    setOpenExercisesId: (id: string) => void;
     handleDayUpdate?: (day: Day, type: "DELETE" | "UPDATE") => void;
 }
 
 export const DayContent = (props: DayContentProps) => {
     const { t } = useTranslation();
+    const navigate = useNavigate();
 
     if (props.isReadOnly) {
         return (
             <motion.div
-                onClick={() => props.setOpenExercisesId(props.day.id)}
+                onClick={() => navigate(`${props.day.id}/exercises`)}
                 className="rounded-[20px] flex items-center justify-between px-5 py-4 cursor-pointer transition-all duration-200"
                 style={{
                     background: 'linear-gradient(135deg, var(--brand-primary) 0%, #3b82f6 100%)',
@@ -74,7 +75,7 @@ export const DayContent = (props: DayContentProps) => {
                 <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                     <IconButton
                         icon={<ArrowRightOutlined className="text-white" />}
-                        onClick={() => props.setOpenExercisesId(props.day.id)}
+                        onClick={() => navigate(`${props.day.id}/exercises`)}
                     />
                 </motion.div>
             </div>

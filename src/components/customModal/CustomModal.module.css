@@ -1,0 +1,173 @@
+.modal {
+    /* Modal container overrides */
+}
+
+.modalContent {
+    padding: 32px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Icon Styling */
+.iconContainer {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-bottom: 8px;
+}
+
+.iconDelete {
+    font-size: 32px;
+    color: #ff7875;
+}
+
+.iconEdit {
+    font-size: 32px;
+    color: var(--brand-primary);
+}
+
+.iconSuccess {
+    font-size: 32px;
+    color: #52c41a;
+}
+
+.iconConfirm {
+    font-size: 32px;
+    color: #faad14;
+}
+
+/* Title */
+.title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: center;
+    line-height: 1.4;
+}
+
+/* Content */
+.content {
+    width: 100%;
+    color: var(--text-secondary);
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.6;
+}
+
+/* Button Container */
+.buttonContainer {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    margin-top: 8px;
+}
+
+/* Base Button Styles */
+.buttonCancel,
+.buttonOk {
+    flex: 1;
+    height: 44px;
+    border-radius: 12px;
+    border: none;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Cancel Button */
+.buttonCancel {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-light);
+}
+
+.buttonCancel:hover {
+    background-color: var(--bg-elevated);
+    border-color: var(--border-medium);
+}
+
+/* OK Button Base */
+.buttonOk {
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Delete Button (Danger Red) */
+.buttonDelete {
+    background: linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%);
+    box-shadow: 0 4px 12px rgba(255, 77, 79, 0.3);
+}
+
+.buttonDelete:hover {
+    box-shadow: 0 6px 16px rgba(255, 77, 79, 0.4);
+}
+
+/* Edit/Primary Button (Brand Blue) */
+.buttonEdit {
+    background: linear-gradient(135deg, var(--brand-primary) 0%, #3b82f6 100%);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.buttonEdit:hover {
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+/* Publish Button (Success Green) */
+.buttonPublish {
+    background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
+    box-shadow: 0 4px 12px rgba(82, 196, 26, 0.3);
+}
+
+.buttonPublish:hover {
+    box-shadow: 0 6px 16px rgba(82, 196, 26, 0.4);
+}
+
+/* Confirm Button (Warning Orange/Yellow) */
+.buttonConfirm {
+    background: linear-gradient(135deg, #faad14 0%, #ffc53d 100%);
+    box-shadow: 0 4px 12px rgba(250, 173, 20, 0.3);
+}
+
+.buttonConfirm:hover {
+    box-shadow: 0 6px 16px rgba(250, 173, 20, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .modalContent {
+        padding: 24px 20px 20px;
+    }
+
+    .iconContainer {
+        width: 56px;
+        height: 56px;
+    }
+
+    .iconDelete,
+    .iconEdit,
+    .iconSuccess,
+    .iconConfirm {
+        font-size: 28px;
+    }
+
+    .title {
+        font-size: 18px;
+    }
+
+    .buttonCancel,
+    .buttonOk {
+        height: 40px;
+        font-size: 14px;
+    }
+}

@@ -6,6 +6,7 @@ import { routes } from "../../utils/routing/routes";
 import { supabase } from "../../store/supabaseClient";
 import { exercisesCatalogActions } from "../../store/exercisesCatalog/exercisesCatalog.action";
 import { useAppDispatch } from "../../store";
+import { currentActions } from "../../store/current/current.actions";
 
 const menus: MenuItem[] = [
     { name: "Profile", icon: <UserOutlined />, path: "/gym/profile" },
@@ -52,6 +53,7 @@ export const BottomBar = () => {
                 break;
             case 1:
                 navigate(routes.workoutsCreate);
+                dispatch(currentActions.showSwitcher(false));
                 break;
             case 2:
                 dispatch(exercisesCatalogActions.manageCreateModal(true));

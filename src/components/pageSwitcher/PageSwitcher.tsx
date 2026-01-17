@@ -22,7 +22,7 @@ export const PageSwitcher = ({ active, onChange }: IProps) => {
 
     return (
         <div
-            className="flex w-full rounded-[20px] p-1.5 gap-1.5 mb-6"
+            className="flex w-full rounded-[20px] p-1.5 gap-1.5"
             style={{
                 backgroundColor: 'var(--bg-tertiary)',
                 border: '1px solid var(--border-light)',

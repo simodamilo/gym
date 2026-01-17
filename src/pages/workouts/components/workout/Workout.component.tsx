@@ -226,7 +226,7 @@ export const WorkoutComponent = (props: WorkoutProps) => {
                                         )}
                                     </div>
                                 )}
-                                <CloseOutlined onClick={() => navigate(workoutId ? "/gym/workouts/history" : "/gym/workouts")} />
+                                <CloseOutlined onClick={() => navigate(workoutId ? "/gym/workouts/main/history" : "/gym/workouts")} />
                             </div>
                             {days && days.length > 0 && <p className="text-left text-[12px] italic">{t("workouts.workout_page.description")}</p>}
                         </div>
@@ -240,7 +240,6 @@ export const WorkoutComponent = (props: WorkoutProps) => {
                                             key={index}
                                             day={day}
                                             isReadOnly={props.isCurrent || props.isHistory || !!workoutId}
-                                            setOpenExercisesId={setOpenExercisesId}
                                             handleDayUpdate={handleDayUpdate}
                                         />
                                     );
@@ -254,7 +253,7 @@ export const WorkoutComponent = (props: WorkoutProps) => {
                                         {days.map((day) => {
                                             return (
                                                 <SortableItem key={day.id} id={day.id}>
-                                                    <DayContent day={day} setOpenExercisesId={setOpenExercisesId} isDraggable handleDayUpdate={handleDayUpdate} />
+                                                    <DayContent day={day} isDraggable handleDayUpdate={handleDayUpdate} />
                                                 </SortableItem>
                                             );
                                         })}

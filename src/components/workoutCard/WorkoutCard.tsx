@@ -1,13 +1,18 @@
-import { RightOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, RightOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
+import { IconButton } from "../iconButton/IconButton";
+import type { Day } from "../../store/draft/types";
+import { useNavigate } from "react-router-dom";
 
 interface WorkoutCardProps {
     title: string;
-    exerciseCount: number;
+    exerciseCount?: number;
     counter?: number;
     isLast?: boolean;
     borderColor?: string;
-    onClick: () => void;
+    isCreation?: boolean;
+    day?: Day;
+    handleDayUpdate?: (day: Day, type: "DELETE" | "UPDATE") => void;
 }
 
 export const WorkoutCard = ({
@@ -16,11 +21,15 @@ export const WorkoutCard = ({
     counter,
     isLast,
     borderColor = "var(--semantic-success)",
-    onClick,
+    isCreation,
+    handleDayUpdate,
+    day
 }: WorkoutCardProps) => {
+    const navigate = useNavigate();
+
     return (
         <motion.div
-            onClick={onClick}
+            onClick={() => navigate(`${day?.id}/exercises`)}
             className="relative rounded-2xl cursor-pointer overflow-hidden"
             style={{
                 backgroundColor: "var(--bg-elevated)",
@@ -64,6 +73,30 @@ export const WorkoutCard = ({
 
                 {/* Right side: Counter badge and chevron */}
                 <div className="flex items-center gap-2 ml-4 flex-shrink-0">
+                    {
+                        isCreation && day && (
+                            <div className="flex justify-between items-center gap-2">
+                                <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                                    <IconButton
+                                        icon={<DeleteOutlined className="text-white" />}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleDayUpdate?.(day, "DELETE");
+                                        }}
+                                    />
+                                </motion.div>
+                                <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                                    <IconButton
+                                        icon={<EditOutlined className="text-white" />}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleDayUpdate?.(day, "UPDATE");
+                                        }}
+                                    />
+                                </motion.div>
+                            </div>
+                        )
+                    }
                     {counter !== undefined && (
                         <div
                             className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold"
@@ -75,12 +108,16 @@ export const WorkoutCard = ({
                             {counter}
                         </div>
                     )}
-                    <RightOutlined
-                        style={{
-                            fontSize: "14px",
-                            color: "var(--text-tertiary)",
-                        }}
-                    />
+                    {
+                        !isCreation && (
+                            <RightOutlined
+                                style={{
+                                    fontSize: "14px",
+                                    color: "var(--text-tertiary)",
+                                }}
+                            />
+                        )
+                    }
                 </div>
             </div>
         </motion.div>

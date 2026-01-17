@@ -95,7 +95,6 @@ export const Current = () => {
                         counter={day.counter}
                         isLast={day.isLast}
                         borderColor="var(--semantic-success)"
-                        onClick={() => setOpenExercisesId(day.id)}
                     />
                 );
             })}
