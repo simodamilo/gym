@@ -23,7 +23,7 @@ function App() {
 
     return (
         <NotificationProvider>
-            <div className="w-screen h-dvh flex" style={{ backgroundColor: 'var(--bg-secondary)' }}>
+            <div className="w-screen h-dvh flex bg-bg-secondary">
                 {/* Desktop Navigation - hidden on mobile */}
                 {user && <DesktopNav />}
 

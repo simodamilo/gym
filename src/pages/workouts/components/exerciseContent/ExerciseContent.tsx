@@ -156,9 +156,9 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                 <Checkbox
                     checked={dayExercise.isLinkedToNext}
                     onChange={() => setDayExercise({ ...dayExercise, isLinkedToNext: !dayExercise.isLinkedToNext })}
-                    style={{ color: 'var(--text-primary)' }}
+                    className="text-text-primary"
                 >
-                    <span style={{ color: 'var(--text-primary)' }}>{t("workouts.exercises.superset")}</span>
+                    <span className="text-text-primary">{t("workouts.exercises.superset")}</span>
                 </Checkbox>
             )}
             {props.isDraft && (
@@ -175,11 +175,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                 />
             )}
             <div
-                className="flex flex-col gap-2 border rounded-lg p-3 shadow-sm"
-                style={{
-                    backgroundColor: 'var(--bg-elevated)',
-                    borderColor: 'var(--border-light)',
-                }}
+                className="flex flex-col gap-2 border rounded-lg p-3 shadow-sm bg-bg-elevated border-border-light"
             >
                 {props.isDraft && (
                     <div className="flex justify-between gap-2 items-center">
@@ -283,10 +279,9 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                     }
                 >
                     <div
-                        className="flex items-center border rounded-md px-2"
-                        style={{ borderColor: 'var(--border-light)' }}
+                        className="flex items-center border rounded-md px-2 border-border-light"
                     >
-                        <p style={{ color: 'var(--text-secondary)', margin: 0 }}>
+                        <p className="text-text-secondary m-0">
                             {t("workouts.exercises.initial")}
                         </p>
                     </div>
@@ -309,8 +304,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                 {(props.isCurrent || props.isHistory) && dayExercise.creationNotes && (
                     <Tooltip title={dayExercise.creationNotes}>
                         <InfoCircleOutlined
-                            className="text-[20px]"
-                            style={{ color: 'var(--text-tertiary)' }}
+                            className="text-[20px] text-text-tertiary"
                         />
                     </Tooltip>
                 )}

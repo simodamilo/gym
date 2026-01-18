@@ -41,6 +41,28 @@ export default {
                     900: '#1f1f1f',
                     950: '#141414',
                 },
+                // Background colors (CSS variables)
+                'bg-primary': 'var(--bg-primary)',
+                'bg-secondary': 'var(--bg-secondary)',
+                'bg-tertiary': 'var(--bg-tertiary)',
+                'bg-elevated': 'var(--bg-elevated)',
+                'bg-base': 'var(--bg-base)',
+                // Text colors (CSS variables)
+                'text-primary': 'var(--text-primary)',
+                'text-secondary': 'var(--text-secondary)',
+                'text-tertiary': 'var(--text-tertiary)',
+                // Border colors (CSS variables)
+                'border-light': 'var(--border-light)',
+                'border-default': 'var(--border-default)',
+                'border-strong': 'var(--border-strong)',
+                // Brand colors (CSS variables)
+                'brand-primary': 'var(--brand-primary)',
+                'brand-primary-hover': 'var(--brand-primary-hover)',
+                // Semantic colors (CSS variables)
+                'semantic-success': 'var(--semantic-success)',
+                'semantic-error': 'var(--semantic-error)',
+                'semantic-warning': 'var(--semantic-warning)',
+                'semantic-info': 'var(--semantic-info)',
             },
             fontFamily: {
                 sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
@@ -85,6 +107,11 @@ export default {
                 lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
                 xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
                 inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
+                // CSS variable shadows
+                'var-sm': 'var(--shadow-sm)',
+                'var-md': 'var(--shadow-md)',
+                'var-lg': 'var(--shadow-lg)',
+                'var-xl': 'var(--shadow-xl)',
             },
             transitionDuration: {
                 fast: '150ms',

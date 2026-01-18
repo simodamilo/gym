@@ -1,7 +1,6 @@
 import { Modal } from "antd";
 import { DeleteOutlined, EditOutlined, CheckCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
-import styles from "./CustomModal.module.css";
 
 export type ModalType = "delete" | "edit" | "publish" | "confirm";
 
@@ -29,13 +28,13 @@ export const CustomModal = ({
     const getIcon = () => {
         switch (type) {
             case "delete":
-                return <DeleteOutlined className={styles.iconDelete} />;
+                return <DeleteOutlined className="text-[32px] text-[#ff7875] max-[480px]:text-[28px]" />;
             case "edit":
-                return <EditOutlined className={styles.iconEdit} />;
+                return <EditOutlined className="text-[32px] text-brand-primary max-[480px]:text-[28px]" />;
             case "publish":
-                return <CheckCircleOutlined className={styles.iconSuccess} />;
+                return <CheckCircleOutlined className="text-[32px] text-[#52c41a] max-[480px]:text-[28px]" />;
             case "confirm":
-                return <ExclamationCircleOutlined className={styles.iconConfirm} />;
+                return <ExclamationCircleOutlined className="text-[32px] text-[#faad14] max-[480px]:text-[28px]" />;
             default:
                 return null;
         }
@@ -44,15 +43,15 @@ export const CustomModal = ({
     const getButtonClass = () => {
         switch (type) {
             case "delete":
-                return styles.buttonDelete;
+                return "bg-gradient-to-br from-[#ff4d4f] to-[#ff7875] shadow-[0_4px_12px_rgba(255,77,79,0.3)] hover:shadow-[0_6px_16px_rgba(255,77,79,0.4)]";
             case "edit":
-                return styles.buttonEdit;
+                return "bg-gradient-to-br from-[var(--brand-primary)] to-[#3b82f6] shadow-[0_4px_12px_rgba(59,130,246,0.3)] hover:shadow-[0_6px_16px_rgba(59,130,246,0.4)]";
             case "publish":
-                return styles.buttonPublish;
+                return "bg-gradient-to-br from-[#52c41a] to-[#73d13d] shadow-[0_4px_12px_rgba(82,196,26,0.3)] hover:shadow-[0_6px_16px_rgba(82,196,26,0.4)]";
             case "confirm":
-                return styles.buttonConfirm;
+                return "bg-gradient-to-br from-[#faad14] to-[#ffc53d] shadow-[0_4px_12px_rgba(250,173,20,0.3)] hover:shadow-[0_6px_16px_rgba(250,173,20,0.4)]";
             default:
-                return styles.buttonConfirm;
+                return "bg-gradient-to-br from-[#faad14] to-[#ffc53d] shadow-[0_4px_12px_rgba(250,173,20,0.3)] hover:shadow-[0_6px_16px_rgba(250,173,20,0.4)]";
         }
     };
 
@@ -78,7 +77,6 @@ export const CustomModal = ({
             footer={null}
             closable={false}
             centered
-            className={styles.modal}
             styles={{
                 content: {
                     backgroundColor: 'var(--bg-elevated)',
@@ -92,23 +90,23 @@ export const CustomModal = ({
                 },
             }}
         >
-            <div className={styles.modalContent}>
+            <div className="px-6 pt-8 pb-6 flex flex-col items-center gap-5 max-[480px]:px-5 max-[480px]:pt-6 max-[480px]:pb-5">
                 {/* Icon Header */}
-                <div className={styles.iconContainer}>
+                <div className="w-16 h-16 flex items-center justify-center rounded-full mb-2 max-[480px]:w-14 max-[480px]:h-14">
                     {getIcon()}
                 </div>
 
                 {/* Title */}
-                {title && <h3 className={styles.title}>{title}</h3>}
+                {title && <h3 className="m-0 text-xl font-semibold text-text-primary text-center leading-snug max-[480px]:text-lg">{title}</h3>}
 
                 {/* Content */}
-                <div className={styles.content}>{children}</div>
+                <div className="w-full text-text-secondary text-sm text-center leading-relaxed">{children}</div>
 
                 {/* Buttons */}
-                <div className={styles.buttonContainer}>
+                <div className="flex gap-3 w-full mt-2">
                     <motion.button
                         onClick={onCancel}
-                        className={styles.buttonCancel}
+                        className="flex-1 h-11 rounded-xl border-none text-[15px] font-semibold cursor-pointer transition-all duration-200 flex items-center justify-center bg-bg-tertiary text-text-primary border border-border-light hover:bg-bg-elevated max-[480px]:h-10 max-[480px]:text-sm"
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                     >
@@ -116,7 +114,7 @@ export const CustomModal = ({
                     </motion.button>
                     <motion.button
                         onClick={onOk}
-                        className={`${styles.buttonOk} ${getButtonClass()}`}
+                        className={`flex-1 h-11 rounded-xl border-none text-[15px] font-semibold cursor-pointer transition-all duration-200 flex items-center justify-center text-white relative overflow-hidden max-[480px]:h-10 max-[480px]:text-sm ${getButtonClass()}`}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                     >

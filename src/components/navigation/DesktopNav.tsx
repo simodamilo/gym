@@ -76,16 +76,12 @@ export const DesktopNav = () => {
 
     return (
         <div
-            className="hidden md:flex flex-col w-64 h-screen border-r"
-            style={{
-                backgroundColor: 'var(--bg-elevated)',
-                borderColor: 'var(--border-default)',
-            }}
+            className="hidden md:flex flex-col w-64 h-screen border-r bg-bg-elevated border-border-default"
         >
             {/* Header */}
-            <div className="p-6 border-b" style={{ borderColor: 'var(--border-default)' }}>
+            <div className="p-6 border-b border-border-default">
                 <h1
-                    className="text-2xl font-bold bg-gradient-to-r from-primary-500 to-accent-purple bg-clip-text text-transparent"
+                    className="text-2xl font-bold"
                     style={{
                         backgroundImage: 'linear-gradient(135deg, var(--brand-primary) 0%, var(--accent) 100%)',
                         WebkitBackgroundClip: 'text',
@@ -94,7 +90,7 @@ export const DesktopNav = () => {
                 >
                     GymTracker
                 </h1>
-                <p className="text-sm mt-1" style={{ color: 'var(--text-tertiary)' }}>
+                <p className="text-sm mt-1 text-text-tertiary">
                     Track your fitness journey
                 </p>
             </div>
@@ -108,11 +104,7 @@ export const DesktopNav = () => {
                             <li key={menu.path}>
                                 <motion.button
                                     onClick={() => navigate(menu.path)}
-                                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200"
-                                    style={{
-                                        backgroundColor: active ? 'var(--brand-primary)' : 'transparent',
-                                        color: active ? 'white' : 'var(--text-primary)',
-                                    }}
+                                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${active ? 'bg-brand-primary text-white' : 'bg-transparent text-text-primary'}`}
                                     whileHover={{
                                         backgroundColor: active ? undefined : 'var(--bg-tertiary)',
                                     }}
@@ -129,16 +121,10 @@ export const DesktopNav = () => {
 
             {/* Action Button */}
             {actionButton && (
-                <div className="p-4 border-t" style={{ borderColor: 'var(--border-default)' }}>
+                <div className="p-4 border-t border-border-default">
                     <motion.button
                         onClick={actionButton.onClick}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium transition-all duration-200"
-                        style={{
-                            background: actionButton.danger
-                                ? 'var(--semantic-error)'
-                                : 'linear-gradient(135deg, var(--brand-primary) 0%, var(--accent) 100%)',
-                            color: 'white',
-                        }}
+                        className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium transition-all duration-200 text-white ${actionButton.danger ? 'bg-semantic-error' : 'bg-gradient-to-br from-brand-primary to-[var(--accent)]'}`}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                     >

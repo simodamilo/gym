@@ -9,12 +9,7 @@ export const ThemeToggle = () => {
     return (
         <motion.button
             onClick={toggleTheme}
-            className="relative flex items-center justify-center w-12 h-12 rounded-full transition-all duration-200"
-            style={{
-                backgroundColor: 'var(--bg-elevated)',
-                border: '1px solid var(--border-default)',
-                boxShadow: 'var(--shadow-sm)',
-            }}
+            className="relative flex items-center justify-center w-12 h-12 rounded-full transition-all duration-200 bg-bg-elevated border border-border-default shadow-var-sm"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
@@ -29,13 +24,11 @@ export const ThemeToggle = () => {
             >
                 {isDark ? (
                     <BulbFilled
-                        className="text-xl"
-                        style={{ color: 'var(--brand-primary)' }}
+                        className="text-xl text-brand-primary"
                     />
                 ) : (
                     <BulbOutlined
-                        className="text-xl"
-                        style={{ color: 'var(--text-secondary)' }}
+                        className="text-xl text-text-secondary"
                     />
                 )}
             </motion.div>

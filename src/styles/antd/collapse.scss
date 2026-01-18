@@ -4,3 +4,54 @@
     max-height: none;
     /* remove height cap */
 }
+
+/* ExercisesList specific collapse styles */
+.exercises-list-collapse {
+    .ant-collapse {
+        background: transparent !important;
+        border: none !important;
+    }
+
+    .ant-collapse-item {
+        border: none !important;
+        border-bottom: 1px solid var(--border-light) !important;
+    }
+
+    .ant-collapse-item:last-child {
+        border-bottom: none !important;
+    }
+
+    .ant-collapse-header {
+        padding: 18px 0 !important;
+        background: transparent !important;
+        border: none !important;
+        align-items: center !important;
+    }
+
+    .ant-collapse-header:hover {
+        background: var(--bg-secondary) !important;
+    }
+
+    .ant-collapse-content {
+        background: transparent !important;
+        border: none !important;
+    }
+
+    .ant-collapse-content-box {
+        padding: 16px 0 18px 0 !important;
+    }
+
+    .ant-collapse-expand-icon {
+        color: var(--text-tertiary) !important;
+        font-size: 18px !important;
+        margin-inline-end: 12px !important;
+    }
+
+    .ant-collapse-item:hover .ant-collapse-expand-icon {
+        color: var(--brand-primary) !important;
+    }
+
+    .ant-collapse-expand-icon svg {
+        transition: transform 200ms ease !important;
+    }
+}

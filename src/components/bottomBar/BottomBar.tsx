@@ -81,12 +81,7 @@ export const BottomBar = () => {
 
     return (
         <div
-            className="fixed bottom-6 left-4 right-4 md:hidden z-[9998] h-[72px] rounded-4xl flex items-center px-3 gap-3"
-            style={{
-                backgroundColor: "var(--bg-elevated)",
-                border: "1px solid var(--border-default)",
-                boxShadow: "var(--shadow-lg)",
-            }}
+            className="fixed bottom-6 left-4 right-4 md:hidden z-[9998] h-[72px] rounded-4xl flex items-center px-3 gap-3 bg-bg-elevated/95 backdrop-blur-xl border border-border-default shadow-var-lg"
         >
             {/* Navigation Icons */}
             <div className="flex items-center gap-2 flex-1">
@@ -94,34 +89,23 @@ export const BottomBar = () => {
                     <motion.div
                         key={menu.path}
                         onClick={() => handleItemClick(index)}
-                        className="flex flex-col items-center justify-center cursor-pointer px-4 py-2 rounded-xl flex-1"
-                        style={{
-                            backgroundColor: active === index ? "var(--bg-base)" : "transparent",
-                        }}
+                        className={`flex flex-col items-center justify-center cursor-pointer px-4 py-2 rounded-xl flex-1 ${active === index ? "bg-bg-base" : "bg-transparent"}`}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                     >
-                        <span className={`text-xl mb-1 transition-colors duration-200 ${active === index ? "text-[var(--text-primary)]" : "text-[var(--text-tertiary)]"}`}>{menu.icon}</span>
-                        <span className={`text-[10px] font-medium transition-colors duration-200 ${active === index ? "text-[var(--text-primary)]" : "text-[var(--text-tertiary)]"}`}>{menu.name}</span>
+                        <span className={`text-xl mb-1 transition-colors duration-200 ${active === index ? "text-text-primary" : "text-text-tertiary"}`}>{menu.icon}</span>
+                        <span className={`text-[10px] font-medium transition-colors duration-200 ${active === index ? "text-text-primary" : "text-text-tertiary"}`}>{menu.name}</span>
                     </motion.div>
                 ))}
             </div>
 
             {/* Vertical Divider */}
-            <div
-                className="w-px h-10 flex-shrink-0"
-                style={{
-                    backgroundColor: "var(--border-default)",
-                }}
-            />
+            <div className="w-px h-10 flex-shrink-0 border-l border-border-default bg-border-default" />
 
             {/* Action Button */}
             <div className="flex items-center justify-end w-14 pr-1">
                 <motion.button
-                    className="h-[42px] w-[42px] rounded-full flex items-center justify-center flex-shrink-0"
-                    style={{
-                        background: active === 0 ? "var(--semantic-error)" : "linear-gradient(135deg, var(--brand-primary) 0%, var(--accent) 100%)",
-                    }}
+                    className={`h-[42px] w-[42px] rounded-full flex items-center justify-center flex-shrink-0 ${active === 0 ? "bg-semantic-error" : "bg-gradient-to-br from-brand-primary to-[var(--accent)]"}`}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleActionButtonClick}

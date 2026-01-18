@@ -14,21 +14,18 @@ export const IconButton = ({ onClick, icon, active, size, disabled }: IconButton
         return size === "SMALL" ? "w-9 h-9 min-w-9" : "w-10 h-10 min-w-10";
     }, [size]);
 
-    const borderStyle = active
-        ? "white"
-        : `conic-gradient(
-             from 60deg, transparent 0deg, var(--secondary-color) 0deg, var(--white-color) 90deg, var(--secondary-color) 180deg, transparent 180deg),
-           conic-gradient(
-             from 240deg, transparent 0deg, var(--secondary-color) 0deg, var(--white-color) 90deg, var(--secondary-color) 180deg, transparent 180deg)`;
+    const getBackgroundClass = () => {
+        if (disabled) return '';
+        if (active) return 'bg-white';
+        return 'bg-[conic-gradient(from_60deg,transparent_0deg,var(--secondary-color)_0deg,var(--white-color)_90deg,var(--secondary-color)_180deg,transparent_180deg),conic-gradient(from_240deg,transparent_0deg,var(--secondary-color)_0deg,var(--white-color)_90deg,var(--secondary-color)_180deg,transparent_180deg)]';
+    };
 
     return (
         <button
             disabled={disabled}
             onClick={(e) => onClick(e)}
-            className={`${sizeStyle} rounded-3xl flex items-center justify-center transition-all duration-300 ease-out relative overflow-hidden group active:scale-95`}
+            className={`${sizeStyle} rounded-3xl flex items-center justify-center transition-all duration-300 ease-out relative overflow-hidden group active:scale-95 p-px ${getBackgroundClass()}`}
             style={{
-                background: disabled ? undefined : borderStyle,
-                padding: "1px",
                 transition: "background 1s ease-out ease-in",
             }}
             aria-label="Icon button"
