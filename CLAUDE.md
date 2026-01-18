@@ -32,12 +32,15 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 ### Task Documentation Process
 
+**REQUIRED**: Always write documentation for every task requested by the user.
+
 Before starting implementation of any task:
 
 1. **Create a planning document** in `docs/YYYY-MM-DD/YYYY-MM-DD-taskname.md`
    - Use today's date in YYYY-MM-DD format
    - Create the date folder if it doesn't exist
    - Use a descriptive task name (e.g., `2026-01-16-add-exercise-filtering.md`)
+   - **If there are related tasks asked one after the other, update the same file** instead of creating multiple files
 
 2. **Document content** should include:
    - What you will implement
@@ -73,6 +76,18 @@ docs/
 - Extract shared logic into utility functions or custom hooks
 
 If a file becomes too large or handles multiple concerns, split it into smaller modules following the existing organizational patterns.
+
+### Styling Requirements
+
+**Use only Tailwind CSS for styling** - no exceptions:
+
+- **NEVER** use CSS modules (`.module.css` files)
+- **NEVER** use inline styles with the `style` attribute
+- **NEVER** use any other styling approach (styled-components, emotion, etc.)
+- **ALWAYS** use Tailwind utility classes for all styling needs
+- For complex or repeated styling patterns, use Tailwind's `@apply` directive in global CSS files if absolutely necessary
+
+This ensures consistency and maintainability across the entire codebase.
 
 ## Architecture Overview
 

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../../store";
 import { historySelectors } from "../../../store/history/history.selectors";
 import { historyActions } from "../../../store/history/history.actions";
-import { WorkoutCard } from "../components/workoutCard/WorkoutCard";
+import { ItemCard } from "../components/itemCard/ItemCard";
 
 export const History = () => {
     const dispatch = useAppDispatch();
@@ -61,7 +61,7 @@ export const History = () => {
                 ) || 0;
 
                 return (
-                    <WorkoutCard
+                    <ItemCard
                         key={workout.id}
                         title={formatDateRange(workout.startDate, workout.endDate)}
                         exerciseCount={totalExercises}

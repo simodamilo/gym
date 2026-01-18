@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import type { Day } from "../../../../store/draft/types";
 import { IconButton } from "../../../../components/iconButton/IconButton";
 
-interface WorkoutCardProps {
+interface ItemCardProps {
     title: string;
     exerciseCount?: number;
     counter?: number;
@@ -16,7 +16,7 @@ interface WorkoutCardProps {
     isDraggable?: boolean;
 }
 
-export const WorkoutCard = ({
+export const ItemCard = ({
     title,
     exerciseCount,
     counter,
@@ -26,7 +26,7 @@ export const WorkoutCard = ({
     handleDayUpdate,
     day,
     isDraggable
-}: WorkoutCardProps) => {
+}: ItemCardProps) => {
     const navigate = useNavigate();
 
     return (

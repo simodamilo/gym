@@ -16,7 +16,7 @@ import { IconButton } from "../../../components/iconButton/IconButton";
 import { MoveIcon } from "../../../components/moveIcon/MoveIcon";
 import { SortableItem } from "../../../components/sortableItem/SortableItem";
 import { CustomModal } from "../../../components/customModal";
-import { WorkoutCard } from "../components/workoutCard/WorkoutCard";
+import { ItemCard } from "../components/itemCard/ItemCard";
 
 export const CreateWorkout = () => {
     const { t } = useTranslation();
@@ -165,7 +165,7 @@ export const CreateWorkout = () => {
                     {!isDragEnable ? (
                         days.map((day, index) => {
                             return (
-                                <WorkoutCard
+                                <ItemCard
                                     title={day.name!}
                                     key={index}
                                     day={day}
@@ -183,7 +183,7 @@ export const CreateWorkout = () => {
                                 {days.map((day) => {
                                     return (
                                         <SortableItem key={day.id} id={day.id}>
-                                            <WorkoutCard
+                                            <ItemCard
                                                 title={day.name!}
                                                 day={day}
                                                 isCreation

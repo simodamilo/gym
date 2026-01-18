@@ -7,7 +7,7 @@ import { currentActions } from "../../../store/current/current.actions";
 import { currentSelectors } from "../../../store/current/current.selectors";
 import { ExercisesList } from "../components/exercisesList/ExercisesList";
 import type { Day } from "../../../store/draft/types";
-import { WorkoutCard } from "../components/workoutCard/WorkoutCard";
+import { ItemCard } from "../components/itemCard/ItemCard";
 
 export const Current = () => {
     const dispatch = useAppDispatch();
@@ -88,7 +88,7 @@ export const Current = () => {
                 const exerciseCount = day.dayExercises?.length || 0;
 
                 return (
-                    <WorkoutCard
+                    <ItemCard
                         key={day.id}
                         title={day.name || "Unnamed Day"}
                         exerciseCount={exerciseCount}
