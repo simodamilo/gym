@@ -24,10 +24,7 @@ export const IconButton = ({ onClick, icon, active, size, disabled }: IconButton
         <button
             disabled={disabled}
             onClick={(e) => onClick(e)}
-            className={`${sizeStyle} rounded-3xl flex items-center justify-center transition-all duration-300 ease-out relative overflow-hidden group active:scale-95 p-px ${getBackgroundClass()}`}
-            style={{
-                transition: "background 1s ease-out ease-in",
-            }}
+            className={`${sizeStyle} rounded-3xl flex items-center justify-center transition-all duration-1000 ease-in-out relative overflow-hidden group active:scale-95 p-px ${getBackgroundClass()}`}
             aria-label="Icon button"
         >
             <div className={`w-full h-full ${disabled ? "bg-[rgba(36,36,36,0.5)]" : "bg-[rgba(36,36,36,0.9)]"} rounded-2xl flex items-center justify-center`}>

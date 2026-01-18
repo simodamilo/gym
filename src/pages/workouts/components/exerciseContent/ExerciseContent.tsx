@@ -459,11 +459,6 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                         label={t("workouts.exercises.save_btn")}
                         onClick={() => props.saveExercises?.(dayExercise)}
                         disabled={!hasValidFields()}
-                        style={{
-                            borderRadius: '8px',
-                            fontSize: '14px',
-                            fontWeight: '500',
-                        }}
                     />
                 </div>
             )}

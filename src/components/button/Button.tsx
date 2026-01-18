@@ -3,9 +3,10 @@ interface ButtonProps {
     label: string;
     active?: boolean;
     disabled?: boolean;
+    className?: string;
 }
 
-export const Button = ({ onClick, label, active, disabled }: ButtonProps) => {
+export const Button = ({ onClick, label, active, disabled, className = '' }: ButtonProps) => {
     const getBackgroundClass = () => {
         if (disabled) return '';
         if (active) return 'bg-white';
@@ -16,14 +17,11 @@ export const Button = ({ onClick, label, active, disabled }: ButtonProps) => {
         <button
             disabled={disabled}
             onClick={onClick}
-            className={`flex items-center rounded-md justify-center transition-all duration-300 ease-out relative overflow-hidden group active:scale-95 p-[2px] w-full ${getBackgroundClass()}`}
-            style={{
-                transition: "background 1s ease-out ease-in",
-            }}
+            className={`flex items-center rounded-lg justify-center transition-all duration-300 ease-out relative overflow-hidden group active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed p-[2px] w-full ${getBackgroundClass()} ${className}`}
             aria-label="Icon button"
         >
-            <div className={`w-full h-full ${disabled ? "bg-[rgba(36,36,36,0.5)]" : "bg-[rgba(36,36,36,0.9)]"} rounded-md flex items-center justify-center py-1 px-2`}>
-                <span className="text-[var(--white-color)] text-sm font-bold">{label}</span>
+            <div className={`w-full h-full ${disabled ? "bg-[rgba(36,36,36,0.5)]" : "bg-[rgba(36,36,36,0.9)]"} rounded-md flex items-center justify-center py-2 px-4`}>
+                <span className="text-[var(--white-color)] text-sm font-medium">{label}</span>
             </div>
         </button>
     );

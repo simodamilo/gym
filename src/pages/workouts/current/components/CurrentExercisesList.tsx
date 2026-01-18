@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import { currentSelectors } from "../../../../store/current/current.selectors";
 import { routes } from "../../../../utils/routing/routes";
 import { ExerciseContent } from "../../components/exerciseContent/ExerciseContent";
+import { IconButton } from "../../../../components/iconButton/IconButton";
 
 export const CurrentExercisesList = () => {
     const { t } = useTranslation();
@@ -135,16 +136,12 @@ export const CurrentExercisesList = () => {
 
                 <div className="flex gap-2 items-center">
                     {mutableDayExercises.length > 0 && mutableDayExercises[0].sets.length > 0 && !mutableDayExercises[0].sets[0].baseWeight && (
-                        <button className="bg-transparent border-none p-0 cursor-pointer text-text-tertiary text-2xl transition-all duration-150 hover:text-brand-primary hover:scale-110 flex items-center justify-center" onClick={() => setShowConfirmSaveBase(true)} title="Save base weight">
-                            <SaveOutlined />
-                        </button>
+                        <IconButton icon={<SaveOutlined />} onClick={() => setShowConfirmSaveBase(true)} />
                     )}
                     {isAlreadyStarted() ? (
                         <div className="text-[15px] font-medium text-text-primary">{t("workouts.exercises.workout_started")}</div>
                     ) : (
-                        <button className="bg-transparent border-none p-0 cursor-pointer text-text-tertiary text-2xl transition-all duration-150 hover:text-brand-primary hover:scale-110 flex items-center justify-center" onClick={() => handleStartClick()} title="Start workout">
-                            <PlayCircleOutlined />
-                        </button>
+                        <IconButton icon={<PlayCircleOutlined />} onClick={() => handleStartClick()} />
                     )}
                 </div>
             </div>
