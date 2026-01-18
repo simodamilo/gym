@@ -6,11 +6,11 @@ import { Workouts } from "../../pages/workouts/Workouts";
 import { WorkoutComponent } from "../../pages/workouts/components/workout/Workout.component";
 import { Profile } from "../../pages/profile/Profile";
 import { Exercises } from "../../pages/exercises/Exercises";
-import { History } from "../../pages/workouts/components/history/History";
 import { ExercisesList } from "../../pages/workouts/components/exercisesList/ExercisesList";
 import { Current } from "../../pages/workouts/current/Current";
 import { CreateWorkout } from "../../pages/workouts/create/CreateWorkout.component";
-import { CreateExercisesList } from "../../pages/workouts/create/CreateExercisesList.component";
+import { History } from "../../pages/workouts/history/History";
+import { CreateExercisesList } from "../../pages/workouts/create/components/CreateExercisesList.component";
 
 export const router = createBrowserRouter([
     {

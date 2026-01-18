@@ -1,10 +1,10 @@
 import { useEffect } from "react";
-import { useAppDispatch } from "../../../../store";
-import { historyActions } from "../../../../store/history/history.actions";
 import { useSelector } from "react-redux";
-import { historySelectors } from "../../../../store/history/history.selectors";
 import { useNavigate } from "react-router-dom";
-import { WorkoutCard } from "../../../../components/workoutCard/WorkoutCard";
+import { useAppDispatch } from "../../../store";
+import { historySelectors } from "../../../store/history/history.selectors";
+import { historyActions } from "../../../store/history/history.actions";
+import { WorkoutCard } from "../components/workoutCard/WorkoutCard";
 
 export const History = () => {
     const dispatch = useAppDispatch();

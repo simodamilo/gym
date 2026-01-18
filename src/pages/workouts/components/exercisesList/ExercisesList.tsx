@@ -10,7 +10,7 @@ import type { DayExercise } from "../../../../store/draft/types";
 import { draftActions } from "../../../../store/draft/draft.actions";
 import { v4 as uuidv4 } from "uuid";
 import { useTranslation } from "react-i18next";
-import { MoveIcon } from "../moveIcon/MoveIcon";
+import { MoveIcon } from "../../../../components/moveIcon/MoveIcon";
 import { currentActions } from "../../../../store/current/current.actions";
 
 interface ExercisesProps {

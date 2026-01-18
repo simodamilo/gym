@@ -3,7 +3,7 @@ import { NotificationProvider } from "./components/notificationProvider/Notifica
 import { Outlet } from "react-router-dom";
 import { useEffect } from "react";
 import { useAuth } from "./utils/auth/AuthProvider";
-import { BottomBar } from "./components/bottomBar/BottomBar";
+import { BottomBar } from "./components/navigation/BottomBar";
 import { DesktopNav } from "./components/navigation/DesktopNav";
 
 function App() {

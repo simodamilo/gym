@@ -1,8 +1,8 @@
 import { DeleteOutlined, EditOutlined, HolderOutlined, RightOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
-import { IconButton } from "../iconButton/IconButton";
-import type { Day } from "../../store/draft/types";
 import { useNavigate } from "react-router-dom";
+import type { Day } from "../../../../store/draft/types";
+import { IconButton } from "../../../../components/iconButton/IconButton";
 
 interface WorkoutCardProps {
     title: string;

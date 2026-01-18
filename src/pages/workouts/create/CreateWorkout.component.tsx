@@ -13,10 +13,10 @@ import type { Day, Workout } from "../../../store/draft/types";
 import { draftSelectors } from "../../../store/draft/draft.selectors";
 import { draftActions } from "../../../store/draft/draft.actions";
 import { IconButton } from "../../../components/iconButton/IconButton";
-import { MoveIcon } from "../components/moveIcon/MoveIcon";
+import { MoveIcon } from "../../../components/moveIcon/MoveIcon";
 import { SortableItem } from "../../../components/sortableItem/SortableItem";
-import { WorkoutCard } from "../../../components/workoutCard/WorkoutCard";
 import { CustomModal } from "../../../components/customModal";
+import { WorkoutCard } from "../components/workoutCard/WorkoutCard";
 
 export const CreateWorkout = () => {
     const { t } = useTranslation();

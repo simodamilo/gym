@@ -142,13 +142,6 @@ export const Profile = () => {
                 <div className="bg-[var(--primary-color)] color-[var(--white-color)] rounded-md p-2">
                     <p className="font-bold text-xl">{t("profile.one_rep_max")}</p>
                 </div>
-                {/*<div className="flex flex-col gap-2 bg-[var(--primary-color)] color-[var(--white-color)] rounded-md p-2">
-                    <p className="font-bold text-xl">{t("profile.settings_title")}</p>
-                    <div className="flex justify-between items-center">
-                        Dark Mode
-                        <DarkModeToggle />
-                    </div>
-                </div>*/}
             </div>
 
             <Modal

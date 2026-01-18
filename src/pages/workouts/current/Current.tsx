@@ -5,9 +5,9 @@ import { useAppDispatch } from "../../../store";
 import type { RootState } from "../../../store";
 import { currentActions } from "../../../store/current/current.actions";
 import { currentSelectors } from "../../../store/current/current.selectors";
-import { WorkoutCard } from "../../../components/workoutCard/WorkoutCard";
 import { ExercisesList } from "../components/exercisesList/ExercisesList";
 import type { Day } from "../../../store/draft/types";
+import { WorkoutCard } from "../components/workoutCard/WorkoutCard";
 
 export const Current = () => {
     const dispatch = useAppDispatch();

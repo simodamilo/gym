@@ -5,7 +5,6 @@ import { routes } from "../../utils/routing/routes";
 import { supabase } from "../../store/supabaseClient";
 import { exercisesCatalogActions } from "../../store/exercisesCatalog/exercisesCatalog.action";
 import { useAppDispatch } from "../../store";
-import { ThemeToggle } from "../themeToggle/ThemeToggle";
 import { currentActions } from "../../store/current/current.actions";
 
 interface MenuItem {
@@ -133,11 +132,6 @@ export const DesktopNav = () => {
                     </motion.button>
                 </div>
             )}
-
-            {/* Theme Toggle */}
-            <div className="p-4 flex justify-center">
-                <ThemeToggle />
-            </div>
         </div>
     );
 };

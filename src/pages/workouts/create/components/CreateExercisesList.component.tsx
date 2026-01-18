@@ -7,16 +7,16 @@ import { v4 as uuidv4 } from "uuid";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
-import { useAppDispatch, type RootState } from "../../../store";
-import { draftSelectors } from "../../../store/draft/draft.selectors";
 import { useNavigate, useParams } from "react-router-dom";
-import { routes } from "../../../utils/routing/routes";
-import type { DayExercise } from "../../../store/draft/types";
-import { draftActions } from "../../../store/draft/draft.actions";
-import { ExerciseContent } from "../components/exerciseContent/ExerciseContent";
-import { SortableItem } from "../../../components/sortableItem/SortableItem";
-import { MoveIcon } from "../components/moveIcon/MoveIcon";
-import { IconButton } from "../../../components/iconButton/IconButton";
+import { useAppDispatch, type RootState } from "../../../../store";
+import { draftSelectors } from "../../../../store/draft/draft.selectors";
+import type { DayExercise } from "../../../../store/draft/types";
+import { draftActions } from "../../../../store/draft/draft.actions";
+import { ExerciseContent } from "../../components/exerciseContent/ExerciseContent";
+import { routes } from "../../../../utils/routing/routes";
+import { IconButton } from "../../../../components/iconButton/IconButton";
+import { MoveIcon } from "../../../../components/moveIcon/MoveIcon";
+import { SortableItem } from "../../../../components/sortableItem/SortableItem";
 
 export const CreateExercisesList = () => {
     const { t } = useTranslation();

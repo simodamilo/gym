@@ -16,7 +16,7 @@ import { SortableItem } from "../../../../components/sortableItem/SortableItem";
 import { useNavigate, useParams } from "react-router-dom";
 import { currentSelectors } from "../../../../store/current/current.selectors";
 import { DayContent } from "../dayContent/DayContent";
-import { MoveIcon } from "../moveIcon/MoveIcon";
+import { MoveIcon } from "../../../../components/moveIcon/MoveIcon";
 import { historySelectors } from "../../../../store/history/history.selectors";
 import { IconButton } from "../../../../components/iconButton/IconButton";
 
