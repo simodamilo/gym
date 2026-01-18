@@ -39,7 +39,7 @@ export const Current = () => {
     const sortedDays = [...currentWorkout.days].sort((a, b) => (a.order || 0) - (b.order || 0));
 
     return (
-        <div className="flex flex-col gap-3 pb-28 hide-scrollbar overflow-auto px-1">
+        <div className="flex flex-col gap-3 pb-28 hide-scrollbar overflow-auto md:px-2">
             {sortedDays.map((day) => {
                 const exerciseCount = day.dayExercises?.length || 0;
 

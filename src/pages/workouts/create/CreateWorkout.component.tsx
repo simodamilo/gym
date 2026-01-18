@@ -17,6 +17,7 @@ import { MoveIcon } from "../../../components/moveIcon/MoveIcon";
 import { SortableItem } from "../../../components/sortableItem/SortableItem";
 import { CustomModal } from "../../../components/customModal";
 import { ItemCard } from "../components/itemCard/ItemCard";
+import { currentActions } from "../../../store/current/current.actions";
 
 export const CreateWorkout = () => {
     const { t } = useTranslation();
@@ -137,11 +138,14 @@ export const CreateWorkout = () => {
     }
 
     return (
-        <div className={`w-full h-full max-h-full md:w-3xl flex flex-col gap-2 justify-between py-4`}>
+        <div className={`w-full h-full max-h-full md:max-w-4xl lg:max-w-5xl xl:max-w-6xl flex flex-col gap-2 justify-between py-4`}>
             <div className="flex flex-col gap-4">
                 <div className="flex w-full items-center gap-4 justify-between">
                     <button
-                        onClick={() => navigate(routes.workoutsCurrent)}
+                        onClick={() => {
+                            navigate(routes.workoutsCurrent);
+                            dispatch(currentActions.showSwitcher(true));
+                        }}
                         className="bg-transparent border-0 p-0 cursor-pointer text-2xl leading-none transition-all duration-150 flex items-center justify-center hover:-translate-x-0.5 active:scale-95"
                         style={{ color: 'var(--text-tertiary)' }}
                         onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-primary)'}
@@ -161,7 +165,7 @@ export const CreateWorkout = () => {
                 {days && days.length > 0 && <p className="text-left text-[12px] italic">{t("workouts.workout_page.description")}</p>}
             </div>
             {days && days.length > 0 ? (
-                <div ref={scrollContainerRef} className="flex-1 overflow-y-auto flex flex-col gap-2 hide-scrollbar pb-28 rounded-b-xl px-1">
+                <div ref={scrollContainerRef} className="flex-1 overflow-y-auto flex flex-col gap-2 hide-scrollbar pb-28 rounded-b-xl md:px-2">
                     {!isDragEnable ? (
                         days.map((day, index) => {
                             return (

@@ -52,7 +52,7 @@ export const History = () => {
     }
 
     return (
-        <div className="flex flex-col gap-3 pb-28 hide-scrollbar overflow-auto px-1">
+        <div className="flex flex-col gap-3 pb-28 hide-scrollbar overflow-auto md:px-2">
             {workouts.map((workout) => {
                 // Calculate total exercises across all days
                 const totalExercises = workout.days?.reduce(
