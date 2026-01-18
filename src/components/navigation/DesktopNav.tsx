@@ -6,6 +6,7 @@ import { supabase } from "../../store/supabaseClient";
 import { exercisesCatalogActions } from "../../store/exercisesCatalog/exercisesCatalog.action";
 import { useAppDispatch } from "../../store";
 import { ThemeToggle } from "../themeToggle/ThemeToggle";
+import { currentActions } from "../../store/current/current.actions";
 
 interface MenuItem {
     name: string;
@@ -28,6 +29,7 @@ export const DesktopNav = () => {
 
     const handleCreateWorkout = () => {
         navigate(routes.workoutsCreate);
+        dispatch(currentActions.showSwitcher(false));
     };
 
     const handleCreateExercise = () => {

@@ -23,12 +23,12 @@ export const Workouts = () => {
 
     return (
         <div
-            className="w-full h-full flex flex-col overflow-hidden"
+            className="w-full md:max-w-[1200px] h-full flex flex-col m-auto overflow-hidden"
             style={{ backgroundColor: 'var(--bg-secondary)' }}
         >
             {/* Container with max width for desktop */}
-            {showSwitcher && 
-                <div className="w-full flex flex-col px-4 md:px-8 py-6 md:py-8 overflow-hidden max-w-7xl mx-auto">
+            {showSwitcher &&
+                <div className="w-full flex flex-col px-4 md:px-4 py-6 md:py-8 overflow-hidden max-w-7xl mx-auto">
                     {/* Header with title and dark mode toggle */}
                     <div className="flex items-center justify-between mb-6">
                         <h1

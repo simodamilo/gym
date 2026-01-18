@@ -1,4 +1,4 @@
-import { DeleteOutlined, EditOutlined, RightOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, HolderOutlined, RightOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import { IconButton } from "../iconButton/IconButton";
 import type { Day } from "../../store/draft/types";
@@ -13,6 +13,7 @@ interface WorkoutCardProps {
     isCreation?: boolean;
     day?: Day;
     handleDayUpdate?: (day: Day, type: "DELETE" | "UPDATE") => void;
+    isDraggable?: boolean;
 }
 
 export const WorkoutCard = ({
@@ -23,7 +24,8 @@ export const WorkoutCard = ({
     borderColor = "var(--semantic-success)",
     isCreation,
     handleDayUpdate,
-    day
+    day,
+    isDraggable
 }: WorkoutCardProps) => {
     const navigate = useNavigate();
 
@@ -42,6 +44,9 @@ export const WorkoutCard = ({
             transition={{ duration: 0.2 }}
         >
             <div className="flex items-center justify-between p-4">
+                {isDraggable && (
+                    <HolderOutlined className="text-white/60 text-lg cursor-grab active:cursor-grabbing mr-4" />
+                )}
                 {/* Left side: Title and metadata */}
                 <div className="flex-1 min-w-0">
                     <h3

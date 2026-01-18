@@ -15,7 +15,6 @@ import { draftActions } from "../../../store/draft/draft.actions";
 import { IconButton } from "../../../components/iconButton/IconButton";
 import { MoveIcon } from "../components/moveIcon/MoveIcon";
 import { SortableItem } from "../../../components/sortableItem/SortableItem";
-import { DayContent } from "../components/dayContent/DayContent";
 import { WorkoutCard } from "../../../components/workoutCard/WorkoutCard";
 import { CustomModal } from "../../../components/customModal";
 
@@ -163,35 +162,41 @@ export const CreateWorkout = () => {
             </div>
             {days && days.length > 0 ? (
                 <div ref={scrollContainerRef} className="flex-1 overflow-y-auto flex flex-col gap-2 hide-scrollbar pb-28 rounded-b-xl">
-                {!isDragEnable ? (
-                    days.map((day, index) => {
-                        return (
-                            <WorkoutCard
-                                title={day.name!}
-                                key={index}
-                                day={day}
-                                isCreation
-                                handleDayUpdate={handleDayUpdate}
-                            />
-                        );
-                    })
-                ) : (
-                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                        <SortableContext
-                            items={days.map((item) => item.id.toString()).filter((id): id is string => id !== undefined && id !== null)}
-                            strategy={verticalListSortingStrategy}
-                        >
-                            {days.map((day) => {
-                                return (
-                                    <SortableItem key={day.id} id={day.id}>
-                                        <DayContent day={day} isDraggable handleDayUpdate={handleDayUpdate} />
-                                    </SortableItem>
-                                );
-                            })}
-                        </SortableContext>
-                    </DndContext>
-                )}
-            </div>
+                    {!isDragEnable ? (
+                        days.map((day, index) => {
+                            return (
+                                <WorkoutCard
+                                    title={day.name!}
+                                    key={index}
+                                    day={day}
+                                    isCreation
+                                    handleDayUpdate={handleDayUpdate}
+                                />
+                            );
+                        })
+                    ) : (
+                        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                            <SortableContext
+                                items={days.map((item) => item.id.toString()).filter((id): id is string => id !== undefined && id !== null)}
+                                strategy={verticalListSortingStrategy}
+                            >
+                                {days.map((day) => {
+                                    return (
+                                        <SortableItem key={day.id} id={day.id}>
+                                            <WorkoutCard
+                                                title={day.name!}
+                                                day={day}
+                                                isCreation
+                                                handleDayUpdate={handleDayUpdate}
+                                                isDraggable
+                                            />
+                                        </SortableItem>
+                                    );
+                                })}
+                            </SortableContext>
+                        </DndContext>
+                    )}
+                </div>
             ) : (
                 <div className="flex h-full items-center mx-auto">{t("workouts.workout_page.no_workout")}</div>
             )}
