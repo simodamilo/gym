@@ -176,7 +176,7 @@ export const CreateExercisesList = () => {
     };
 
     return (
-        <div className="w-full h-full max-h-full flex flex-col overflow-hidden py-4">
+        <div className="w-full h-full max-h-full flex flex-col overflow-hidden pt-4">
             {/* Header with back button and action buttons */}
             <div className="flex justify-between items-center gap-4 mb-4">
                 <button

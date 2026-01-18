@@ -59,7 +59,7 @@ export const Workouts = () => {
                     <PageSwitcher active={page} onChange={(key) => setPage(key)} />
                 </div>
             }
-            <div className="flex-1 px-4 overflow-auto pb-28 md:pb-8 hide-scrollbar">
+            <div className="flex-1 px-4 overflow-auto md:pb-8 hide-scrollbar relative">
                 <Outlet />
             </div>
         </div>

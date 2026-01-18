@@ -151,8 +151,8 @@ export const CreateWorkout = () => {
                         <ArrowLeftOutlined />
                     </button>
                     <div className="flex gap-2">
-                        <IconButton icon={<PlusOutlined />} onClick={() => setIsEditModalOpen(true)} />
                         {days && days.length > 0 && <IconButton icon={<UploadOutlined />} onClick={() => setIsPublishModalOpen(true)} />}
+                        <IconButton icon={<PlusOutlined />} onClick={() => setIsEditModalOpen(true)} />
                         {days && days.length > 1 && (
                             <IconButton active={isDragEnable} icon={<MoveIcon style={{ fontSize: "20px" }} />} onClick={() => setIsDragEnable(!isDragEnable)} />
                         )}
@@ -161,7 +161,7 @@ export const CreateWorkout = () => {
                 {days && days.length > 0 && <p className="text-left text-[12px] italic">{t("workouts.workout_page.description")}</p>}
             </div>
             {days && days.length > 0 ? (
-                <div ref={scrollContainerRef} className="flex-1 overflow-y-auto flex flex-col gap-2 hide-scrollbar pb-28 rounded-b-xl">
+                <div ref={scrollContainerRef} className="flex-1 overflow-y-auto flex flex-col gap-2 hide-scrollbar pb-28 rounded-b-xl px-1">
                     {!isDragEnable ? (
                         days.map((day, index) => {
                             return (

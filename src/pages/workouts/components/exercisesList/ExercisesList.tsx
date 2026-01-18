@@ -177,7 +177,7 @@ export const ExercisesList = (props: ExercisesProps) => {
     });
 
     return (
-        <div className="bg-bg-primary p-6 w-full h-full max-h-full flex flex-col overflow-hidden">
+        <div className="fixed inset-0 bg-bg-primary p-6 flex flex-col overflow-hidden z-10">
             {/* Header with close button and action buttons */}
             <div className="flex justify-between items-start mb-6">
                 <div className="flex gap-5 items-center">
