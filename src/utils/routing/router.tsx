@@ -6,11 +6,11 @@ import { Workouts } from "../../pages/workouts/Workouts";
 import { WorkoutComponent } from "../../pages/workouts/components/workout/Workout.component";
 import { Profile } from "../../pages/profile/Profile";
 import { Exercises } from "../../pages/exercises/Exercises";
-import { ExercisesList } from "../../pages/workouts/components/exercisesList/ExercisesList";
 import { Current } from "../../pages/workouts/current/Current";
 import { CreateWorkout } from "../../pages/workouts/create/CreateWorkout.component";
 import { History } from "../../pages/workouts/history/History";
 import { CreateExercisesList } from "../../pages/workouts/create/components/CreateExercisesList.component";
+import { CurrentExercisesList } from "../../pages/workouts/current/components/CurrentExercisesList";
 
 export const router = createBrowserRouter([
     {
@@ -30,9 +30,9 @@ export const router = createBrowserRouter([
                     {
                         element: <Workouts />,
                         children: [
-                            { index: true, element: <Navigate to="current" replace /> },
-                            { path: 'current', element: <Current /> },
-                            { path: 'current/exercises', element: <ExercisesList /> },
+                            { index: true, element: <Navigate to="current/days" replace /> },
+                            { path: 'current/days', element: <Current /> },
+                            { path: 'current/days/:dayId/exercises', element: <CurrentExercisesList /> },
                             { path: "history", element: <History /> },
                             { path: "history/:workoutId", element: <WorkoutComponent isHistory /> },
                             { path: "create/days", element: <CreateWorkout /> },

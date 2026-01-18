@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { DndContext, closestCenter, useSensor, useSensors, type DragEndEvent, MouseSensor, TouchSensor } from "@dnd-kit/core";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { Collapse, Modal } from "antd";
-import { ExerciseContent } from "../exerciseContent/ExerciseContent";
 import { SortableItem } from "../../../../components/sortableItem/SortableItem";
 import type { DayExercise } from "../../../../store/draft/types";
 import { draftActions } from "../../../../store/draft/draft.actions";
@@ -12,20 +11,9 @@ import { v4 as uuidv4 } from "uuid";
 import { useTranslation } from "react-i18next";
 import { MoveIcon } from "../../../../components/moveIcon/MoveIcon";
 import { currentActions } from "../../../../store/current/current.actions";
+import { ExerciseContent } from "../../components/exerciseContent/ExerciseContent";
 
-interface ExercisesProps {
-    workoutId: string;
-    dayId: string;
-    dayExercises: DayExercise[];
-    isDraft?: boolean;
-    isCurrent?: boolean;
-    isHistory?: boolean;
-    setOpenExercisesId: (id?: string) => void;
-    handleStartClick?: (dayId: string) => void;
-    lastWorkout?: number;
-}
-
-export const ExercisesList = (props: ExercisesProps) => {
+export const HistoryExercisesList = (props: any) => {
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
 

@@ -13,15 +13,14 @@ import { v4 as uuidv4 } from "uuid";
 import type { ExerciseCatalog } from "../../../../store/exercisesCatalog/types";
 import { RepsTypes } from "../../../../utils/constants";
 import { ExerciseSelects } from "../../../../components/exerciseSelects/ExerciseSelects";
-import { IconButton } from "../../../../components/iconButton/IconButton";
 import { Button } from "../../../../components/button/Button";
 
 export interface ExerciseContentProps {
     dayId: string;
     exerciseId: string;
     dayExercise: DayExercise;
-    saveExercises: (dayExercise: DayExercise) => void;
-    deleteExercise: (dayExerciseId: string) => void;
+    saveExercises?: (dayExercise: DayExercise) => void;
+    deleteExercise?: (dayExerciseId: string) => void;
     isDraft?: boolean;
     isCurrent?: boolean;
     isHistory?: boolean;
@@ -132,7 +131,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
 
     const saveWeights = () => {
         if (props.isCurrent && isExerciseUpdated) {
-            props.saveExercises(dayExercise);
+            props.saveExercises?.(dayExercise);
             setIsExerciseUpdated(false);
         }
     };
@@ -433,7 +432,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
             {props.isDraft && (
                 <div className="flex items-center gap-3">
                     <button
-                        onClick={() => props.deleteExercise(props.exerciseId)}
+                        onClick={() => props.deleteExercise?.(props.exerciseId)}
                         disabled={props.isNew}
                         className="w-10 h-10 flex items-center justify-center rounded-lg transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
                         style={{
@@ -458,7 +457,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                     </button>
                     <Button
                         label={t("workouts.exercises.save_btn")}
-                        onClick={() => props.saveExercises(dayExercise)}
+                        onClick={() => props.saveExercises?.(dayExercise)}
                         disabled={!hasValidFields()}
                         style={{
                             borderRadius: '8px',

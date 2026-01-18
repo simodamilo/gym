@@ -166,10 +166,12 @@ export const CreateWorkout = () => {
                         days.map((day, index) => {
                             return (
                                 <ItemCard
-                                    title={day.name!}
                                     key={index}
-                                    day={day}
+                                    title={day.name || ''}
+                                    exerciseCount={day.dayExercises.length}
+                                    onClick={() => navigate(`${day?.id}/exercises`)}
                                     isCreation
+                                    day={day}
                                     handleDayUpdate={handleDayUpdate}
                                 />
                             );
@@ -184,9 +186,10 @@ export const CreateWorkout = () => {
                                     return (
                                         <SortableItem key={day.id} id={day.id}>
                                             <ItemCard
-                                                title={day.name!}
-                                                day={day}
+                                                title={day.name || ''}
+                                                exerciseCount={day.dayExercises.length}
                                                 isCreation
+                                                day={day}
                                                 handleDayUpdate={handleDayUpdate}
                                                 isDraggable
                                             />

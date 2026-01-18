@@ -1,37 +1,40 @@
 import { DeleteOutlined, EditOutlined, HolderOutlined, RightOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
 import type { Day } from "../../../../store/draft/types";
 import { IconButton } from "../../../../components/iconButton/IconButton";
 
 interface ItemCardProps {
     title: string;
-    exerciseCount?: number;
-    counter?: number;
-    isLast?: boolean;
+    exerciseCount: number;
+    onClick?: () => void;
     borderColor?: string;
+    // only for current
+    trainingCounter?: number;
+    isLast?: boolean;
+    // only for creation
     isCreation?: boolean;
     day?: Day;
     handleDayUpdate?: (day: Day, type: "DELETE" | "UPDATE") => void;
     isDraggable?: boolean;
 }
 
-export const ItemCard = ({
-    title,
-    exerciseCount,
-    counter,
-    isLast,
-    borderColor = "var(--semantic-success)",
-    isCreation,
-    handleDayUpdate,
-    day,
-    isDraggable
-}: ItemCardProps) => {
-    const navigate = useNavigate();
+export const ItemCard = (props: ItemCardProps) => {
+    const {
+        title,
+        exerciseCount,
+        borderColor = "var(--semantic-success)",
+        onClick,
+        trainingCounter,
+        isLast,
+        isCreation,
+        handleDayUpdate,
+        day,
+        isDraggable
+    } = props;
 
     return (
         <motion.div
-            onClick={() => navigate(`${day?.id}/exercises`)}
+            onClick={onClick}
             className="relative rounded-2xl cursor-pointer overflow-hidden"
             style={{
                 backgroundColor: "var(--bg-elevated)",
@@ -102,7 +105,7 @@ export const ItemCard = ({
                             </div>
                         )
                     }
-                    {counter !== undefined && (
+                    {trainingCounter !== undefined && (
                         <div
                             className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold"
                             style={{
@@ -110,7 +113,7 @@ export const ItemCard = ({
                                 color: "var(--text-primary)",
                             }}
                         >
-                            {counter}
+                            {trainingCounter}
                         </div>
                     )}
                     {
