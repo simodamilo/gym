@@ -110,7 +110,6 @@ export const CurrentExercisesList = () => {
                     exerciseId={exercise.id}
                     dayExercise={exercise}
                     isCurrent
-                    isNew={!exercise.exercise?.name}
                 />
             ),
         };
@@ -157,7 +156,7 @@ export const CurrentExercisesList = () => {
             )}
 
             {/* Exercise list */}
-            <div className="flex-1 overflow-y-auto pb-28 hide-scrollbar">
+            <div className="flex flex-col gap-3 overflow-y-auto pb-28 hide-scrollbar">
                 {mutableDayExercises.length > 0 ? (
                     <>
                         {groupLinkedItems(mutableDayExercises).map((group) => {
@@ -166,7 +165,7 @@ export const CurrentExercisesList = () => {
 
                             return (
                                 <SortableItem key={groupKey} id={group[0].id.toString()}>
-                                    <div className="mb-3">
+                                    <div>
                                         <Collapse
                                             accordion
                                             items={renderedItems}

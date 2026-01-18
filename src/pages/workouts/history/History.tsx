@@ -5,6 +5,7 @@ import { useAppDispatch } from "../../../store";
 import { historySelectors } from "../../../store/history/history.selectors";
 import { historyActions } from "../../../store/history/history.actions";
 import { ItemCard } from "../components/itemCard/ItemCard";
+import { currentActions } from "../../../store/current/current.actions";
 
 export const History = () => {
     const dispatch = useAppDispatch();
@@ -66,7 +67,10 @@ export const History = () => {
                         title={formatDateRange(workout.startDate, workout.endDate)}
                         exerciseCount={totalExercises}
                         borderColor="var(--brand-primary)"
-                        onClick={() => navigate(`${workout.id}`)}
+                        onClick={() => {
+                            navigate(`${workout.id}/days`);
+                            dispatch(currentActions.showSwitcher(false));
+                        }}
                     />
                 );
             })}

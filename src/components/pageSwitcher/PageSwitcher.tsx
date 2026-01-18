@@ -22,10 +22,10 @@ export const PageSwitcher = ({ active, onChange }: IProps) => {
 
     return (
         <div
-            className="flex w-full rounded-[20px] p-1.5 gap-1.5"
+            className="flex w-full rounded-[20px] p-1.5 gap-1.5 shadow-var-sm"
             style={{
-                backgroundColor: 'var(--bg-tertiary)',
-                border: '1px solid var(--border-light)',
+                backgroundColor: 'var(--bg-elevated)',
+                border: '1px solid var(--border-default)',
             }}
         >
             {items.map(({ key, label }) => {
@@ -34,13 +34,13 @@ export const PageSwitcher = ({ active, onChange }: IProps) => {
                     <motion.button
                         key={key}
                         onClick={() => onChange(key)}
-                        className="flex-1 h-10 rounded-[16px] font-semibold text-base transition-all duration-300 cursor-pointer"
+                        className="flex-1 h-10 rounded-[16px] font-semibold text-base transition-all duration-300 cursor-pointer shadow-sm"
                         style={{
                             backgroundColor: isActive ? 'var(--brand-primary)' : 'transparent',
                             color: isActive ? 'white' : 'var(--text-secondary)',
                         }}
                         whileHover={{
-                            backgroundColor: isActive ? undefined : 'var(--bg-elevated)',
+                            backgroundColor: isActive ? undefined : 'var(--bg-secondary)',
                         }}
                         whileTap={{ scale: 0.98 }}
                         animate={{

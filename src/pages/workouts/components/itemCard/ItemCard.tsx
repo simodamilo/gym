@@ -38,7 +38,7 @@ export const ItemCard = (props: ItemCardProps) => {
             className="relative rounded-2xl cursor-pointer overflow-hidden"
             style={{
                 backgroundColor: "var(--bg-elevated)",
-                border: "1px solid var(--border-light)",
+                border: "1px solid var(--border-default)",
                 boxShadow: "var(--shadow-md)",
                 borderLeft: `4px solid ${borderColor}`,
             }}

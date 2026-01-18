@@ -128,7 +128,7 @@ export default {
             backgroundImage: {
                 'gradient-primary': 'linear-gradient(135deg, #1677ff 0%, #722ed1 100%)',
                 'gradient-success': 'linear-gradient(135deg, #52c41a 0%, #73d13d 100%)',
-                'gradient-surface': 'linear-gradient(180deg, #ffffff 0%, #fafafa 100%)',
+                'gradient-surface': 'linear-gradient(180deg, #f5f5f7 0%, #e8e8ed 100%)',
                 'gradient-surface-dark': 'linear-gradient(180deg, #1f1f1f 0%, #141414 100%)',
             },
         },

@@ -31,7 +31,8 @@
       "Bash(curl:*)",
       "Bash(test:*)",
       "WebFetch(domain:github.com)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(if not exist \"docs\\\\2026-01-18\" mkdir \"docs\\\\2026-01-18\")"
     ]
   }
 }

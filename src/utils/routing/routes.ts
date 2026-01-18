@@ -3,7 +3,7 @@ export const routes = {
     workouts: "/gym/workouts",
     workoutsCurrent: "/gym/workouts/current/days",
     workoutsExercises: "/gym/workouts/current/exercises",
-    workoutsHistory: "/gym/workouts/history",
+    workoutsHistory: "/gym/workouts/history/workouts",
     workoutsCreate: "/gym/workouts/create/days",
     profile: "/gym/profile",
     exercises: "/gym/exercises",

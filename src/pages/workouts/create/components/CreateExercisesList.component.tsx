@@ -214,7 +214,7 @@ export const CreateExercisesList = () => {
             )}
 
             {/* Exercise list */}
-            <div className="flex-1 overflow-y-auto pb-28 hide-scrollbar">
+            <div className="flex flex-col gap-3 overflow-y-auto pb-28 hide-scrollbar">
                 {mutableDayExercises.length > 0 ? (
                     <>
                         {activeKey !== undefined || !isDragEnable ? (
@@ -225,7 +225,7 @@ export const CreateExercisesList = () => {
 
                                     return (
                                         <SortableItem key={groupKey} id={group[0].id.toString()}>
-                                            <div className="mb-3">
+                                            <div>
                                                 <Collapse
                                                     accordion
                                                     items={renderedItems}
@@ -248,7 +248,7 @@ export const CreateExercisesList = () => {
                                         const item = renderItem(mutableDayExercise);
                                         return (
                                             <SortableItem key={mutableDayExercise.id} id={mutableDayExercise.id.toString()}>
-                                                <div className="mb-3">
+                                                <div>
                                                     <Collapse
                                                         items={[item]}
                                                         activeKey={item.key === activeKey ? item.key : undefined}

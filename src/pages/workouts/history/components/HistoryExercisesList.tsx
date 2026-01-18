@@ -1,123 +1,34 @@
-import { CloseOutlined, HolderOutlined, PlayCircleOutlined, PlusOutlined, SaveOutlined } from "@ant-design/icons";
-import { useAppDispatch } from "../../../../store";
+import { ArrowLeftOutlined, FileTextOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import { DndContext, closestCenter, useSensor, useSensors, type DragEndEvent, MouseSensor, TouchSensor } from "@dnd-kit/core";
-import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { Collapse, Modal } from "antd";
+import { Collapse } from "antd";
+import { motion } from "framer-motion";
 import { SortableItem } from "../../../../components/sortableItem/SortableItem";
-import type { DayExercise } from "../../../../store/draft/types";
-import { draftActions } from "../../../../store/draft/draft.actions";
-import { v4 as uuidv4 } from "uuid";
-import { useTranslation } from "react-i18next";
-import { MoveIcon } from "../../../../components/moveIcon/MoveIcon";
-import { currentActions } from "../../../../store/current/current.actions";
+import type { Day, DayExercise } from "../../../../store/draft/types";
 import { ExerciseContent } from "../../components/exerciseContent/ExerciseContent";
+import { historySelectors } from "../../../../store/history/history.selectors";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
-export const HistoryExercisesList = (props: any) => {
+export const HistoryExercisesList = () => {
     const { t } = useTranslation();
-    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+    const { workoutId, dayId } = useParams();
 
     const [activeKey, setActiveKey] = useState<string>();
-    const [mutableDayExercises, setMutableDayExercises] = useState<DayExercise[]>([]);
-    const [isDragEnable, setIsDragEnable] = useState<boolean>(false);
-    const [showConfirmSaveBase, setShowConfirmSaveBase] = useState<boolean>(false);
+    const [day, setDay] = useState<Day>();
+
+    const archivedWorkouts = useSelector(historySelectors.getHistoryWorkouts);
 
     useEffect(() => {
-        const mutable: DayExercise[] = [...props.dayExercises];
-        mutable.sort((a: DayExercise, b: DayExercise) => a.orderNumber - b.orderNumber);
-        setMutableDayExercises(mutable);
-    }, [props.dayExercises]);
-
-    /* only used if isReadOnly is false */
-    const sensors = useSensors(
-        useSensor(MouseSensor, {
-            activationConstraint: {
-                distance: 50,
-            },
-        }),
-        useSensor(TouchSensor, {
-            activationConstraint: {
-                delay: 200,
-                tolerance: 50,
-            },
-        })
-    );
-
-    /* only used if isReadOnly is false */
-    const handleDragEnd = (event: DragEndEvent) => {
-        const { active, over } = event;
-
-        if (active.id !== over?.id) {
-            const oldIndex = mutableDayExercises.findIndex((item) => item.id.toString() === active.id);
-            const newIndex = mutableDayExercises.findIndex((item) => item.id.toString() === over?.id);
-
-            const newItems = arrayMove(mutableDayExercises, oldIndex, newIndex).map((item, index) => ({ ...item, orderNumber: index, isLinkedToNext: false }));
-            setMutableDayExercises(newItems);
-            saveNewOrder(newItems);
+        if (workoutId) {
+            const currentWorkout = archivedWorkouts.find((workout) => workout.id === workoutId);
+            const day = currentWorkout?.days.find(day => day.id === dayId)
+            if (day) {
+                setDay(day);
+            }
         }
-    };
-
-    /* only used if isReadOnly is false */
-    const handleAddExercise = () => {
-        const newId = uuidv4();
-        setMutableDayExercises([
-            ...mutableDayExercises,
-            {
-                id: newId,
-                orderNumber: mutableDayExercises.length,
-                sets: [],
-                rest: undefined,
-                notes: undefined,
-            },
-        ]);
-        setActiveKey(newId);
-    };
-
-    /* only used if isReadOnly is false */
-    const saveNewOrder = async (newItems: DayExercise[]) => {
-        const newOrder = newItems.filter((dayExercise) => dayExercise.exercise?.id);
-
-        await dispatch(
-            draftActions.upsertExercises({
-                dayExercises: newOrder,
-                dayId: props.dayId,
-                workoutId: props.workoutId,
-                isOrderUpdate: true,
-            })
-        );
-    };
-
-    /* only used if isReadOnly is false */
-    const saveExercises = async (exercise: DayExercise) => {
-        await dispatch(
-            draftActions.upsertExercises({
-                dayExercises: [exercise],
-                dayId: props.dayId,
-                workoutId: props.workoutId,
-            })
-        );
-        if (!isAlreadyStarted() && props.isCurrent) {
-            props.handleStartClick?.(props.dayId);
-        }
-    };
-
-    /* only used if isReadOnly is false */
-    const deleteExercise = async (exerciseId: string) => {
-        await dispatch(draftActions.deleteExercise(exerciseId));
-    };
-
-    const saveAsBaseWeight = async () => {
-        await dispatch(currentActions.saveBaseWeight({ dayExercises: mutableDayExercises, dayId: props.dayId }));
-    };
-
-    const isAlreadyStarted = () => {
-        if (props.lastWorkout) {
-            const savedDate = new Date(props.lastWorkout);
-            const today = new Date();
-
-            return savedDate.getFullYear() === today.getFullYear() && savedDate.getMonth() === today.getMonth() && savedDate.getDate() === today.getDate();
-        }
-    };
+    }, [archivedWorkouts, workoutId, dayId]);
 
     const groupLinkedItems = (items: DayExercise[]) => {
         const groups: DayExercise[][] = [];
@@ -145,140 +56,88 @@ export const HistoryExercisesList = (props: any) => {
         key: exercise.id,
         label: (
             <div className="flex items-center justify-between w-full gap-4">
-                <span className="flex-1 text-[17px] font-normal text-text-primary leading-snug">{exercise.exercise?.name}</span>
-                {props.isDraft && isDragEnable && <HolderOutlined className="text-border-default text-xl cursor-grab flex-shrink-0 active:cursor-grabbing" />}
+                <div className="flex-1 flex flex-col gap-1">
+                    <span className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>
+                        {exercise.exercise?.name || "Exercise"}
+                    </span>
+                </div>
             </div>
         ),
         children: (
             <ExerciseContent
-                dayId={props.dayId}
+                dayId={dayId!}
                 exerciseId={exercise.id}
                 dayExercise={exercise}
-                saveExercises={saveExercises}
-                deleteExercise={deleteExercise}
-                isDraft={props.isDraft}
-                isCurrent={props.isCurrent}
-                isHistory={props.isHistory}
-                isNew={!exercise.exercise?.name}
+                isHistory
             />
         ),
     });
 
     return (
-        <div className="fixed inset-0 bg-bg-primary p-6 flex flex-col overflow-hidden z-10">
+        <div className="w-full h-full max-h-full flex flex-col overflow-hidden pt-4">
             {/* Header with close button and action buttons */}
-            <div className="flex justify-between items-start mb-6">
-                <div className="flex gap-5 items-center">
-                    {props.isCurrent ? (
-                        <>
-                            {mutableDayExercises.length > 0 && mutableDayExercises[0].sets.length > 0 && !mutableDayExercises[0].sets[0].baseWeight && (
-                                <button className="bg-transparent border-none p-0 cursor-pointer text-text-tertiary text-2xl transition-all duration-150 hover:text-brand-primary hover:scale-110 flex items-center justify-center" onClick={() => setShowConfirmSaveBase(true)} title="Save base weight">
-                                    <SaveOutlined />
-                                </button>
-                            )}
-                            {isAlreadyStarted() ? (
-                                <div className="text-[15px] font-medium text-text-primary">{t("workouts.exercises.workout_started")}</div>
-                            ) : (
-                                <button className="bg-transparent border-none p-0 cursor-pointer text-text-tertiary text-2xl transition-all duration-150 hover:text-brand-primary hover:scale-110 flex items-center justify-center" onClick={() => props.handleStartClick?.(props.dayId)} title="Start workout">
-                                    <PlayCircleOutlined />
-                                </button>
-                            )}
-                        </>
-                    ) : props.isDraft ? (
-                        <>
-                            <button className="bg-transparent border-none p-0 cursor-pointer text-text-tertiary text-2xl transition-all duration-150 hover:text-brand-primary hover:scale-110 flex items-center justify-center" onClick={handleAddExercise} title="Add exercise">
-                                <PlusOutlined />
-                            </button>
-                            {mutableDayExercises && mutableDayExercises.length > 1 && (
-                                <button
-                                    className={`bg-transparent border-none p-0 cursor-pointer text-2xl transition-all duration-150 hover:scale-110 flex items-center justify-center ${isDragEnable ? 'text-brand-primary' : 'text-text-tertiary hover:text-brand-primary'}`}
-                                    onClick={() => {
-                                        if (!isDragEnable) {
-                                            setActiveKey(undefined);
-                                        }
-                                        setIsDragEnable(!isDragEnable);
-                                    }}
-                                    title="Reorder exercises"
-                                >
-                                    <MoveIcon style={{ fontSize: "20px" }} />
-                                </button>
-                            )}
-                        </>
-                    ) : null}
-                </div>
-
-                <button className="bg-transparent border-none p-0 cursor-pointer text-text-tertiary text-2xl transition-all duration-150 hover:text-text-primary hover:scale-110 flex items-center justify-center" onClick={() => props.setOpenExercisesId()} title="Close">
-                    <CloseOutlined />
+            <div className="flex justify-between items-center gap-4 mb-4">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="bg-transparent border-0 p-0 cursor-pointer text-2xl leading-none transition-all duration-150 flex items-center justify-center hover:-translate-x-0.5 active:scale-95"
+                    style={{ color: 'var(--text-tertiary)' }}
+                    onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-primary)'}
+                    onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-tertiary)'}
+                    aria-label="Go back"
+                >
+                    <ArrowLeftOutlined />
                 </button>
             </div>
 
-            {/* Info text for draft mode */}
-            {props.isDraft && mutableDayExercises && mutableDayExercises.length > 0 && (
-                <p className="text-sm text-text-secondary italic mt-2">{t("workouts.exercises.description")}</p>
+            {day?.dayExercises && day?.dayExercises.length > 0 && (
+                <p className="text-left text-xs italic mb-4" style={{ color: 'var(--text-secondary)' }}>
+                    {t("workouts.exercises.description")}
+                </p>
             )}
 
             {/* Exercise list */}
-            <div className="flex-1 overflow-y-auto pb-28 md:pb-6 exercises-list-collapse hide-scrollbar">
-                {mutableDayExercises.length > 0 ? (
+            <div className="flex flex-col gap-3 overflow-y-auto pb-28 hide-scrollbar">
+                {day?.dayExercises && day?.dayExercises.length > 0 ? (
                     <>
-                        {props.isCurrent || props.isHistory || activeKey !== undefined || !isDragEnable ? (
-                            <>
-                                {groupLinkedItems(mutableDayExercises).map((group) => {
-                                    const renderedItems = group.map((exercise) => renderItem(exercise));
-                                    const groupKey = group.map((g) => g.id).join("-");
+                        {groupLinkedItems(day.dayExercises).map((group) => {
+                            const renderedItems = group.map((exercise) => renderItem(exercise));
+                            const groupKey = group.map((g) => g.id).join("-");
 
-                                    return (
-                                        <SortableItem key={groupKey} id={group[0].id.toString()}>
-                                            <Collapse
-                                                accordion
-                                                items={renderedItems}
-                                                activeKey={activeKey}
-                                                onChange={(key) => setActiveKey(Array.isArray(key) ? key[0] : key)}
-                                                bordered={false}
-                                            />
-                                        </SortableItem>
-                                    );
-                                })}
-                            </>
-                        ) : (
-                            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                                <SortableContext
-                                    items={mutableDayExercises.map((item) => item.id.toString()).filter((id): id is string => id !== undefined && id !== null)}
-                                    strategy={verticalListSortingStrategy}
-                                >
-                                    {mutableDayExercises.map((mutableDayExercise) => {
-                                        const item = renderItem(mutableDayExercise);
-                                        return (
-                                            <SortableItem key={mutableDayExercise.id} id={mutableDayExercise.id.toString()}>
-                                                <Collapse
-                                                    items={[item]}
-                                                    activeKey={item.key === activeKey ? item.key : undefined}
-                                                    onChange={() => setActiveKey(item.key !== activeKey ? (item.key as string) : undefined)}
-                                                    bordered={false}
-                                                />
-                                            </SortableItem>
-                                        );
-                                    })}
-                                </SortableContext>
-                            </DndContext>
-                        )}
+                            return (
+                                <SortableItem key={groupKey} id={group[0].id.toString()}>
+                                    <div>
+                                        <Collapse
+                                            accordion
+                                            items={renderedItems}
+                                            activeKey={activeKey}
+                                            onChange={(key) => setActiveKey(Array.isArray(key) ? key[0] : key)}
+                                            bordered={false}
+                                        />
+                                    </div>
+                                </SortableItem>
+                            );
+                        })}
                     </>
                 ) : (
-                    <div className="flex items-center justify-center py-12 px-6 text-text-tertiary text-[15px]">No exercises yet</div>
+                    <motion.div
+                        className="flex flex-col items-center justify-center h-full gap-4"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        <FileTextOutlined
+                            className="text-6xl"
+                            style={{ color: 'var(--brand-primary)', opacity: 0.5 }}
+                        />
+                        <p className="text-base" style={{ color: 'var(--text-secondary)' }}>
+                            No exercises yet
+                        </p>
+                        <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>
+                            This workout has no exercises recorded
+                        </p>
+                    </motion.div>
                 )}
             </div>
-
-            {/* Confirmation modal */}
-            <Modal
-                closable={{ "aria-label": "Custom Close Button" }}
-                open={showConfirmSaveBase}
-                onOk={() => saveAsBaseWeight()}
-                onCancel={() => {
-                    setShowConfirmSaveBase(false);
-                }}
-            >
-                <div className="px-2">{t("workouts.exercises.confirm_save_base")}</div>
-            </Modal>
         </div>
     );
 };

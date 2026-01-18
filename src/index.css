@@ -16,27 +16,28 @@
 
 /* Light Mode (Default) */
 .light, :root:not(.dark) {
-    /* Background colors */
-    --bg-primary: #ffffff;
-    --bg-secondary: #fafafa;
-    --bg-tertiary: #f5f5f5;
+    /* Background colors - Distinct layered system */
+    --bg-primary: #f5f5f7;
+    --bg-secondary: #e8e8ed;
+    --bg-tertiary: #d1d1d6;
     --bg-elevated: #ffffff;
 
-    /* Text colors */
-    --text-primary: #262626;
-    --text-secondary: #595959;
-    --text-tertiary: #8c8c8c;
+    /* Text colors - Enhanced contrast */
+    --text-primary: #1a1a1a;
+    --text-secondary: #6b6b6b;
+    --text-tertiary: #9a9a9a;
     --text-inverse: #ffffff;
 
-    /* Border colors */
-    --border-light: #f0f0f0;
-    --border-default: #d9d9d9;
-    --border-strong: #8c8c8c;
+    /* Border colors - Visible, defined */
+    --border-light: #e0e0e5;
+    --border-default: #c7c7cc;
+    --border-strong: #8e8e93;
 
     /* Brand colors */
     --brand-primary: #1677ff;
     --brand-primary-hover: #0958d9;
     --brand-primary-active: #003eb3;
+    --brand-primary-light: #e6f4ff;
 
     /* Semantic colors */
     --semantic-success: #52c41a;
@@ -46,20 +47,21 @@
 
     /* Accent color */
     --accent: #722ed1;
+    --accent-light: #f3e8ff;
 
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+    /* Shadows - Strong depth */
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+    --shadow-md: 0 4px 8px -2px rgba(0, 0, 0, 0.16), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 12px 24px -4px rgba(0, 0, 0, 0.18), 0 6px 12px -2px rgba(0, 0, 0, 0.12);
+    --shadow-xl: 0 24px 48px -8px rgba(0, 0, 0, 0.2), 0 12px 24px -4px rgba(0, 0, 0, 0.14);
+    --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.1);
 
     /* Legacy variables (for backward compatibility) */
     --stable-primary-color: #1677ff;
     --primary-color: #1677ff;
-    --secondary-color: #fafafa;
+    --secondary-color: #e8e8ed;
     --white-color: #ffffff;
-    --contrast-color: #262626;
+    --contrast-color: #1a1a1a;
 
     color: var(--text-primary);
     background-color: var(--bg-primary);
@@ -136,7 +138,7 @@ body::before {
     z-index: -1; /* behind everything */
 }
 
-/* Optional: Add subtle gradient for visual interest */
+/* Subtle warm gradient for visual interest */
 .light body::before {
     background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
 }

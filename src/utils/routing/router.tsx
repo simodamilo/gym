@@ -3,7 +3,6 @@ import App from "../../App";
 import { Login } from "../../pages/login/Login";
 import ProtectedPage from "../auth/ProtectedPage";
 import { Workouts } from "../../pages/workouts/Workouts";
-import { WorkoutComponent } from "../../pages/workouts/components/workout/Workout.component";
 import { Profile } from "../../pages/profile/Profile";
 import { Exercises } from "../../pages/exercises/Exercises";
 import { Current } from "../../pages/workouts/current/Current";
@@ -11,6 +10,8 @@ import { CreateWorkout } from "../../pages/workouts/create/CreateWorkout.compone
 import { History } from "../../pages/workouts/history/History";
 import { CreateExercisesList } from "../../pages/workouts/create/components/CreateExercisesList.component";
 import { CurrentExercisesList } from "../../pages/workouts/current/components/CurrentExercisesList";
+import { HistoryWorkout } from "../../pages/workouts/history/components/HistoryWorkout.component";
+import { HistoryExercisesList } from "../../pages/workouts/history/components/HistoryExercisesList";
 
 export const router = createBrowserRouter([
     {
@@ -33,8 +34,9 @@ export const router = createBrowserRouter([
                             { index: true, element: <Navigate to="current/days" replace /> },
                             { path: 'current/days', element: <Current /> },
                             { path: 'current/days/:dayId/exercises', element: <CurrentExercisesList /> },
-                            { path: "history", element: <History /> },
-                            { path: "history/:workoutId", element: <WorkoutComponent isHistory /> },
+                            { path: "history/workouts", element: <History /> },
+                            { path: "history/workouts/:workoutId/days", element: <HistoryWorkout /> },
+                            { path: "history/workouts/:workoutId/days/:dayId/exercises", element: <HistoryExercisesList /> },
                             { path: "create/days", element: <CreateWorkout /> },
                             { path: "create/days/:dayId/exercises", element: <CreateExercisesList /> }
                         ],

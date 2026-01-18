@@ -39,9 +39,10 @@ export const Workouts = () => {
                         </h1>
                         <motion.button
                             onClick={toggleTheme}
-                            className="w-10 h-10 rounded-full flex items-center justify-center border-0 cursor-pointer"
+                            className="w-10 h-10 rounded-full flex items-center justify-center border cursor-pointer shadow-var-sm"
                             style={{
-                                backgroundColor: "var(--bg-tertiary)",
+                                backgroundColor: "var(--bg-elevated)",
+                                borderColor: "var(--border-default)",
                                 color: "var(--text-primary)",
                             }}
                             whileHover={{ scale: 1.1 }}
