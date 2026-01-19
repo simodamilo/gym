@@ -1,0 +1,76 @@
+{
+    "common": {
+        "back_btn": "Atrás"
+    },
+    "exercises": {
+        "category_placeholder": "Selecciona una categoría",
+        "create_exercise_modal": {
+            "title": "Crear un nuevo ejercicio"
+        },
+        "edit_exercise_modal": {
+            "title": "Editar ejercicio",
+            "name_placeholder": "Nombre"
+        },
+        "name_placeholder": "Añade un nuevo ejercicio",
+        "add_exercise_btn": "Añadir",
+        "delete_exercise_modal": {
+            "description": "¿Estás seguro de que quieres eliminar este ejercicio?"
+        }
+    },
+    "workouts": {
+        "current_tab": "Actual",
+        "history_tab": "Historial",
+        "workout_page": {
+            "description": "Esta es la lista de días",
+            "no_workout": "El entrenamiento está vacío",
+            "is_last": "Último",
+            "add_day_modal_title": "Añadir un nuevo día",
+            "day_name_placeholder": "Añade un nombre para el día",
+            "delete_day_modal_title": "¿Estás seguro de que quieres eliminar este día?",
+            "publish_workout_modal_title": "¿Estás seguro de que quieres publicar el entrenamiento?"
+        },
+        "exercises": {
+            "description": "Esta es la lista de ejercicios",
+            "category_placeholder": "Selecciona una categoría",
+            "exercise_placeholder": "Selecciona un ejercicio",
+            "reps_placeholder_reps": "Añade el número de repeticiones",
+            "reps_placeholder_time": "Añade el número de segundos",
+            "rest_placeholder": "Añade el descanso",
+            "rest_label": "Descanso",
+            "notes_placeholder": "Añade una nota",
+            "save_btn": "Guardar",
+            "new_exercise_title": "Nuevo ejercicio",
+            "kg": "Kg",
+            "reps": "Reps",
+            "secs": "Segs",
+            "start_workout": "Iniciar Entrenamiento",
+            "reps_type_placeholder": "Selecciona el tipo de repeticiones",
+            "superset": "Superserie con el siguiente ejercicio",
+            "confirm_save_base": "¿Estás seguro de que quieres guardar los pesos actuales como base?",
+            "workout_started": "Entrenamiento Iniciado",
+            "initial": "Inicial"
+        }
+    },
+    "profile": {
+        "personal_info_title": "Información personal",
+        "weight_title": "Gráfico de peso",
+        "one_rep_max": "1RM",
+        "settings_title": "Configuración",
+        "workouts": "Entrenamientos",
+        "body_weight_progress": "Progreso de Peso Corporal",
+        "personal_bests": "Mejores Marcas Personales",
+        "no_personal_bests": "Aún no hay mejores marcas. ¡Completa entrenamientos para ver tus récords!",
+        "weight_modal": {
+            "title": "Añadir un peso",
+            "placeholder": "Añade un peso"
+        },
+        "settings": {
+            "title": "Configuración",
+            "theme": "Tema",
+            "dark": "Oscuro",
+            "light": "Claro",
+            "language": "Idioma",
+            "sign_out": "Cerrar Sesión"
+        }
+    }
+}
