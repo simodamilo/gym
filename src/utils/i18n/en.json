@@ -62,6 +62,20 @@
         "no_personal_bests": "No personal bests yet. Complete workouts to see your records!",
         "loading": "Loading...",
         "error_loading_personal_bests": "Error loading personal bests",
+        "add_pr_button": "Add personal best",
+        "add_pr_modal": {
+            "title": "Add Personal Best",
+            "cancel": "Cancel",
+            "save": "Save PR",
+            "saving": "Saving...",
+            "error_exercise_required": "Please select an exercise",
+            "error_weight_min": "Weight must be at least 0.5 kg",
+            "error_weight_max": "Weight cannot exceed 999.9 kg",
+            "success_title": "Personal Best Added!",
+            "success_message": "Your personal best has been saved successfully",
+            "error_title": "Failed to Add PR",
+            "error_message": "Could not save your personal best. Please try again."
+        },
         "weight_modal": {
             "title": "Add a weight",
             "placeholder": "Add a weight"

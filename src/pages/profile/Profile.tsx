@@ -10,6 +10,7 @@ import { progressesSelectors } from "../../store/progressHistory/progressHistory
 import { historySelectors } from "../../store/history/history.selectors";
 import { historyActions } from "../../store/history/history.actions";
 import { personalBestsActions } from "../../store/personalBests/personalBests.actions";
+import { exercisesCatalogActions } from "../../store/exercisesCatalog/exercisesCatalog.action";
 import { ProfileHeader } from "./components/ProfileHeader";
 import { WorkoutStatsCard } from "./components/WorkoutStatsCard";
 import { BodyWeightChart } from "./components/BodyWeightChart";
@@ -63,6 +64,7 @@ export const Profile = () => {
         dispatch(progressHistoryActions.fetchProgressesByType());
         dispatch(historyActions.fetchHistoryWorkout());
         dispatch(personalBestsActions.fetchPersonalBests());
+        dispatch(exercisesCatalogActions.fetchExercisesCatalog());
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

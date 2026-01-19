@@ -71,9 +71,56 @@ function processPersonalBests(workouts: PersonalBestsWorkoutResponse[]): Persona
  * Fetch personal bests from archived workouts
  * Only fetches exercise info and weights for exercises marked as tracked in personal bests
  */
+const fetchWorkoutPersonalBests = createAsyncThunk(
+    "personalBests/fetchWorkoutPersonalBests",
+    async (_arg, thunkAPI) => {
+        try {
+            const { data, error } = await supabase
+                .from("workouts")
+                .select(
+                    `
+                days (
+                    day_exercises (
+                        exercises_catalog!inner (
+                            id,
+                            name,
+                            category,
+                            show_in_personal_best
+                        ),
+                        day_exercise_sets (
+                            weight
+                        )
+                    )
+                )
+            `
+                )
+                .eq("status", "archived")
+                .eq("days.day_exercises.exercises_catalog.show_in_personal_best", true);
+
+            if (error) {
+                throw new Error("Error fetching workout personal bests");
+            }
+
+            if (!data) {
+                return [];
+            }
+
+            return processPersonalBests(data as PersonalBestsWorkoutResponse[]);
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : "Unknown error";
+            return thunkAPI.rejectWithValue(errorMessage);
+        }
+    }
+);
+
+/**
+ * Fetch all personal bests (both workout-derived and manual)
+ * Merges both sources and shows the highest weight for each exercise
+ */
 const fetchPersonalBests = createAsyncThunk("personalBests/fetchPersonalBests", async (_arg, thunkAPI) => {
     try {
-        const { data, error } = await supabase
+        // Fetch workout-derived PRs
+        const workoutPRsPromise = supabase
             .from("workouts")
             .select(
                 `
@@ -95,23 +142,276 @@ const fetchPersonalBests = createAsyncThunk("personalBests/fetchPersonalBests", 
             .eq("status", "archived")
             .eq("days.day_exercises.exercises_catalog.show_in_personal_best", true);
 
-        if (error) {
-            throw new Error("Error fetching personal bests");
+        // Fetch manual PRs
+        const manualPRsPromise = supabase
+            .from("manual_personal_bests")
+            .select(
+                `
+                id,
+                exercise_id,
+                weight,
+                created_at,
+                exercises_catalog!inner (
+                    id,
+                    name,
+                    category
+                )
+            `
+            );
+
+        const [workoutResult, manualResult] = await Promise.all([workoutPRsPromise, manualPRsPromise]);
+
+        if (workoutResult.error) {
+            throw new Error("Error fetching workout personal bests");
         }
 
-        if (!data) {
-            return [];
+        if (manualResult.error) {
+            throw new Error("Error fetching manual personal bests");
         }
 
-        return processPersonalBests(data as PersonalBestsWorkoutResponse[]);
+        // Process workout PRs
+        const workoutPRs = processPersonalBests((workoutResult.data || []) as PersonalBestsWorkoutResponse[]);
+
+        // Process manual PRs
+        const manualPRs: PersonalBest[] = (manualResult.data || []).map((item) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const exercise = (item as any).exercises_catalog;
+            return {
+                exerciseId: (item as any).exercise_id,
+                exerciseName: exercise.name,
+                maxWeight: (item as any).weight,
+                category: exercise.category,
+                isManual: true,
+                createdAt: (item as any).created_at,
+                manualId: (item as any).id,
+            };
+        });
+
+        // Merge both lists - show highest weight for each exercise
+        const mergedMap = new Map<string, PersonalBest>();
+
+        // Add workout PRs
+        workoutPRs.forEach((pr) => {
+            mergedMap.set(pr.exerciseId, pr);
+        });
+
+        // Add or override with manual PRs if they have higher weight
+        manualPRs.forEach((pr) => {
+            const existing = mergedMap.get(pr.exerciseId);
+            if (!existing || pr.maxWeight > existing.maxWeight) {
+                mergedMap.set(pr.exerciseId, pr);
+            }
+        });
+
+        // Convert back to array and sort by weight
+        return Array.from(mergedMap.values()).sort((a, b) => b.maxWeight - a.maxWeight);
     } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : "Unknown error";
         return thunkAPI.rejectWithValue(errorMessage);
     }
 });
 
+/**
+ * Fetch manual personal bests from the database
+ */
+const fetchManualPersonalBests = createAsyncThunk(
+    "personalBests/fetchManualPersonalBests",
+    async (_arg, thunkAPI) => {
+        try {
+            const { data, error } = await supabase
+                .from("manual_personal_bests")
+                .select(
+                    `
+                    id,
+                    exercise_id,
+                    weight,
+                    created_at,
+                    exercises_catalog!inner (
+                        id,
+                        name,
+                        category
+                    )
+                `
+                )
+                .order("weight", { ascending: false });
+
+            if (error) {
+                throw new Error("Error fetching manual personal bests");
+            }
+
+            if (!data) {
+                return [];
+            }
+
+            // Map response to PersonalBest format
+            return data.map((item) => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const exercise = (item as any).exercises_catalog;
+                return {
+                    exerciseId: (item as any).exercise_id,
+                    exerciseName: exercise.name,
+                    maxWeight: (item as any).weight,
+                    category: exercise.category,
+                    isManual: true,
+                    createdAt: (item as any).created_at,
+                    manualId: (item as any).id,
+                };
+            }) as PersonalBest[];
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : "Unknown error";
+            return thunkAPI.rejectWithValue(errorMessage);
+        }
+    }
+);
+
+/**
+ * Add a new manual personal best
+ */
+const addManualPersonalBest = createAsyncThunk(
+    "personalBests/addManualPersonalBest",
+    async (payload: { exerciseId: string; weight: number }, thunkAPI) => {
+        try {
+            // Get current user ID
+            const {
+                data: { user },
+            } = await supabase.auth.getUser();
+
+            if (!user) {
+                throw new Error("User not authenticated");
+            }
+
+            const { data, error } = await supabase
+                .from("manual_personal_bests")
+                .insert({
+                    user_id: user.id,
+                    exercise_id: payload.exerciseId,
+                    weight: payload.weight,
+                })
+                .select(
+                    `
+                    id,
+                    exercise_id,
+                    weight,
+                    created_at,
+                    exercises_catalog!inner (
+                        id,
+                        name,
+                        category
+                    )
+                `
+                )
+                .single();
+
+            if (error) {
+                throw new Error(error.message || "Error adding manual personal best");
+            }
+
+            if (!data) {
+                throw new Error("No data returned after adding manual personal best");
+            }
+
+            // Map response to PersonalBest format
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const exercise = (data as any).exercises_catalog;
+            return {
+                exerciseId: (data as any).exercise_id,
+                exerciseName: exercise.name,
+                maxWeight: (data as any).weight,
+                category: exercise.category,
+                isManual: true,
+                createdAt: (data as any).created_at,
+                manualId: (data as any).id,
+            } as PersonalBest;
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : "Unknown error";
+            return thunkAPI.rejectWithValue(errorMessage);
+        }
+    }
+);
+
+/**
+ * Update an existing manual personal best
+ */
+const updateManualPersonalBest = createAsyncThunk(
+    "personalBests/updateManualPersonalBest",
+    async (payload: { id: string; weight: number }, thunkAPI) => {
+        try {
+            const { data, error } = await supabase
+                .from("manual_personal_bests")
+                .update({
+                    weight: payload.weight,
+                })
+                .eq("id", payload.id)
+                .select(
+                    `
+                    id,
+                    exercise_id,
+                    weight,
+                    created_at,
+                    exercises_catalog!inner (
+                        id,
+                        name,
+                        category
+                    )
+                `
+                )
+                .single();
+
+            if (error) {
+                throw new Error(error.message || "Error updating manual personal best");
+            }
+
+            if (!data) {
+                throw new Error("No data returned after updating manual personal best");
+            }
+
+            // Map response to PersonalBest format
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const exercise = (data as any).exercises_catalog;
+            return {
+                exerciseId: (data as any).exercise_id,
+                exerciseName: exercise.name,
+                maxWeight: (data as any).weight,
+                category: exercise.category,
+                isManual: true,
+                createdAt: (data as any).created_at,
+                manualId: (data as any).id,
+            } as PersonalBest;
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : "Unknown error";
+            return thunkAPI.rejectWithValue(errorMessage);
+        }
+    }
+);
+
+/**
+ * Delete a manual personal best
+ */
+const deleteManualPersonalBest = createAsyncThunk(
+    "personalBests/deleteManualPersonalBest",
+    async (id: string, thunkAPI) => {
+        try {
+            const { error } = await supabase.from("manual_personal_bests").delete().eq("id", id);
+
+            if (error) {
+                throw new Error(error.message || "Error deleting manual personal best");
+            }
+
+            return id;
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : "Unknown error";
+            return thunkAPI.rejectWithValue(errorMessage);
+        }
+    }
+);
+
 const personalBestsActions = {
     fetchPersonalBests,
+    fetchWorkoutPersonalBests,
+    fetchManualPersonalBests,
+    addManualPersonalBest,
+    updateManualPersonalBest,
+    deleteManualPersonalBest,
 };
 
 export { personalBestsActions };

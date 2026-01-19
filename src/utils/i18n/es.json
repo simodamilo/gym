@@ -62,6 +62,20 @@
         "no_personal_bests": "Aún no hay mejores marcas. ¡Completa entrenamientos para ver tus récords!",
         "loading": "Cargando...",
         "error_loading_personal_bests": "Error al cargar mejores marcas",
+        "add_pr_button": "Añadir marca personal",
+        "add_pr_modal": {
+            "title": "Añadir Marca Personal",
+            "cancel": "Cancelar",
+            "save": "Guardar MP",
+            "saving": "Guardando...",
+            "error_exercise_required": "Por favor selecciona un ejercicio",
+            "error_weight_min": "El peso debe ser al menos 0.5 kg",
+            "error_weight_max": "El peso no puede exceder 999.9 kg",
+            "success_title": "¡Marca Personal Añadida!",
+            "success_message": "Tu marca personal ha sido guardada exitosamente",
+            "error_title": "Error al Añadir MP",
+            "error_message": "No se pudo guardar tu marca personal. Por favor intenta de nuevo."
+        },
         "weight_modal": {
             "title": "Añadir un peso",
             "placeholder": "Añade un peso"
