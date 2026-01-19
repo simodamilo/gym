@@ -18,6 +18,7 @@ import { SortableItem } from "../../../components/sortableItem/SortableItem";
 import { CustomModal } from "../../../components/customModal";
 import { ItemCard } from "../components/itemCard/ItemCard";
 import { currentActions } from "../../../store/current/current.actions";
+import { EmptyState } from "../../../components/emptyState/EmptyState";
 
 export const CreateWorkout = () => {
     const { t } = useTranslation();
@@ -205,7 +206,13 @@ export const CreateWorkout = () => {
                     )}
                 </div>
             ) : (
-                <div className="flex h-full items-center mx-auto">{t("workouts.workout_page.no_workout")}</div>
+                <EmptyState
+                    icon={<PlusOutlined />}
+                    title={t("workouts.workout_page.no_workout")}
+                    description="Tap the + button to add your first day"
+                    animated={false}
+                    className="pb-28"
+                />
             )}
 
             {/* Edit Day name */}

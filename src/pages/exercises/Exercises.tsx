@@ -11,6 +11,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Categories } from "../../utils/constants";
 import { DeleteOutlined, EditOutlined, MoreOutlined, AppstoreOutlined, InboxOutlined, TrophyOutlined, CheckOutlined } from "@ant-design/icons";
 import { CustomModal } from "../../components/customModal/CustomModal";
+import { EmptyState } from "../../components/emptyState/EmptyState";
 
 export const Exercises = () => {
     const dispatch = useAppDispatch();
@@ -153,22 +154,18 @@ export const Exercises = () => {
             </div>
 
             {/* Exercise List - Grouped by Category */}
-            <div className="flex flex-col gap-6 pb-28 overflow-auto hide-scrollbar">
+            <div className="flex flex-col flex-1 gap-6 pb-28 overflow-auto hide-scrollbar">
                 {sortedCategories.length === 0 ? (
-                    /* Empty State */
-                    <div className="flex flex-col items-center justify-center py-20 px-6">
-                        <div className="w-24 h-24 bg-[var(--bg-tertiary)] rounded-full flex items-center justify-center mb-6">
-                            <InboxOutlined className="text-5xl text-[var(--text-tertiary)]" />
-                        </div>
-                        <h3 className="text-xl font-semibold text-[var(--text-primary)] mb-2">
-                            {selectedCategory ? "No exercises found" : "No exercises yet"}
-                        </h3>
-                        <p className="text-[var(--text-secondary)] text-center max-w-sm">
-                            {selectedCategory
+                    <EmptyState
+                        icon={<InboxOutlined />}
+                        title={selectedCategory ? "No exercises found" : "No exercises yet"}
+                        description={
+                            selectedCategory
                                 ? `There are no exercises in the "${selectedCategory}" category. Try selecting a different category or create a new exercise.`
-                                : "Get started by creating your first exercise using the button below."}
-                        </p>
-                    </div>
+                                : "Get started by creating your first exercise using the button below."
+                        }
+                        animated={false}
+                    />
                 ) : (
                     sortedCategories.map((category) => {
                         const categoryExercises = groupedExercises[category].sort((a, b) =>

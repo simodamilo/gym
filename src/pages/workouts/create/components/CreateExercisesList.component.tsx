@@ -5,7 +5,6 @@ import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-ki
 import { Collapse } from "antd";
 import { v4 as uuidv4 } from "uuid";
 import { useTranslation } from "react-i18next";
-import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, type RootState } from "../../../../store";
@@ -17,6 +16,7 @@ import { routes } from "../../../../utils/routing/routes";
 import { IconButton } from "../../../../components/iconButton/IconButton";
 import { MoveIcon } from "../../../../components/moveIcon/MoveIcon";
 import { SortableItem } from "../../../../components/sortableItem/SortableItem";
+import { EmptyState } from "../../../../components/emptyState/EmptyState";
 
 export const CreateExercisesList = () => {
     const { t } = useTranslation();
@@ -214,7 +214,7 @@ export const CreateExercisesList = () => {
             )}
 
             {/* Exercise list */}
-            <div className="flex flex-col gap-3 overflow-y-auto pb-28 hide-scrollbar">
+            <div className="flex flex-col flex-1 gap-3 overflow-y-auto pb-28 hide-scrollbar">
                 {mutableDayExercises.length > 0 ? (
                     <>
                         {activeKey !== undefined || !isDragEnable ? (
@@ -264,23 +264,11 @@ export const CreateExercisesList = () => {
                         )}
                     </>
                 ) : (
-                    <motion.div
-                        className="flex flex-col items-center justify-center h-full gap-4"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3 }}
-                    >
-                        <FileTextOutlined
-                            className="text-6xl"
-                            style={{ color: 'var(--brand-primary)', opacity: 0.5 }}
-                        />
-                        <p className="text-base" style={{ color: 'var(--text-secondary)' }}>
-                            No exercises yet
-                        </p>
-                        <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>
-                            Tap the + button to add your first exercise
-                        </p>
-                    </motion.div>
+                    <EmptyState
+                        icon={<FileTextOutlined />}
+                        title="No exercises yet"
+                        description="Tap the + button to add your first exercise"
+                    />
                 )}
             </div>
         </div>

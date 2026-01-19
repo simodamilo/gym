@@ -1,7 +1,6 @@
 import { ArrowLeftOutlined, FileTextOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { Collapse } from "antd";
-import { motion } from "framer-motion";
 import { SortableItem } from "../../../../components/sortableItem/SortableItem";
 import type { Day, DayExercise } from "../../../../store/draft/types";
 import { ExerciseContent } from "../../components/exerciseContent/ExerciseContent";
@@ -9,6 +8,7 @@ import { historySelectors } from "../../../../store/history/history.selectors";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { EmptyState } from "../../../../components/emptyState/EmptyState";
 
 export const HistoryExercisesList = () => {
     const { t } = useTranslation();
@@ -119,23 +119,11 @@ export const HistoryExercisesList = () => {
                         })}
                     </>
                 ) : (
-                    <motion.div
-                        className="flex flex-col items-center justify-center h-full gap-4"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3 }}
-                    >
-                        <FileTextOutlined
-                            className="text-6xl"
-                            style={{ color: 'var(--brand-primary)', opacity: 0.5 }}
-                        />
-                        <p className="text-base" style={{ color: 'var(--text-secondary)' }}>
-                            No exercises yet
-                        </p>
-                        <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>
-                            This workout has no exercises recorded
-                        </p>
-                    </motion.div>
+                    <EmptyState
+                        icon={<FileTextOutlined />}
+                        title="No exercises yet"
+                        description="This workout has no exercises recorded"
+                    />
                 )}
             </div>
         </div>

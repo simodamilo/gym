@@ -6,7 +6,6 @@ import { SortableItem } from "../../../../components/sortableItem/SortableItem";
 import { CustomModal } from "../../../../components/customModal";
 import type { Day, DayExercise } from "../../../../store/draft/types";
 import { useTranslation } from "react-i18next";
-import { motion } from "framer-motion";
 import { currentActions } from "../../../../store/current/current.actions";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -15,6 +14,7 @@ import { routes } from "../../../../utils/routing/routes";
 import { ExerciseContent } from "../../components/exerciseContent/ExerciseContent";
 import { IconButton } from "../../../../components/iconButton/IconButton";
 import { draftActions } from "../../../../store/draft/draft.actions";
+import { EmptyState } from "../../../../components/emptyState/EmptyState";
 
 export const CurrentExercisesList = () => {
     const { t } = useTranslation();
@@ -198,23 +198,11 @@ export const CurrentExercisesList = () => {
                         })}
                     </>
                 ) : (
-                    <motion.div
-                        className="flex flex-col items-center justify-center h-full gap-4"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3 }}
-                    >
-                        <FileTextOutlined
-                            className="text-6xl"
-                            style={{ color: 'var(--brand-primary)', opacity: 0.5 }}
-                        />
-                        <p className="text-base" style={{ color: 'var(--text-secondary)' }}>
-                            No exercises yet
-                        </p>
-                        <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>
-                            Add exercises to your workout to get started
-                        </p>
-                    </motion.div>
+                    <EmptyState
+                        icon={<FileTextOutlined />}
+                        title="No exercises yet"
+                        description="Add exercises to your workout to get started"
+                    />
                 )}
             </div>
 
