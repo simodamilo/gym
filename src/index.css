@@ -35,6 +35,7 @@
 
     /* Brand colors */
     --brand-primary: #1677ff;
+    --brand-primary-rgb: 22, 119, 255;
     --brand-primary-hover: #0958d9;
     --brand-primary-active: #003eb3;
     --brand-primary-light: #e6f4ff;
@@ -90,6 +91,7 @@
 
     /* Brand colors (slightly brighter for dark mode) */
     --brand-primary: #4096ff;
+    --brand-primary-rgb: 64, 150, 255;
     --brand-primary-hover: #69b1ff;
     --brand-primary-active: #91caff;
 

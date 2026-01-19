@@ -89,12 +89,16 @@ export const BottomBar = () => {
                     <motion.div
                         key={menu.path}
                         onClick={() => handleItemClick(index)}
-                        className={`flex flex-col items-center justify-center cursor-pointer px-4 py-2 rounded-xl flex-1 ${active === index ? "bg-bg-secondary" : "bg-transparent"}`}
+                        className="flex flex-col items-center justify-center cursor-pointer px-4 py-2 rounded-xl flex-1"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                     >
-                        <span className={`text-xl mb-1 transition-colors duration-200 ${active === index ? "text-brand-primary" : "text-text-tertiary"}`}>{menu.icon}</span>
-                        <span className={`text-[10px] font-semibold transition-colors duration-200 ${active === index ? "text-brand-primary" : "text-text-tertiary"}`}>{menu.name}</span>
+                        <span className={`text-xl mb-1 transition-colors duration-200 ${active === index ? "text-[var(--brand-primary)]" : "text-[var(--text-tertiary)]"}`}>
+                            {menu.icon}
+                        </span>
+                        <span className={`text-[10px] font-semibold transition-colors duration-200 ${active === index ? "text-[var(--brand-primary)]" : "text-[var(--text-tertiary)]"}`}>
+                            {menu.name}
+                        </span>
                     </motion.div>
                 ))}
             </div>
