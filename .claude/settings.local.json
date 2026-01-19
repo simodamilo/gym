@@ -32,7 +32,8 @@
       "Bash(test:*)",
       "WebFetch(domain:github.com)",
       "WebSearch",
-      "Bash(if not exist \"docs\\\\2026-01-18\" mkdir \"docs\\\\2026-01-18\")"
+      "Bash(if not exist \"docs\\\\2026-01-18\" mkdir \"docs\\\\2026-01-18\")",
+      "Bash(ipconfig:*)"
     ]
   }
 }

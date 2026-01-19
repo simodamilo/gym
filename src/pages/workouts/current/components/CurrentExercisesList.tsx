@@ -14,6 +14,7 @@ import { currentSelectors } from "../../../../store/current/current.selectors";
 import { routes } from "../../../../utils/routing/routes";
 import { ExerciseContent } from "../../components/exerciseContent/ExerciseContent";
 import { IconButton } from "../../../../components/iconButton/IconButton";
+import { draftActions } from "../../../../store/draft/draft.actions";
 
 export const CurrentExercisesList = () => {
     const { t } = useTranslation();
@@ -71,6 +72,25 @@ export const CurrentExercisesList = () => {
         }
     };
 
+    const saveExercises = async (exercise: DayExercise) => {
+        if (!workout || !dayId) return;
+        await dispatch(
+            draftActions.upsertExercises({
+                dayExercises: [exercise],
+                dayId: dayId,
+                workoutId: workout?.id,
+            })
+        );
+        if (!isAlreadyStarted()) {
+            handleStartClick();
+        }
+    };
+
+    /* only used if isReadOnly is false */
+    const deleteExercise = async (exerciseId: string) => {
+        await dispatch(draftActions.deleteExercise(exerciseId));
+    };
+
     const groupLinkedItems = (items: DayExercise[]) => {
         const groups: DayExercise[][] = [];
         let currentGroup: DayExercise[] = [];
@@ -110,6 +130,8 @@ export const CurrentExercisesList = () => {
                     dayId={dayId!}
                     exerciseId={exercise.id}
                     dayExercise={exercise}
+                    saveExercises={saveExercises}
+                    deleteExercise={deleteExercise}
                     isCurrent
                 />
             ),

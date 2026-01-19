@@ -308,13 +308,15 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                                             </div>
                                             <div className="w-[60%]">
                                                 <Input
-                                                    type="tel"
-                                                    inputMode="numeric"
-                                                    pattern="[0-9]*"
+                                                    type="text"
+                                                    inputMode="decimal"
                                                     key={set.id}
                                                     addonBefore={getAddon()}
                                                     value={set.weight}
-                                                    onChange={(input) => updateSet("weight", input.target.value, set.id)}
+                                                    onChange={(input) => {
+                                                        const normalizedValue = input.target.value.replace(',', '.');
+                                                        updateSet("weight", normalizedValue, set.id);
+                                                    }}
                                                     disabled={isLoadingExercises}
                                                     readOnly={props.isHistory}
                                                     style={{ borderRadius: '8px', fontSize: '14px' }}
