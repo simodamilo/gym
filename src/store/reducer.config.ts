@@ -4,13 +4,15 @@ import { draftReducer } from "./draft/draft.reducer";
 import { currentReducer } from "./current/current.reducer";
 import { progressesReducer } from "./progressHistory/progressHistory.reducer";
 import { historyReducer } from "./history/history.reducer";
+import { personalBestsReducer } from "./personalBests/personalBests.reducer";
 
 const appReducer = combineReducers({
     ...exercisesReducer,
     ...draftReducer,
     ...currentReducer,
     ...progressesReducer,
-    ...historyReducer
+    ...historyReducer,
+    ...personalBestsReducer
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

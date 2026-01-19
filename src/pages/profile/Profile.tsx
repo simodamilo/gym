@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { progressesSelectors } from "../../store/progressHistory/progressHistory.selector";
 import { historySelectors } from "../../store/history/history.selectors";
 import { historyActions } from "../../store/history/history.actions";
+import { personalBestsActions } from "../../store/personalBests/personalBests.actions";
 import { ProfileHeader } from "./components/ProfileHeader";
 import { WorkoutStatsCard } from "./components/WorkoutStatsCard";
 import { BodyWeightChart } from "./components/BodyWeightChart";
@@ -61,6 +62,7 @@ export const Profile = () => {
         fetchUser();
         dispatch(progressHistoryActions.fetchProgressesByType());
         dispatch(historyActions.fetchHistoryWorkout());
+        dispatch(personalBestsActions.fetchPersonalBests());
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

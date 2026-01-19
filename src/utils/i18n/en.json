@@ -60,6 +60,8 @@
         "body_weight_progress": "Body Weight Progress",
         "personal_bests": "Personal Bests",
         "no_personal_bests": "No personal bests yet. Complete workouts to see your records!",
+        "loading": "Loading...",
+        "error_loading_personal_bests": "Error loading personal bests",
         "weight_modal": {
             "title": "Add a weight",
             "placeholder": "Add a weight"

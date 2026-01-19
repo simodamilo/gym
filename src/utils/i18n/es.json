@@ -60,6 +60,8 @@
         "body_weight_progress": "Progreso de Peso Corporal",
         "personal_bests": "Mejores Marcas Personales",
         "no_personal_bests": "Aún no hay mejores marcas. ¡Completa entrenamientos para ver tus récords!",
+        "loading": "Cargando...",
+        "error_loading_personal_bests": "Error al cargar mejores marcas",
         "weight_modal": {
             "title": "Añadir un peso",
             "placeholder": "Añade un peso"
