@@ -9,7 +9,7 @@ import type { MenuProps } from "antd";
 import { useTranslation } from "react-i18next";
 import { v4 as uuidv4 } from "uuid";
 import { Categories } from "../../utils/constants";
-import { DeleteOutlined, EditOutlined, MoreOutlined, AppstoreOutlined, InboxOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, MoreOutlined, AppstoreOutlined, InboxOutlined, TrophyOutlined, CheckOutlined } from "@ant-design/icons";
 import { CustomModal } from "../../components/customModal/CustomModal";
 
 export const Exercises = () => {
@@ -83,9 +83,30 @@ export const Exercises = () => {
     // Sort categories alphabetically
     const sortedCategories = Object.keys(groupedExercises).sort();
 
+    // Toggle personal best tracking for an exercise
+    const togglePersonalBest = async (exercise: ExerciseCatalog) => {
+        await dispatch(
+            exercisesCatalogActions.togglePersonalBest({
+                id: exercise.id,
+                showInPersonalBest: !exercise.show_in_personal_best,
+            })
+        );
+    };
+
     // Create dropdown menu for each exercise
     const getDropdownMenu = (exercise: ExerciseCatalog): MenuProps => ({
         items: [
+            {
+                key: "personal-best",
+                label: "Track in Personal Bests",
+                icon: exercise.show_in_personal_best ? <CheckOutlined /> : <TrophyOutlined />,
+                onClick: () => {
+                    togglePersonalBest(exercise);
+                },
+            },
+            {
+                type: "divider",
+            },
             {
                 key: "edit",
                 label: "Edit",
@@ -171,8 +192,16 @@ export const Exercises = () => {
                                             {/* Left side: Icon + Exercise Info */}
                                             <div className="flex items-center gap-4 flex-1">
                                                 {/* Exercise Icon */}
-                                                <div className="w-10 h-10 bg-[var(--brand-primary-light)] rounded-lg flex items-center justify-center flex-shrink-0">
-                                                    <AppstoreOutlined className="text-[var(--brand-primary)] text-lg" />
+                                                <div className="relative">
+                                                    <div className="w-10 h-10 bg-[var(--brand-primary-light)] rounded-lg flex items-center justify-center flex-shrink-0">
+                                                        <AppstoreOutlined className="text-[var(--brand-primary)] text-lg" />
+                                                    </div>
+                                                    {/* Trophy Badge - shown when tracked in personal bests */}
+                                                    {exercise.show_in_personal_best && (
+                                                        <div className="absolute -top-1 -right-1 w-5 h-5 bg-[var(--accent-teal)] rounded-full flex items-center justify-center shadow-md">
+                                                            <TrophyOutlined className="text-white text-xs" />
+                                                        </div>
+                                                    )}
                                                 </div>
 
                                                 {/* Exercise Name */}

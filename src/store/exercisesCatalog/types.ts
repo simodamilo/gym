@@ -11,6 +11,7 @@ export interface ExerciseCatalog {
     category: string;
     description?: string;
     created_at?: number;
+    show_in_personal_best?: boolean;
 }
 
 export interface AddExercisePayload {

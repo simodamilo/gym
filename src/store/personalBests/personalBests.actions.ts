@@ -32,7 +32,10 @@ function processPersonalBests(workouts: PersonalBestsWorkoutResponse[]): Persona
                 const exerciseId = typedDayEx.exercises_catalog.id;
                 const exerciseName = typedDayEx.exercises_catalog.name;
                 const category = typedDayEx.exercises_catalog.category;
+                const showInPersonalBest = typedDayEx.exercises_catalog.show_in_personal_best;
 
+                // Only process exercises marked for personal best tracking
+                if (!showInPersonalBest) return;
                 if (!exerciseId || !exerciseName || !category) return;
                 if (!typedDayEx.day_exercise_sets || !Array.isArray(typedDayEx.day_exercise_sets)) return;
 
@@ -66,7 +69,7 @@ function processPersonalBests(workouts: PersonalBestsWorkoutResponse[]): Persona
 
 /**
  * Fetch personal bests from archived workouts
- * Only fetches exercise info and weights for optimal performance
+ * Only fetches exercise info and weights for exercises marked as tracked in personal bests
  */
 const fetchPersonalBests = createAsyncThunk("personalBests/fetchPersonalBests", async (_arg, thunkAPI) => {
     try {
@@ -76,10 +79,11 @@ const fetchPersonalBests = createAsyncThunk("personalBests/fetchPersonalBests", 
                 `
                 days (
                     day_exercises (
-                        exercises_catalog (
+                        exercises_catalog!inner (
                             id,
                             name,
-                            category
+                            category,
+                            show_in_personal_best
                         ),
                         day_exercise_sets (
                             weight
@@ -88,7 +92,8 @@ const fetchPersonalBests = createAsyncThunk("personalBests/fetchPersonalBests", 
                 )
             `
             )
-            .eq("status", "archived");
+            .eq("status", "archived")
+            .eq("days.day_exercises.exercises_catalog.show_in_personal_best", true);
 
         if (error) {
             throw new Error("Error fetching personal bests");

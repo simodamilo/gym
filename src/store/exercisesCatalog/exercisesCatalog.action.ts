@@ -42,6 +42,32 @@ const deleteExercise = createAsyncThunk("data/deleteExercise", async (id: string
     }
 });
 
+const togglePersonalBest = createAsyncThunk(
+    "data/togglePersonalBest",
+    async (payload: { id: string; showInPersonalBest: boolean }, thunkAPI) => {
+        try {
+            const { data, error } = await supabase
+                .from("exercises_catalog")
+                .update({ show_in_personal_best: payload.showInPersonalBest })
+                .eq("id", payload.id)
+                .select();
+
+            if (error) {
+                return thunkAPI.rejectWithValue(error.message);
+            }
+
+            if (!data || data.length === 0) {
+                return thunkAPI.rejectWithValue("No data returned from update");
+            }
+
+            return data as ExerciseCatalog[];
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue(error.message);
+        }
+    }
+);
+
 const manageCreateModal = createAction<boolean>("data/manageCreateModal");
 
 const exercisesCatalogActions = {
@@ -49,6 +75,7 @@ const exercisesCatalogActions = {
     addExercise,
     updateExercise,
     deleteExercise,
+    togglePersonalBest,
     manageCreateModal,
 };
 
