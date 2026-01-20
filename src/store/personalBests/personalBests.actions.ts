@@ -162,7 +162,17 @@ const fetchPersonalBests = createAsyncThunk("personalBests/fetchPersonalBests", 
             )
             .eq("exercises_catalog.show_in_personal_best", true);
 
-        const [workoutResult, manualResult] = await Promise.all([workoutPRsPromise, manualPRsPromise]);
+        // Fetch all exercises with show_in_personal_best = true
+        const trackedExercisesPromise = supabase
+            .from("exercises_catalog")
+            .select("id, name, category")
+            .eq("show_in_personal_best", true);
+
+        const [workoutResult, manualResult, trackedExercisesResult] = await Promise.all([
+            workoutPRsPromise,
+            manualPRsPromise,
+            trackedExercisesPromise,
+        ]);
 
         if (workoutResult.error) {
             throw new Error("Error fetching workout personal bests");
@@ -170,6 +180,10 @@ const fetchPersonalBests = createAsyncThunk("personalBests/fetchPersonalBests", 
 
         if (manualResult.error) {
             throw new Error("Error fetching manual personal bests");
+        }
+
+        if (trackedExercisesResult.error) {
+            throw new Error("Error fetching tracked exercises");
         }
 
         // Process workout PRs
@@ -216,8 +230,33 @@ const fetchPersonalBests = createAsyncThunk("personalBests/fetchPersonalBests", 
             }
         });
 
-        // Convert back to array and sort by weight
-        return Array.from(mergedMap.values()).sort((a, b) => b.maxWeight - a.maxWeight);
+        // Add tracked exercises with no weight data (show 0 as weight)
+        const trackedExercises = trackedExercisesResult.data || [];
+        trackedExercises.forEach((exercise) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const exerciseId = (exercise as any).id;
+            if (!mergedMap.has(exerciseId)) {
+                mergedMap.set(exerciseId, {
+                    exerciseId,
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    exerciseName: (exercise as any).name,
+                    maxWeight: 0,
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    category: (exercise as any).category,
+                });
+            }
+        });
+
+        // Convert back to array and sort by weight (descending, but keep 0s at the end)
+        return Array.from(mergedMap.values()).sort((a, b) => {
+            // Sort by weight descending, but keep exercises with 0 weight at the end
+            if (a.maxWeight === 0 && b.maxWeight === 0) {
+                return a.exerciseName.localeCompare(b.exerciseName);
+            }
+            if (a.maxWeight === 0) return 1;
+            if (b.maxWeight === 0) return -1;
+            return b.maxWeight - a.maxWeight;
+        });
     } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : "Unknown error";
         return thunkAPI.rejectWithValue(errorMessage);
