@@ -77,6 +77,9 @@ export const BottomBar = () => {
     const handleItemClick = (index: number) => {
         setActive(index);
         navigate(menus[index].path);
+        if (active !== 1 && index === 1) {
+            dispatch(currentActions.showSwitcher(true));
+        }
     };
 
     return (

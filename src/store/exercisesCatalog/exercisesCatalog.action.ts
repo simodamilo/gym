@@ -1,6 +1,7 @@
 import { createAction, createAsyncThunk } from "@reduxjs/toolkit";
 import type { AddExercisePayload, ExerciseCatalog } from "./types";
 import { supabase } from "../supabaseClient";
+import { personalBestsActions } from "../personalBests/personalBests.actions";
 
 const fetchExercisesCatalog = createAsyncThunk("data/fetchExercisesCatalog", async (_arg, thunkAPI) => {
     try {
@@ -46,6 +47,7 @@ const togglePersonalBest = createAsyncThunk(
     "data/togglePersonalBest",
     async (payload: { id: string; showInPersonalBest: boolean }, thunkAPI) => {
         try {
+            // Update the exercises_catalog table
             const { data, error } = await supabase
                 .from("exercises_catalog")
                 .update({ show_in_personal_best: payload.showInPersonalBest })
@@ -59,6 +61,10 @@ const togglePersonalBest = createAsyncThunk(
             if (!data || data.length === 0) {
                 return thunkAPI.rejectWithValue("No data returned from update");
             }
+
+            // Refresh personal bests state to reflect the changes
+            // Manual PRs are kept in the database but filtered out by show_in_personal_best
+            await thunkAPI.dispatch(personalBestsActions.fetchPersonalBests());
 
             return data as ExerciseCatalog[];
             // eslint-disable-next-line @typescript-eslint/no-explicit-any

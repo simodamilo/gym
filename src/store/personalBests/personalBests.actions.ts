@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { supabase } from "../supabaseClient";
 import type { PersonalBest, PersonalBestsWorkoutResponse } from "./types";
+import { exercisesCatalogActions } from "../exercisesCatalog/exercisesCatalog.action";
 
 /**
  * Process workout data to extract personal bests
@@ -142,7 +143,7 @@ const fetchPersonalBests = createAsyncThunk("personalBests/fetchPersonalBests", 
             .in("status", ["archived", "published"])
             .eq("days.day_exercises.exercises_catalog.show_in_personal_best", true);
 
-        // Fetch manual PRs
+        // Fetch manual PRs (only for exercises with show_in_personal_best = true)
         const manualPRsPromise = supabase
             .from("manual_personal_bests")
             .select(
@@ -154,10 +155,12 @@ const fetchPersonalBests = createAsyncThunk("personalBests/fetchPersonalBests", 
                 exercises_catalog!inner (
                     id,
                     name,
-                    category
+                    category,
+                    show_in_personal_best
                 )
             `
-            );
+            )
+            .eq("exercises_catalog.show_in_personal_best", true);
 
         const [workoutResult, manualResult] = await Promise.all([workoutPRsPromise, manualPRsPromise]);
 
@@ -223,6 +226,7 @@ const fetchPersonalBests = createAsyncThunk("personalBests/fetchPersonalBests", 
 
 /**
  * Fetch manual personal bests from the database
+ * Only returns PRs for exercises with show_in_personal_best = true
  */
 const fetchManualPersonalBests = createAsyncThunk(
     "personalBests/fetchManualPersonalBests",
@@ -239,10 +243,12 @@ const fetchManualPersonalBests = createAsyncThunk(
                     exercises_catalog!inner (
                         id,
                         name,
-                        category
+                        category,
+                        show_in_personal_best
                     )
                 `
                 )
+                .eq("exercises_catalog.show_in_personal_best", true)
                 .order("weight", { ascending: false });
 
             if (error) {
@@ -329,6 +335,9 @@ const addManualPersonalBest = createAsyncThunk(
             if (!data) {
                 throw new Error("No data returned after adding manual personal best");
             }
+
+            // Refresh exercises catalog to update show_in_personal_best field in Redux state
+            await thunkAPI.dispatch(exercisesCatalogActions.fetchExercisesCatalog());
 
             // Map response to PersonalBest format
             // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -131,7 +131,7 @@ export const Exercises = () => {
     });
 
     return (
-        <div className="w-full h-screen md:w-3xl flex flex-col gap-6 p-4 overflow-hidden bg-[var(--bg-secondary)]">
+        <div className="w-full h-screen md:w-3xl flex flex-col gap-6 p-4 pb-28 overflow-hidden bg-[var(--bg-secondary)]">
             {/* Page Header */}
             <div className="flex items-center justify-between">
                 <h1 className="text-3xl font-bold text-[var(--text-primary)]">Exercises</h1>
@@ -154,7 +154,7 @@ export const Exercises = () => {
             </div>
 
             {/* Exercise List - Grouped by Category */}
-            <div className="flex flex-col flex-1 gap-6 pb-28 overflow-auto hide-scrollbar">
+            <div className="flex flex-col flex-1 gap-6 overflow-auto hide-scrollbar">
                 {sortedCategories.length === 0 ? (
                     <EmptyState
                         icon={<InboxOutlined />}
