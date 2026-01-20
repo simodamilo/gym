@@ -150,6 +150,7 @@ export const Exercises = () => {
                     options={Categories}
                     size="large"
                     style={{ borderRadius: "12px" }}
+                    listHeight={180}
                 />
             </div>
 
@@ -208,7 +209,12 @@ export const Exercises = () => {
                                             </div>
 
                                             {/* Right side: Three-dot Menu */}
-                                            <Dropdown menu={getDropdownMenu(exercise)} trigger={["click"]} placement="bottomRight">
+                                            <Dropdown
+                                                menu={getDropdownMenu(exercise)}
+                                                trigger={["click"]}
+                                                placement="bottomRight"
+                                                getPopupContainer={(trigger) => trigger.parentElement || document.body}
+                                            >
                                                 <button className="w-8 h-8 flex items-center justify-center text-[var(--text-tertiary)] hover:bg-[var(--bg-secondary)] rounded-lg transition-colors">
                                                     <MoreOutlined className="text-lg" />
                                                 </button>
@@ -245,6 +251,7 @@ export const Exercises = () => {
                             setNewExerciseCategory(value ?? undefined);
                         }}
                         options={Categories}
+                        listHeight={180}
                     />
 
                     <Input placeholder={t("exercises.name_placeholder")} value={newExerciseName} onChange={(input) => setNewExerciseName(input.target.value)} />
