@@ -22,9 +22,26 @@ export const PersonalBests = () => {
     const handleAddPR = async (exerciseId: string, weight: number) => {
         setIsSaving(true);
         try {
-            await dispatch(
-                personalBestsActions.addManualPersonalBest({ exerciseId, weight })
-            ).unwrap();
+            // Check if this exercise already has a manual PR
+            // Note: manualId can exist even when isManual=false (when workout PR is higher)
+            const existingManualPR = personalBests.find(
+                (pb) => pb.exerciseId === exerciseId && pb.manualId
+            );
+
+            if (existingManualPR && existingManualPR.manualId) {
+                // Update existing manual PR
+                await dispatch(
+                    personalBestsActions.updateManualPersonalBest({
+                        id: existingManualPR.manualId,
+                        weight,
+                    })
+                ).unwrap();
+            } else {
+                // Add new manual PR
+                await dispatch(
+                    personalBestsActions.addManualPersonalBest({ exerciseId, weight })
+                ).unwrap();
+            }
 
             notification.success({
                 message: t("profile.add_pr_modal.success_title"),

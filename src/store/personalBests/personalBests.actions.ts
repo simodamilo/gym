@@ -94,7 +94,7 @@ const fetchWorkoutPersonalBests = createAsyncThunk(
                 )
             `
                 )
-                .eq("status", "archived")
+                .in("status", ["archived", "published"])
                 .eq("days.day_exercises.exercises_catalog.show_in_personal_best", true);
 
             if (error) {
@@ -139,7 +139,7 @@ const fetchPersonalBests = createAsyncThunk("personalBests/fetchPersonalBests", 
                 )
             `
             )
-            .eq("status", "archived")
+            .in("status", ["archived", "published"])
             .eq("days.day_exercises.exercises_catalog.show_in_personal_best", true);
 
         // Fetch manual PRs
@@ -188,6 +188,7 @@ const fetchPersonalBests = createAsyncThunk("personalBests/fetchPersonalBests", 
         });
 
         // Merge both lists - show highest weight for each exercise
+        // BUT preserve manual PR metadata even when workout PR is higher
         const mergedMap = new Map<string, PersonalBest>();
 
         // Add workout PRs
@@ -195,11 +196,20 @@ const fetchPersonalBests = createAsyncThunk("personalBests/fetchPersonalBests", 
             mergedMap.set(pr.exerciseId, pr);
         });
 
-        // Add or override with manual PRs if they have higher weight
+        // Process manual PRs
         manualPRs.forEach((pr) => {
             const existing = mergedMap.get(pr.exerciseId);
             if (!existing || pr.maxWeight > existing.maxWeight) {
+                // Manual PR is higher or no workout PR exists, use manual PR
                 mergedMap.set(pr.exerciseId, pr);
+            } else {
+                // Workout PR is higher, but preserve manual PR metadata
+                mergedMap.set(pr.exerciseId, {
+                    ...existing,
+                    manualId: pr.manualId,
+                    isManual: false, // Show it's not the displayed value
+                    createdAt: pr.createdAt,
+                });
             }
         });
 
@@ -278,6 +288,16 @@ const addManualPersonalBest = createAsyncThunk(
 
             if (!user) {
                 throw new Error("User not authenticated");
+            }
+
+            // Update the exercise to be tracked in personal bests
+            const { error: updateError } = await supabase
+                .from("exercises_catalog")
+                .update({ show_in_personal_best: true })
+                .eq("id", payload.exerciseId);
+
+            if (updateError) {
+                throw new Error(updateError.message || "Error updating exercise catalog");
             }
 
             const { data, error } = await supabase
