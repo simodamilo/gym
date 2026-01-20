@@ -3,33 +3,57 @@
 }
 
 .ant-notification .ant-notification-notice-wrapper .ant-notification-notice {
-    padding: 8px;
-    border-radius: 6px;
+    padding: 16px 20px;
+    border-radius: 16px;
     max-width: calc(100vw - 32px);
+    box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.25),
+                0 6px 16px -2px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .ant-notification .ant-notification-notice-wrapper .ant-notification-notice-with-icon .ant-notification-notice-message {
-    font-size: 12px;
-    line-height: 20px;
-    font-weight: 400;
+    font-size: 15px;
+    line-height: 22px;
+    font-weight: 500;
     margin-bottom: 0px;
+    letter-spacing: 0.01em;
 }
 
 .ant-notification .ant-notification-notice-wrapper .ant-notification-notice-icon-success.anticon,
 .ant-notification .ant-notification-notice-wrapper .ant-notification-notice-icon-error.anticon {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     color: #ffffff;
+    margin-top: -1px;
 }
 
 .ant-notification .ant-notification-notice-wrapper .ant-notification-notice-close {
-    top: 8px;
-    right: 8px;
+    top: 14px;
+    right: 14px;
+    width: 24px;
+    height: 24px;
 }
 
-/* SUCCESS */
-.custom-success-notification {
-    background-color: green;
+.ant-notification .ant-notification-notice-wrapper .ant-notification-notice-close .ant-notification-notice-close-x {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: 14px;
+}
+
+/* SUCCESS - Light Mode */
+:root:not(.dark) .custom-success-notification {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* SUCCESS - Dark Mode */
+.dark .custom-success-notification {
+    background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+    border-color: rgba(255, 255, 255, 0.15);
 }
 
 .custom-success-notification .ant-notification-notice-message,
@@ -37,12 +61,29 @@
     color: #ffffff !important;
 }
 
-/* ERROR */
-.custom-error-notification {
-    background-color: red;
+.custom-success-notification .ant-notification-notice-close:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border-radius: 6px;
+}
+
+/* ERROR - Light Mode */
+:root:not(.dark) .custom-error-notification {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ERROR - Dark Mode */
+.dark .custom-error-notification {
+    background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+    border-color: rgba(255, 255, 255, 0.15);
 }
 
 .custom-error-notification .ant-notification-notice-message,
 .custom-error-notification .ant-notification-notice-close {
     color: #ffffff !important;
+}
+
+.custom-error-notification .ant-notification-notice-close:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border-radius: 6px;
 }

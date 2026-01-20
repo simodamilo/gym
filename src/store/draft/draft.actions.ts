@@ -50,7 +50,7 @@ const fetchDraftWorkout = createAsyncThunk("data/fetchDraftWorkout", async (_arg
     } catch (error: any) {
         console.error("Error in getting draft workout", error.message);
         getNotificationApi().error({
-            message: `Error in getting draft workout`,
+            message: `Unable to load workout`,
             placement: "bottom",
             className: "custom-error-notification",
         });
@@ -75,7 +75,7 @@ const createDraftWorkout = createAsyncThunk("data/createDraftWorkout", async (_a
     } catch (error: any) {
         console.error("Error in creating new draft workout", error.message);
         getNotificationApi().error({
-            message: `Error in creating new draft workout`,
+            message: `Unable to create workout`,
             placement: "bottom",
             className: "custom-error-notification",
         });
@@ -90,7 +90,7 @@ const publishDraftWorkout = createAsyncThunk("data/publishDraftWorkout", async (
         await supabase.from("workouts").update({ status: "published", start_date: now.getTime() }).eq("status", "draft");
 
         getNotificationApi().success({
-            message: `Successfully published`,
+            message: `Workout started!`,
             placement: "bottom",
             className: "custom-success-notification",
         });
@@ -101,7 +101,7 @@ const publishDraftWorkout = createAsyncThunk("data/publishDraftWorkout", async (
     } catch (error: any) {
         console.error("Error in publishing draft workout", error.message);
         getNotificationApi().error({
-            message: `Error in publishing draft workout`,
+            message: `Unable to start workout`,
             placement: "bottom",
             className: "custom-error-notification",
         });
@@ -123,7 +123,7 @@ const upsertDay = createAsyncThunk("data/upsertDay", async (days: UpsertDayPaylo
         }
 
         getNotificationApi().success({
-            message: `Successfully saved`,
+            message: `Day saved`,
             placement: "bottom",
             className: "custom-success-notification",
         });
@@ -134,7 +134,7 @@ const upsertDay = createAsyncThunk("data/upsertDay", async (days: UpsertDayPaylo
     } catch (error: any) {
         console.error("Error in updating day", error.message);
         getNotificationApi().error({
-            message: `Error in updating day`,
+            message: `Unable to save day`,
             placement: "bottom",
             className: "custom-error-notification",
         });
@@ -147,7 +147,7 @@ const deleteDay = createAsyncThunk("data/deleteDay", async (dayId: string, thunk
         await supabase.from("days").delete().eq("id", dayId);
 
         getNotificationApi().success({
-            message: `Successfully deleted`,
+            message: `Day removed`,
             placement: "bottom",
             className: "custom-success-notification",
         });
@@ -157,7 +157,7 @@ const deleteDay = createAsyncThunk("data/deleteDay", async (dayId: string, thunk
     } catch (error: any) {
         console.error("Error in deleting day", error.message);
         getNotificationApi().error({
-            message: `Error in deleting day`,
+            message: `Unable to remove day`,
             placement: "bottom",
             className: "custom-error-notification",
         });
@@ -205,7 +205,7 @@ const upsertExercises = createAsyncThunk("data/upsertExercise", async (payloadDa
         }
 
         getNotificationApi().success({
-            message: `Successfully saved`,
+            message: `Exercise saved`,
             placement: "bottom",
             className: "custom-success-notification",
         });
@@ -216,7 +216,7 @@ const upsertExercises = createAsyncThunk("data/upsertExercise", async (payloadDa
     } catch (error: any) {
         console.error("Error in updating exercise", error.message);
         getNotificationApi().error({
-            message: `Error in updating exercise`,
+            message: `Unable to save exercise`,
             placement: "bottom",
             className: "custom-error-notification",
         });
@@ -229,7 +229,7 @@ const deleteExercise = createAsyncThunk("data/deleteExercise", async (dayExercis
         await supabase.from("day_exercises").delete().eq("id", dayExerciseId);
 
         getNotificationApi().success({
-            message: `Successfully deleted`,
+            message: `Exercise removed`,
             placement: "bottom",
             className: "custom-success-notification",
         });
@@ -240,7 +240,7 @@ const deleteExercise = createAsyncThunk("data/deleteExercise", async (dayExercis
     } catch (error: any) {
         console.error("Error in deleting exercise", error.message);
         getNotificationApi().error({
-            message: `Error in deleting exercise`,
+            message: `Unable to remove exercise`,
             placement: "bottom",
             className: "custom-error-notification",
         });
