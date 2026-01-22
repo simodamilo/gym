@@ -30,7 +30,7 @@ export const CustomModal = ({
             case "delete":
                 return <DeleteOutlined className="text-[32px] text-[#ff7875] max-[480px]:text-[28px]" />;
             case "edit":
-                return <EditOutlined className="text-[32px] text-brand-primary max-[480px]:text-[28px]" />;
+                return <EditOutlined className="text-[32px] text-[var(--brand-primary)] max-[480px]:text-[28px]" />;
             case "publish":
                 return <CheckCircleOutlined className="text-[32px] text-[#52c41a] max-[480px]:text-[28px]" />;
             case "confirm":
@@ -97,16 +97,16 @@ export const CustomModal = ({
                 </div>
 
                 {/* Title */}
-                {title && <h3 className="m-0 text-xl font-semibold text-text-primary text-center leading-snug max-[480px]:text-lg">{title}</h3>}
+                {title && <h3 className="m-0 text-xl font-semibold text-[var(--text-primary)] text-center leading-snug max-[480px]:text-lg">{title}</h3>}
 
                 {/* Content */}
-                <div className="w-full text-text-secondary text-sm text-center leading-relaxed">{children}</div>
+                <div className="w-full text-[var(--text-secondary)] text-sm text-center leading-relaxed">{children}</div>
 
                 {/* Buttons */}
                 <div className="flex gap-3 w-full mt-2">
                     <motion.button
                         onClick={onCancel}
-                        className="flex-1 h-11 rounded-xl border-none text-[15px] font-semibold cursor-pointer transition-all duration-200 flex items-center justify-center bg-bg-tertiary text-text-primary border border-border-light hover:bg-bg-elevated max-[480px]:h-10 max-[480px]:text-sm"
+                        className="flex-1 h-11 rounded-xl border-none text-[15px] font-semibold cursor-pointer transition-all duration-200 flex items-center justify-center bg-[var(--bg-tertiary)] text-[var(--text-primary)] border border-[var(--border-light)] hover:bg-[var(--bg-elevated)] max-[480px]:h-10 max-[480px]:text-sm"
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                     >

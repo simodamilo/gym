@@ -35,13 +35,8 @@ export const ItemCard = (props: ItemCardProps) => {
     return (
         <motion.div
             onClick={onClick}
-            className="relative rounded-2xl cursor-pointer overflow-hidden"
-            style={{
-                backgroundColor: "var(--bg-elevated)",
-                border: "1px solid var(--border-default)",
-                boxShadow: "var(--shadow-md)",
-                borderLeft: `4px solid ${borderColor}`,
-            }}
+            className="relative rounded-2xl cursor-pointer overflow-hidden bg-[var(--bg-elevated)] border border-[var(--border-default)] shadow-var-md border-l-4"
+            style={{ borderLeftColor: borderColor }}
             whileHover={{ scale: 1.01, boxShadow: "var(--shadow-lg)" }}
             whileTap={{ scale: 0.99 }}
             transition={{ duration: 0.2 }}
@@ -52,27 +47,15 @@ export const ItemCard = (props: ItemCardProps) => {
                 )}
                 {/* Left side: Title and metadata */}
                 <div className="flex-1 min-w-0">
-                    <h3
-                        className="text-base font-semibold mb-0.5 truncate"
-                        style={{ color: "var(--text-primary)" }}
-                    >
+                    <h3 className="text-base font-semibold mb-0.5 truncate text-[var(--text-primary)]">
                         {title}
                     </h3>
                     <div className="flex items-center gap-2">
-                        <span
-                            className="text-sm"
-                            style={{ color: "var(--text-secondary)" }}
-                        >
+                        <span className="text-sm text-[var(--text-secondary)]">
                             {exerciseCount} Exercise{exerciseCount !== 1 ? "s" : ""}
                         </span>
                         {isLast && (
-                            <span
-                                className="text-xs font-semibold px-2 py-0.5 rounded"
-                                style={{
-                                    backgroundColor: "var(--semantic-success)",
-                                    color: "white",
-                                }}
-                            >
+                            <span className="text-xs font-semibold px-2 py-0.5 rounded bg-[var(--semantic-success)] text-white">
                                 LAST
                             </span>
                         )}
@@ -106,24 +89,13 @@ export const ItemCard = (props: ItemCardProps) => {
                         )
                     }
                     {trainingCounter !== undefined && (
-                        <div
-                            className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold"
-                            style={{
-                                backgroundColor: "var(--bg-tertiary)",
-                                color: "var(--text-primary)",
-                            }}
-                        >
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold bg-[var(--bg-tertiary)] text-[var(--text-primary)]">
                             {trainingCounter}
                         </div>
                     )}
                     {
                         !isCreation && (
-                            <RightOutlined
-                                style={{
-                                    fontSize: "14px",
-                                    color: "var(--text-tertiary)",
-                                }}
-                            />
+                            <RightOutlined className="text-sm text-[var(--text-tertiary)]" />
                         )
                     }
                 </div>

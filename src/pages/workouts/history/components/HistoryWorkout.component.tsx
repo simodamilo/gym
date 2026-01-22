@@ -46,10 +46,7 @@ export const HistoryWorkout = () => {
                             navigate(routes.workoutsHistory);
                             dispatch(currentActions.showSwitcher(true));
                         }}
-                        className="bg-transparent border-0 p-0 cursor-pointer text-2xl leading-none transition-all duration-150 flex items-center justify-center hover:-translate-x-0.5 active:scale-95"
-                        style={{ color: 'var(--text-tertiary)' }}
-                        onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-primary)'}
-                        onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-tertiary)'}
+                        className="bg-transparent border-0 p-0 cursor-pointer text-2xl leading-none transition-all duration-150 flex items-center justify-center hover:-translate-x-0.5 active:scale-95 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
                         aria-label="Go back"
                     >
                         <ArrowLeftOutlined />

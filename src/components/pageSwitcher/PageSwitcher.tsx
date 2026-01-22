@@ -21,24 +21,16 @@ export const PageSwitcher = ({ active, onChange }: IProps) => {
     ];
 
     return (
-        <div
-            className="flex w-full rounded-[20px] p-1.5 gap-1.5 shadow-var-sm"
-            style={{
-                backgroundColor: 'var(--bg-elevated)',
-                border: '1px solid var(--border-default)',
-            }}
-        >
+        <div className="flex w-full rounded-[20px] p-1.5 gap-1.5 shadow-var-sm bg-[var(--bg-elevated)] border border-[var(--border-default)]">
             {items.map(({ key, label }) => {
                 const isActive = active === key;
                 return (
                     <motion.button
                         key={key}
                         onClick={() => onChange(key)}
-                        className="flex-1 h-10 rounded-[16px] font-semibold text-base transition-all duration-300 cursor-pointer shadow-sm"
-                        style={{
-                            backgroundColor: isActive ? 'var(--brand-primary)' : 'transparent',
-                            color: isActive ? 'white' : 'var(--text-secondary)',
-                        }}
+                        className={`flex-1 h-10 rounded-[16px] font-semibold text-base transition-all duration-300 cursor-pointer shadow-sm ${
+                            isActive ? 'bg-[var(--brand-primary)] text-white' : 'bg-transparent text-[var(--text-secondary)]'
+                        }`}
                         whileHover={{
                             backgroundColor: isActive ? undefined : 'var(--bg-secondary)',
                         }}

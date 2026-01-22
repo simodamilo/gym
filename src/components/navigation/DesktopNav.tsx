@@ -75,21 +75,14 @@ export const DesktopNav = () => {
 
     return (
         <div
-            className="hidden md:flex flex-col w-64 h-screen border-r bg-bg-elevated border-border-default shadow-var-md"
+            className="hidden md:flex flex-col w-64 h-screen border-r bg-[var(--bg-elevated)] border-[var(--border-default)] shadow-var-md"
         >
             {/* Header */}
-            <div className="p-6 border-b border-border-default">
-                <h1
-                    className="text-2xl font-bold"
-                    style={{
-                        backgroundImage: 'linear-gradient(135deg, var(--brand-primary) 0%, var(--accent) 100%)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                    }}
-                >
+            <div className="p-6 border-b border-[var(--border-default)]">
+                <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
                     GymTracker
                 </h1>
-                <p className="text-sm mt-1 text-text-tertiary">
+                <p className="text-sm mt-1 text-[var(--text-tertiary)]">
                     Track your fitness journey
                 </p>
             </div>
@@ -103,20 +96,18 @@ export const DesktopNav = () => {
                             <li key={menu.path}>
                                 <motion.button
                                     onClick={() => navigate(menu.path)}
-                                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 border"
-                                    style={{
-                                        backgroundColor: active ? '#e6f4ff' : 'transparent',
-                                        color: active ? 'var(--brand-primary)' : 'var(--text-primary)',
-                                        borderColor: active ? 'var(--brand-primary)' : 'transparent',
-                                        fontWeight: active ? '600' : '500',
-                                    }}
+                                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 border ${
+                                        active
+                                            ? 'bg-primary-50 text-[var(--brand-primary)] border-[var(--brand-primary)] font-semibold'
+                                            : 'bg-transparent text-[var(--text-primary)] border-transparent font-medium'
+                                    }`}
                                     whileHover={{
                                         backgroundColor: active ? '#e6f4ff' : 'var(--bg-tertiary)',
                                     }}
                                     whileTap={{ scale: 0.98 }}
                                 >
                                     <span className="text-xl">{menu.icon}</span>
-                                    <span className="font-medium">{menu.name}</span>
+                                    <span>{menu.name}</span>
                                 </motion.button>
                             </li>
                         );
@@ -126,10 +117,10 @@ export const DesktopNav = () => {
 
             {/* Action Button */}
             {actionButton && (
-                <div className="p-4 border-t border-border-default">
+                <div className="p-4 border-t border-[var(--border-default)]">
                     <motion.button
                         onClick={actionButton.onClick}
-                        className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium transition-all duration-200 text-white shadow-var-md ${actionButton.danger ? 'bg-semantic-error' : 'bg-gradient-to-br from-brand-primary to-[var(--accent)]'}`}
+                        className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium transition-all duration-200 text-white shadow-var-md ${actionButton.danger ? 'bg-[var(--semantic-error)]' : 'bg-gradient-to-br from-[var(--brand-primary)] to-[var(--accent)]'}`}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                     >

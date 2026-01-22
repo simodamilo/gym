@@ -156,9 +156,9 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                 <Checkbox
                     checked={dayExercise.isLinkedToNext}
                     onChange={() => setDayExercise({ ...dayExercise, isLinkedToNext: !dayExercise.isLinkedToNext })}
-                    className="text-text-primary"
+                    className="text-[var(--text-primary)]"
                 >
-                    <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                    <span className="text-sm text-[var(--text-secondary)]">
                         {t("workouts.exercises.superset")}
                     </span>
                 </Checkbox>
@@ -184,7 +184,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                 <div className="flex items-center gap-3">
                     <div className="flex-1">
                         <Select
-                            className="text-left !text-[14px] w-full"
+                            className="text-left !text-[14px] w-full rounded-lg"
                             placeholder={t("workouts.exercises.reps_type_placeholder")}
                             value={dayExercise.repsType}
                             onChange={(value) => {
@@ -205,9 +205,6 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                             }}
                             options={RepsTypes}
                             disabled={isLoadingExercises}
-                            style={{
-                                borderRadius: '8px',
-                            }}
                         />
                     </div>
                     {dayExercise.repsType !== "custom" && (
@@ -215,46 +212,16 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                             <button
                                 onClick={removeSet}
                                 disabled={dayExercise.sets.length === 0 || !dayExercise.repsType || isLoadingExercises}
-                                className="w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
-                                style={{
-                                    backgroundColor: 'var(--bg-elevated)',
-                                    border: '1px solid var(--border-light)',
-                                    color: 'var(--text-primary)',
-                                }}
-                                onMouseEnter={(e) => {
-                                    if (!e.currentTarget.disabled) {
-                                        e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)';
-                                    }
-                                }}
-                                onMouseLeave={(e) => {
-                                    if (!e.currentTarget.disabled) {
-                                        e.currentTarget.style.backgroundColor = 'var(--bg-elevated)';
-                                    }
-                                }}
+                                className="w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed bg-[var(--bg-elevated)] border border-[var(--border-light)] text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)]"
                             >
-                                <MinusOutlined style={{ fontSize: '12px' }} />
+                                <MinusOutlined className="text-xs" />
                             </button>
                             <button
                                 onClick={addSet}
                                 disabled={!dayExercise.repsType || isLoadingExercises}
-                                className="w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
-                                style={{
-                                    backgroundColor: 'var(--bg-elevated)',
-                                    border: '1px solid var(--border-light)',
-                                    color: 'var(--text-primary)',
-                                }}
-                                onMouseEnter={(e) => {
-                                    if (!e.currentTarget.disabled) {
-                                        e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)';
-                                    }
-                                }}
-                                onMouseLeave={(e) => {
-                                    if (!e.currentTarget.disabled) {
-                                        e.currentTarget.style.backgroundColor = 'var(--bg-elevated)';
-                                    }
-                                }}
+                                className="w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed bg-[var(--bg-elevated)] border border-[var(--border-light)] text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)]"
                             >
-                                <PlusOutlined style={{ fontSize: '12px' }} />
+                                <PlusOutlined className="text-xs" />
                             </button>
                         </div>
                     )}
@@ -263,13 +230,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
 
             {/* Sets Container - Clean, minimal card */}
             {(dayExercise.repsType || !props.isDraft) && (
-                <div
-                    className="flex flex-col gap-3 rounded-xl p-4"
-                    style={{
-                        backgroundColor: 'var(--bg-elevated)',
-                        border: '1px solid var(--border-light)',
-                    }}
-                >
+                <div className="flex flex-col gap-3 rounded-xl p-4 bg-[var(--bg-elevated)] border border-[var(--border-light)]">
                     {dayExercise.repsType === "custom" ? (
                         <TextArea
                             rows={4}
@@ -286,10 +247,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                             placeholder={t("workouts.exercises.notes_placeholder")}
                             disabled={isLoadingExercises}
                             readOnly={props.isCurrent || props.isHistory}
-                            style={{
-                                borderRadius: '8px',
-                                fontSize: '14px',
-                            }}
+                            className="rounded-lg text-sm"
                         />
                     ) : (
                         [...(dayExercise.sets ?? [])]
@@ -303,7 +261,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                                                     readOnly
                                                     addonBefore={set.setNumber}
                                                     value={set.reps}
-                                                    style={{ borderRadius: '8px', fontSize: '14px' }}
+                                                    className="rounded-lg text-sm"
                                                 />
                                             </div>
                                             <div className="w-[60%]">
@@ -319,7 +277,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                                                     }}
                                                     disabled={isLoadingExercises}
                                                     readOnly={props.isHistory}
-                                                    style={{ borderRadius: '8px', fontSize: '14px' }}
+                                                    className="rounded-lg text-sm"
                                                 />
                                             </div>
                                         </div>
@@ -334,7 +292,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                                         onChange={(input) => updateSet("reps", input.target.value, set.id)}
                                         disabled={isLoadingExercises}
                                         readOnly={dayExercise.repsType === "max"}
-                                        style={{ borderRadius: '8px', fontSize: '14px' }}
+                                        className="rounded-lg text-sm"
                                     />
                                 );
                             })
@@ -359,14 +317,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                         </div>
                     }
                 >
-                    <button
-                        className="px-4 py-2 rounded-lg transition-all duration-200 text-sm font-medium"
-                        style={{
-                            backgroundColor: 'var(--bg-elevated)',
-                            border: '1px solid var(--border-light)',
-                            color: 'var(--text-secondary)',
-                        }}
-                    >
+                    <button className="px-4 py-2 rounded-lg transition-all duration-200 text-sm font-medium bg-[var(--bg-elevated)] border border-[var(--border-light)] text-[var(--text-secondary)]">
                         {t("workouts.exercises.initial")}
                     </button>
                 </Tooltip>
@@ -384,21 +335,12 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                         });
                     }}
                     disabled={isLoadingExercises}
-                    style={{ borderRadius: '8px', fontSize: '14px' }}
+                    className="rounded-lg text-sm"
                 />
                 {(props.isCurrent || props.isHistory) && dayExercise.creationNotes && (
                     <Tooltip title={dayExercise.creationNotes}>
-                        <button
-                            className="w-10 h-10 flex items-center justify-center rounded-lg"
-                            style={{
-                                backgroundColor: 'var(--bg-elevated)',
-                                border: '1px solid var(--border-light)',
-                            }}
-                        >
-                            <InfoCircleOutlined
-                                className="text-[18px]"
-                                style={{ color: 'var(--text-tertiary)' }}
-                            />
+                        <button className="w-10 h-10 flex items-center justify-center rounded-lg bg-[var(--bg-elevated)] border border-[var(--border-light)]">
+                            <InfoCircleOutlined className="text-[18px] text-[var(--text-tertiary)]" />
                         </button>
                     </Tooltip>
                 )}
@@ -421,12 +363,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                     onBlur={saveWeights}
                     placeholder={t("workouts.exercises.notes_placeholder")}
                     disabled={isLoadingExercises}
-                    style={{
-                        borderRadius: '8px',
-                        fontSize: '14px',
-                        backgroundColor: 'var(--bg-elevated)',
-                        border: '1px solid var(--border-light)',
-                    }}
+                    className="rounded-lg text-sm bg-[var(--bg-elevated)] border-[var(--border-light)]"
                 />
             )}
 
@@ -436,26 +373,9 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                     <button
                         onClick={() => props.deleteExercise?.(props.exerciseId)}
                         disabled={props.isNew}
-                        className="w-10 h-10 flex items-center justify-center rounded-lg transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
-                        style={{
-                            backgroundColor: 'transparent',
-                            border: '1px solid var(--border-light)',
-                            color: 'var(--text-tertiary)',
-                        }}
-                        onMouseEnter={(e) => {
-                            if (!e.currentTarget.disabled) {
-                                e.currentTarget.style.backgroundColor = 'var(--bg-elevated)';
-                                e.currentTarget.style.color = 'var(--error)';
-                            }
-                        }}
-                        onMouseLeave={(e) => {
-                            if (!e.currentTarget.disabled) {
-                                e.currentTarget.style.backgroundColor = 'transparent';
-                                e.currentTarget.style.color = 'var(--text-tertiary)';
-                            }
-                        }}
+                        className="w-10 h-10 flex items-center justify-center rounded-lg transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed bg-transparent border border-[var(--border-light)] text-[var(--text-tertiary)] hover:bg-[var(--bg-elevated)] hover:text-[var(--semantic-error)]"
                     >
-                        <DeleteOutlined style={{ fontSize: '16px' }} />
+                        <DeleteOutlined className="text-base" />
                     </button>
                     <Button
                         label={t("workouts.exercises.save_btn")}

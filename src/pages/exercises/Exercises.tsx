@@ -141,7 +141,7 @@ export const Exercises = () => {
             <div className="flex flex-col text-left md:flex-row items-start gap-2">
                 <Select
                     allowClear
-                    className="w-full md:w-xl exercises-select"
+                    className="w-full md:w-xl exercises-select rounded-xl"
                     placeholder={t("exercises.category_placeholder")}
                     value={selectedCategory}
                     onChange={(value) => {
@@ -149,7 +149,6 @@ export const Exercises = () => {
                     }}
                     options={Categories}
                     size="large"
-                    style={{ borderRadius: "12px" }}
                     listHeight={180}
                 />
             </div>

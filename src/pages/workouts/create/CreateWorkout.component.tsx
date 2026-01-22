@@ -147,10 +147,7 @@ export const CreateWorkout = () => {
                             navigate(routes.workoutsCurrent);
                             dispatch(currentActions.showSwitcher(true));
                         }}
-                        className="bg-transparent border-0 p-0 cursor-pointer text-2xl leading-none transition-all duration-150 flex items-center justify-center hover:-translate-x-0.5 active:scale-95"
-                        style={{ color: 'var(--text-tertiary)' }}
-                        onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-primary)'}
-                        onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-tertiary)'}
+                        className="bg-transparent border-0 p-0 cursor-pointer text-2xl leading-none transition-all duration-150 flex items-center justify-center hover:-translate-x-0.5 active:scale-95 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
                         aria-label="Go back"
                     >
                         <ArrowLeftOutlined />
@@ -159,7 +156,7 @@ export const CreateWorkout = () => {
                         {days && days.length > 0 && <IconButton icon={<UploadOutlined />} onClick={() => setIsPublishModalOpen(true)} />}
                         <IconButton icon={<PlusOutlined />} onClick={() => setIsEditModalOpen(true)} />
                         {days && days.length > 1 && (
-                            <IconButton active={isDragEnable} icon={<MoveIcon style={{ fontSize: "20px" }} />} onClick={() => setIsDragEnable(!isDragEnable)} />
+                            <IconButton active={isDragEnable} icon={<MoveIcon className="text-xl" />} onClick={() => setIsDragEnable(!isDragEnable)} />
                         )}
                     </div>
                 </div>
@@ -240,11 +237,7 @@ export const CreateWorkout = () => {
                             };
                         })
                     }
-                    style={{
-                        backgroundColor: 'var(--bg-tertiary)',
-                        borderColor: 'var(--border-light)',
-                        color: 'var(--text-primary)',
-                    }}
+                    className="bg-[var(--bg-tertiary)] border-[var(--border-light)] text-[var(--text-primary)]"
                 />
             </CustomModal>
 
@@ -259,7 +252,7 @@ export const CreateWorkout = () => {
                     setSelectedDay(undefined);
                 }}
             >
-                <p style={{ color: 'var(--text-secondary)', margin: 0 }}>
+                <p className="text-[var(--text-secondary)] m-0">
                     This action cannot be undone. All exercises in this day will be permanently removed.
                 </p>
             </CustomModal>
@@ -272,7 +265,7 @@ export const CreateWorkout = () => {
                 onOk={publishWorkout}
                 onCancel={() => setIsPublishModalOpen(false)}
             >
-                <p style={{ color: 'var(--text-secondary)', margin: 0 }}>
+                <p className="text-[var(--text-secondary)] m-0">
                     Your workout will be published and ready to use. You can start tracking your progress!
                 </p>
             </CustomModal>

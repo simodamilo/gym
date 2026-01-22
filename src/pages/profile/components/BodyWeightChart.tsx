@@ -50,13 +50,13 @@ export const BodyWeightChart = ({ data, currentWeight, onEditClick }: BodyWeight
                     <XAxis
                         dataKey="name"
                         stroke="#6B7280"
-                        style={{ fontSize: '12px' }}
+                        className="text-xs"
                     />
                     <YAxis
                         width={40}
                         domain={[40, "auto"]}
                         stroke="#6B7280"
-                        style={{ fontSize: '12px' }}
+                        className="text-xs"
                     />
                     <Tooltip
                         content={({ active, payload, label }) => {

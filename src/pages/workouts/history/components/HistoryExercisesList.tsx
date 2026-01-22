@@ -57,7 +57,7 @@ export const HistoryExercisesList = () => {
         label: (
             <div className="flex items-center justify-between w-full gap-4">
                 <div className="flex-1 flex flex-col gap-1">
-                    <span className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>
+                    <span className="text-base font-semibold text-[var(--text-primary)]">
                         {exercise.exercise?.name || "Exercise"}
                     </span>
                 </div>
@@ -79,10 +79,7 @@ export const HistoryExercisesList = () => {
             <div className="flex justify-between items-center gap-4 mb-4">
                 <button
                     onClick={() => navigate(-1)}
-                    className="bg-transparent border-0 p-0 cursor-pointer text-2xl leading-none transition-all duration-150 flex items-center justify-center hover:-translate-x-0.5 active:scale-95"
-                    style={{ color: 'var(--text-tertiary)' }}
-                    onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-primary)'}
-                    onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-tertiary)'}
+                    className="bg-transparent border-0 p-0 cursor-pointer text-2xl leading-none transition-all duration-150 flex items-center justify-center hover:-translate-x-0.5 active:scale-95 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
                     aria-label="Go back"
                 >
                     <ArrowLeftOutlined />
@@ -90,7 +87,7 @@ export const HistoryExercisesList = () => {
             </div>
 
             {day?.dayExercises && day?.dayExercises.length > 0 && (
-                <p className="text-left text-xs italic mb-4" style={{ color: 'var(--text-secondary)' }}>
+                <p className="text-left text-xs italic mb-4 text-[var(--text-secondary)]">
                     {t("workouts.exercises.description")}
                 </p>
             )}

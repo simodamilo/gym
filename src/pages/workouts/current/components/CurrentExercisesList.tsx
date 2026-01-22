@@ -119,7 +119,7 @@ export const CurrentExercisesList = () => {
             label: (
                 <div className="flex items-center justify-between w-full gap-4">
                     <div className="flex-1 flex flex-col gap-1">
-                        <span className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>
+                        <span className="text-base font-semibold text-[var(--text-primary)]">
                             {exercise.exercise?.name || "New Exercise"}
                         </span>
                     </div>
@@ -147,10 +147,7 @@ export const CurrentExercisesList = () => {
                         navigate(routes.workoutsCurrent);
                         dispatch(currentActions.showSwitcher(true));
                     }}
-                    className="bg-transparent border-0 p-0 cursor-pointer text-2xl leading-none transition-all duration-150 flex items-center justify-center hover:-translate-x-0.5 active:scale-95"
-                    style={{ color: 'var(--text-tertiary)' }}
-                    onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-primary)'}
-                    onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-tertiary)'}
+                    className="bg-transparent border-0 p-0 cursor-pointer text-2xl leading-none transition-all duration-150 flex items-center justify-center hover:-translate-x-0.5 active:scale-95 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
                     aria-label="Go back"
                 >
                     <ArrowLeftOutlined />
@@ -161,7 +158,7 @@ export const CurrentExercisesList = () => {
                         <IconButton icon={<SaveOutlined />} onClick={() => setShowConfirmSaveBase(true)} />
                     )}
                     {isAlreadyStarted() ? (
-                        <div className="text-[15px] font-medium text-text-primary">{t("workouts.exercises.workout_started")}</div>
+                        <div className="text-[15px] font-medium text-[var(--text-primary)]">{t("workouts.exercises.workout_started")}</div>
                     ) : (
                         <IconButton icon={<PlayCircleOutlined />} onClick={() => handleStartClick()} />
                     )}
@@ -169,7 +166,7 @@ export const CurrentExercisesList = () => {
             </div>
 
             {mutableDayExercises && mutableDayExercises.length > 0 && (
-                <p className="text-left text-xs italic mb-4" style={{ color: 'var(--text-secondary)' }}>
+                <p className="text-left text-xs italic mb-4 text-[var(--text-secondary)]">
                     {t("workouts.exercises.description")}
                 </p>
             )}
@@ -220,7 +217,7 @@ export const CurrentExercisesList = () => {
                 }}
                 okText="Save"
             >
-                <p style={{ color: 'var(--text-secondary)', margin: 0 }}>
+                <p className="text-[var(--text-secondary)] m-0">
                     {t("workouts.exercises.confirm_save_base")}
                 </p>
             </CustomModal>

@@ -13,13 +13,16 @@ export const SortableItem = ({ id, children }: SortableItemProps) => {
     const style: CSSProperties = {
         transform: transform ? CSS.Transform.toString(transform) : undefined,
         transition,
-        boxShadow: isDragging ? "0 10px 20px rgba(255, 255, 255, 0.2)" : undefined,
-        position: isDragging ? ("relative" as CSSProperties["position"]) : undefined,
-        zIndex: isDragging ? 10 : undefined,
     };
 
     return (
-        <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+        <div
+            ref={setNodeRef}
+            style={style}
+            className={isDragging ? "relative z-10 shadow-[0_10px_20px_rgba(255,255,255,0.2)]" : ""}
+            {...attributes}
+            {...listeners}
+        >
             {children}
         </div>
     );

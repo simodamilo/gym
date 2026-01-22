@@ -80,7 +80,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
                     <Select
                         value={i18n.language}
                         onChange={handleLanguageChange}
-                        style={{ width: 150 }}
+                        className="w-[150px]"
                         options={[
                             { value: "en", label: "English" },
                             { value: "es", label: "Español" },

@@ -28,7 +28,7 @@ export const Current = () => {
     if (!currentWorkout || !currentWorkout.days || currentWorkout.days.length === 0) {
         return (
             <div className="flex h-full items-center justify-center">
-                <span style={{ color: "var(--text-tertiary)" }}>
+                <span className="text-[var(--text-tertiary)]">
                     No workout available. Create one to get started!
                 </span>
             </div>

@@ -45,7 +45,7 @@ export const History = () => {
     if (!workouts || workouts.length === 0) {
         return (
             <div className="flex h-full items-center justify-center">
-                <span style={{ color: "var(--text-tertiary)" }}>
+                <span className="text-[var(--text-tertiary)]">
                     No workout history yet. Complete a workout to see it here!
                 </span>
             </div>

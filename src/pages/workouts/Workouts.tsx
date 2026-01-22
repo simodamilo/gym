@@ -22,37 +22,26 @@ export const Workouts = () => {
     }, [page, navigate]);
 
     return (
-        <div
-            className="w-full md:max-w-[1200px] h-full flex flex-col m-auto overflow-hidden"
-            style={{ backgroundColor: 'var(--bg-secondary)' }}
-        >
+        <div className="w-full md:max-w-[1200px] h-full flex flex-col m-auto overflow-hidden bg-[var(--bg-secondary)]">
             {/* Container with max width for desktop */}
             {showSwitcher &&
                 <div className="w-full flex flex-col px-4 md:px-4 py-6 md:py-8 overflow-hidden max-w-7xl mx-auto">
                     {/* Header with title and dark mode toggle */}
                     <div className="flex items-center justify-between mb-6">
-                        <h1
-                            className="text-3xl font-bold m-0"
-                            style={{ color: "var(--text-primary)" }}
-                        >
+                        <h1 className="text-3xl font-bold m-0 text-[var(--text-primary)]">
                             Workouts
                         </h1>
                         <motion.button
                             onClick={toggleTheme}
-                            className="w-10 h-10 rounded-full flex items-center justify-center border cursor-pointer shadow-var-sm"
-                            style={{
-                                backgroundColor: "var(--bg-elevated)",
-                                borderColor: "var(--border-default)",
-                                color: "var(--text-primary)",
-                            }}
+                            className="w-10 h-10 rounded-full flex items-center justify-center border cursor-pointer shadow-var-sm bg-[var(--bg-elevated)] border-[var(--border-default)] text-[var(--text-primary)]"
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
                             transition={{ duration: 0.2 }}
                         >
                             {mode === "dark" ? (
-                                <SunOutlined style={{ fontSize: "18px" }} />
+                                <SunOutlined className="text-lg" />
                             ) : (
-                                <MoonOutlined style={{ fontSize: "18px" }} />
+                                <MoonOutlined className="text-lg" />
                             )}
                         </motion.button>
                     </div>

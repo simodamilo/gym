@@ -84,7 +84,7 @@ export const BottomBar = () => {
 
     return (
         <div
-            className="fixed bottom-6 left-4 right-4 md:hidden z-[9998] h-[72px] rounded-4xl flex items-center px-3 gap-3 bg-bg-elevated/95 backdrop-blur-xl border border-border-default shadow-var-xl"
+            className="fixed bottom-6 left-4 right-4 md:hidden z-[9998] h-[72px] rounded-4xl flex items-center px-3 gap-3 bg-[var(--bg-elevated)]/95 backdrop-blur-xl border border-[var(--border-default)] shadow-var-xl"
         >
             {/* Navigation Icons */}
             <div className="flex items-center gap-2 flex-1">
@@ -107,12 +107,12 @@ export const BottomBar = () => {
             </div>
 
             {/* Vertical Divider */}
-            <div className="w-px h-10 flex-shrink-0 border-l border-border-default bg-border-default" />
+            <div className="w-px h-10 flex-shrink-0 border-l border-[var(--border-default)] bg-[var(--border-default)]" />
 
             {/* Action Button */}
             <div className="flex items-center justify-end w-14 pr-1">
                 <motion.button
-                    className={`h-[42px] w-[42px] rounded-full flex items-center justify-center flex-shrink-0 shadow-var-md ${active === 0 ? "bg-semantic-error" : "bg-gradient-to-br from-brand-primary to-[var(--accent)]"}`}
+                    className={`h-[42px] w-[42px] rounded-full flex items-center justify-center flex-shrink-0 shadow-var-md ${active === 0 ? "bg-[var(--semantic-error)]" : "bg-gradient-to-br from-[var(--brand-primary)] to-[var(--accent)]"}`}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleActionButtonClick}
