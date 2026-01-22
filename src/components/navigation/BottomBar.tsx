@@ -84,7 +84,7 @@ export const BottomBar = () => {
 
     return (
         <div
-            className="fixed bottom-6 left-4 right-4 md:hidden z-[9998] h-[72px] rounded-4xl flex items-center px-3 gap-3 bg-[var(--bg-elevated)]/95 backdrop-blur-xl border border-[var(--border-default)] shadow-var-xl"
+            className="fixed bottom-6 left-4 right-4 md:hidden z-[9998] h-[72px] rounded-4xl flex items-center px-3 gap-3  backdrop-blur-xl border border-[var(--border-default)] shadow-var-xl"
         >
             {/* Navigation Icons */}
             <div className="flex items-center gap-2 flex-1">

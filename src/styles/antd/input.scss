@@ -8,3 +8,61 @@
 .ant-input-group-wrapper-outlined .ant-input-group-addon {
     min-width: 40px;
 }
+
+/* Enhanced input addon styling for better contrast */
+.ant-input-group-addon {
+    background-color: var(--bg-tertiary) !important;
+    border-color: var(--border-default) !important;
+    color: var(--text-primary) !important;
+    font-weight: 500;
+}
+
+/* Input field contrast improvements */
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-select-selector {
+    background-color: var(--bg-primary) !important;
+    border-color: var(--border-default) !important;
+    color: var(--text-primary) !important;
+}
+
+/* TextArea styling */
+.ant-input-textarea textarea {
+    background-color: var(--bg-primary) !important;
+    border-color: var(--border-default) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Placeholder text contrast */
+.ant-input::placeholder,
+.ant-input-textarea textarea::placeholder {
+    color: var(--text-tertiary) !important;
+    opacity: 0.7;
+}
+
+/* Focus states with brand color */
+.ant-input:focus,
+.ant-input-focused,
+.ant-input-affix-wrapper:focus,
+.ant-input-affix-wrapper-focused,
+.ant-select-focused .ant-select-selector,
+.ant-input-textarea-focused textarea {
+    border-color: var(--brand-primary) !important;
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.1) !important;
+}
+
+/* Hover states */
+.ant-input:hover:not(:disabled),
+.ant-input-affix-wrapper:hover:not(.ant-input-affix-wrapper-disabled),
+.ant-select:not(.ant-select-disabled):hover .ant-select-selector,
+.ant-input-textarea:hover:not(.ant-input-textarea-disabled) textarea {
+    border-color: var(--border-strong) !important;
+}
+
+/* Disabled states */
+.ant-input:disabled,
+.ant-input-affix-wrapper-disabled,
+.ant-select-disabled .ant-select-selector {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

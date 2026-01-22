@@ -30,37 +30,39 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
 
     return (
         <Modal
-            title={t("profile.settings.title")}
             open={open}
             onCancel={onClose}
             footer={null}
             centered
+            closable={true}
             styles={{
                 content: {
                     backgroundColor: 'var(--bg-elevated)',
-                    borderRadius: '16px',
+                    borderRadius: '20px',
+                    padding: '0',
+                    overflow: 'hidden',
                 },
-                header: {
-                    backgroundColor: 'var(--bg-elevated)',
-                    borderBottom: 'none',
-                    paddingBottom: '12px',
-                },
-                body: {
-                    paddingTop: '12px',
-                    paddingBottom: '24px',
+                mask: {
+                    backdropFilter: 'blur(8px)',
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
                 },
             }}
         >
-            <div className="space-y-6 py-4">
+            <div className="px-6 pt-8 pb-6 flex flex-col gap-6 max-[480px]:px-5 max-[480px]:pt-6 max-[480px]:pb-5">
+                {/* Title */}
+                <h3 className="m-0 text-xl font-semibold text-[var(--text-primary)] text-center leading-snug max-[480px]:text-lg">
+                    {t("profile.settings.title")}
+                </h3>
+
                 {/* Theme Toggle */}
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-3">
                         {mode === "dark" ? (
-                            <MoonOutlined className="text-lg" />
+                            <MoonOutlined className="text-lg text-[var(--text-primary)]" />
                         ) : (
-                            <SunOutlined className="text-lg" />
+                            <SunOutlined className="text-lg text-[var(--text-primary)]" />
                         )}
-                        <span className="text-base font-medium">
+                        <span className="text-base font-medium text-[var(--text-primary)]">
                             {t("profile.settings.theme")}
                         </span>
                     </div>
@@ -74,7 +76,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
 
                 {/* Language Selector */}
                 <div className="flex justify-between items-center">
-                    <span className="text-base font-medium">
+                    <span className="text-base font-medium text-[var(--text-primary)]">
                         {t("profile.settings.language")}
                     </span>
                     <Select
@@ -89,7 +91,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
                 </div>
 
                 {/* Divider */}
-                <div className="border-t border-neutral-200 dark:border-neutral-700" />
+                <div className="border-t border-[var(--border-default)]" />
 
                 {/* Sign Out Button */}
                 <Button
@@ -99,6 +101,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
                     size="large"
                     icon={<LogoutOutlined />}
                     onClick={handleSignOut}
+                    className="h-11 rounded-xl text-[15px] font-semibold"
                 >
                     {t("profile.settings.sign_out")}
                 </Button>

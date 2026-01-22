@@ -150,7 +150,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
     };
 
     return (
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-6">
             {/* Superset Checkbox - Minimal style */}
             {props.isDraft && (
                 <Checkbox
@@ -212,16 +212,16 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                             <button
                                 onClick={removeSet}
                                 disabled={dayExercise.sets.length === 0 || !dayExercise.repsType || isLoadingExercises}
-                                className="w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed bg-[var(--bg-elevated)] border border-[var(--border-light)] text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)]"
+                                className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed bg-[var(--bg-elevated)] border border-[var(--border-default)] text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)] hover:border-[var(--border-strong)]"
                             >
-                                <MinusOutlined className="text-xs" />
+                                <MinusOutlined className="text-sm" />
                             </button>
                             <button
                                 onClick={addSet}
                                 disabled={!dayExercise.repsType || isLoadingExercises}
-                                className="w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed bg-[var(--bg-elevated)] border border-[var(--border-light)] text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)]"
+                                className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed bg-[var(--bg-elevated)] border border-[var(--border-default)] text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)] hover:border-[var(--border-strong)]"
                             >
-                                <PlusOutlined className="text-xs" />
+                                <PlusOutlined className="text-sm" />
                             </button>
                         </div>
                     )}
@@ -230,7 +230,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
 
             {/* Sets Container - Clean, minimal card */}
             {(dayExercise.repsType || !props.isDraft) && (
-                <div className="flex flex-col gap-3 rounded-xl p-4 bg-[var(--bg-elevated)] border border-[var(--border-light)]">
+                <div className="flex flex-col gap-4 rounded-xl p-5 bg-[var(--bg-elevated)] border border-[var(--border-default)] shadow-sm">
                     {dayExercise.repsType === "custom" ? (
                         <TextArea
                             rows={4}
@@ -317,7 +317,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                         </div>
                     }
                 >
-                    <button className="px-4 py-2 rounded-lg transition-all duration-200 text-sm font-medium bg-[var(--bg-elevated)] border border-[var(--border-light)] text-[var(--text-secondary)]">
+                    <button className="min-h-[44px] px-4 py-2 rounded-lg transition-all duration-200 text-sm font-medium bg-[var(--bg-elevated)] border border-[var(--border-default)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)]">
                         {t("workouts.exercises.initial")}
                     </button>
                 </Tooltip>
@@ -339,8 +339,8 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                 />
                 {(props.isCurrent || props.isHistory) && dayExercise.creationNotes && (
                     <Tooltip title={dayExercise.creationNotes}>
-                        <button className="w-10 h-10 flex items-center justify-center rounded-lg bg-[var(--bg-elevated)] border border-[var(--border-light)]">
-                            <InfoCircleOutlined className="text-[18px] text-[var(--text-tertiary)]" />
+                        <button className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg bg-[var(--bg-elevated)] border border-[var(--border-default)] hover:bg-[var(--bg-tertiary)] hover:border-[var(--border-strong)] transition-all duration-200">
+                            <InfoCircleOutlined className="text-[18px] text-[var(--text-secondary)]" />
                         </button>
                     </Tooltip>
                 )}
@@ -363,7 +363,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                     onBlur={saveWeights}
                     placeholder={t("workouts.exercises.notes_placeholder")}
                     disabled={isLoadingExercises}
-                    className="rounded-lg text-sm bg-[var(--bg-elevated)] border-[var(--border-light)]"
+                    className="rounded-lg text-sm"
                 />
             )}
 
@@ -373,7 +373,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                     <button
                         onClick={() => props.deleteExercise?.(props.exerciseId)}
                         disabled={props.isNew}
-                        className="w-10 h-10 flex items-center justify-center rounded-lg transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed bg-transparent border border-[var(--border-light)] text-[var(--text-tertiary)] hover:bg-[var(--bg-elevated)] hover:text-[var(--semantic-error)]"
+                        className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed bg-transparent border border-[var(--border-default)] text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] hover:text-[var(--semantic-error)] hover:border-[var(--semantic-error)]"
                     >
                         <DeleteOutlined className="text-base" />
                     </button>

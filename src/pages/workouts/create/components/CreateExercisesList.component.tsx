@@ -219,7 +219,7 @@ export const CreateExercisesList = () => {
 
                                     return (
                                         <SortableItem key={groupKey} id={group[0].id.toString()}>
-                                            <div>
+                                            <div className="history-exercises-collapse">
                                                 <Collapse
                                                     accordion
                                                     items={renderedItems}
@@ -242,7 +242,7 @@ export const CreateExercisesList = () => {
                                         const item = renderItem(mutableDayExercise);
                                         return (
                                             <SortableItem key={mutableDayExercise.id} id={mutableDayExercise.id.toString()}>
-                                                <div>
+                                                <div className="history-exercises-collapse">
                                                     <Collapse
                                                         items={[item]}
                                                         activeKey={item.key === activeKey ? item.key : undefined}

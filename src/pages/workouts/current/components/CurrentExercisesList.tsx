@@ -181,7 +181,7 @@ export const CurrentExercisesList = () => {
 
                             return (
                                 <SortableItem key={groupKey} id={group[0].id.toString()}>
-                                    <div>
+                                    <div className="history-exercises-collapse">
                                         <Collapse
                                             accordion
                                             items={renderedItems}

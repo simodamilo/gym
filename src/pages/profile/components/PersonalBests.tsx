@@ -64,10 +64,10 @@ export const PersonalBests = () => {
     };
 
     return (
-        <div className="bg-gradient-to-br from-neutral-900 to-neutral-800 dark:from-neutral-950 dark:to-neutral-900 rounded-2xl p-6">
+        <div className="bg-[var(--bg-profile-card)] shadow-var-md rounded-2xl p-6">
             {/* Header with Add Button */}
             <div className="flex items-center justify-between mb-4">
-                <p className="text-neutral-400 text-sm uppercase tracking-wider">
+                <p className="text-[var(--text-secondary)] text-sm uppercase tracking-wider">
                     {t("profile.personal_bests")}
                 </p>
                 <motion.button
@@ -84,7 +84,7 @@ export const PersonalBests = () => {
             {/* Loading State */}
             {isLoading && (
                 <div className="text-center py-8">
-                    <p className="text-neutral-500 text-sm">
+                    <p className="text-[var(--text-tertiary)] text-sm">
                         {t("profile.loading")}
                     </p>
                 </div>
@@ -105,9 +105,9 @@ export const PersonalBests = () => {
                     {personalBests.map((pb) => (
                         <div
                             key={pb.exerciseId}
-                            className="flex justify-between items-center py-2 border-b border-neutral-700/50 last:border-b-0"
+                            className="flex justify-between items-center py-2 border-b border-[var(--border-default)] last:border-b-0"
                         >
-                            <span className="text-white text-base">
+                            <span className="text-[var(--text-primary)] text-base">
                                 {pb.exerciseName}
                             </span>
                             <div className="flex items-center gap-2">
@@ -116,7 +116,7 @@ export const PersonalBests = () => {
                                         M
                                     </span>
                                 )}
-                                <span className="text-white text-base font-semibold">
+                                <span className="text-[var(--text-primary)] text-base font-semibold">
                                     {pb.maxWeight.toFixed(1)} kg
                                 </span>
                             </div>
@@ -128,7 +128,7 @@ export const PersonalBests = () => {
             {/* Empty State */}
             {!isLoading && !isError && personalBests.length === 0 && (
                 <div className="text-center py-8">
-                    <p className="text-neutral-500 text-sm">
+                    <p className="text-[var(--text-tertiary)] text-sm">
                         {t("profile.no_personal_bests")}
                     </p>
                 </div>

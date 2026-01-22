@@ -55,3 +55,66 @@
         transition: transform 200ms ease !important;
     }
 }
+
+/* History exercises collapse - card style */
+.history-exercises-collapse {
+    .ant-collapse {
+        background: transparent !important;
+        border: none !important;
+    }
+
+    .ant-collapse-item {
+        background: var(--bg-elevated) !important;
+        border: none !important;
+        border-radius: 16px !important;
+        margin-bottom: 12px !important;
+        overflow: hidden !important;
+        box-shadow: var(--shadow-md) !important;
+    }
+
+    .ant-collapse-item:last-child {
+        margin-bottom: 0 !important;
+    }
+
+    .ant-collapse-header {
+        padding: 16px 20px !important;
+        background: transparent !important;
+        border: none !important;
+        align-items: center !important;
+    }
+
+    .ant-collapse-header:hover {
+        background: transparent !important;
+    }
+
+    .ant-collapse-content {
+        background: transparent !important;
+        border: none !important;
+    }
+
+    .ant-collapse-content-box {
+        padding: 0 20px 16px 20px !important;
+        background: transparent !important;
+    }
+
+    .ant-collapse-expand-icon {
+        color: var(--text-tertiary) !important;
+        font-size: 16px !important;
+        margin-inline-end: 12px !important;
+    }
+
+    .ant-collapse-item-active .ant-collapse-expand-icon {
+        color: var(--brand-primary) !important;
+    }
+
+    .ant-collapse-expand-icon svg {
+        transition: transform 200ms ease !important;
+    }
+}
+
+/* Dark mode specific adjustments */
+.dark .history-exercises-collapse {
+    .ant-collapse-item {
+        background: var(--bg-tertiary) !important;
+    }
+}

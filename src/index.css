@@ -21,6 +21,7 @@
     --bg-secondary: #e8e8ed;
     --bg-tertiary: #d1d1d6;
     --bg-elevated: #ffffff;
+    --bg-profile-card: #ffffff;
 
     /* Text colors - Enhanced contrast */
     --text-primary: #1a1a1a;
@@ -81,6 +82,7 @@
     --bg-secondary: #262626;
     --bg-tertiary: #434343;
     --bg-elevated: #262626;
+    --bg-profile-card: #434343;
 
     /* Text colors */
     --text-primary: #fafafa;
