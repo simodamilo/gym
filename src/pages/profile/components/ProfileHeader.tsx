@@ -14,7 +14,7 @@ export const ProfileHeader = ({ email, onSettingsClick }: ProfileHeaderProps) =>
                 {/* Avatar */}
                 <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[var(--border-light)]">
                     <img
-                        src={`https://api.dicebear.com/8.x/pixel-art/svg?seed=${email || "default"}`}
+                        src={`https://api.dicebear.com/8.x/pixel-art/svg?seed=1234`}
                         alt="User Avatar"
                         className="w-full h-full object-cover"
                     />
@@ -23,7 +23,7 @@ export const ProfileHeader = ({ email, onSettingsClick }: ProfileHeaderProps) =>
                 {/* User Name and Badge */}
                 <div className="flex-1">
                     <h2 className="text-[var(--text-primary)] text-xl font-bold mb-1">
-                        {email?.split("@")[0] || "User"}
+                        {email?.split("@")[0] || ""}
                     </h2>
                 </div>
             </div>
