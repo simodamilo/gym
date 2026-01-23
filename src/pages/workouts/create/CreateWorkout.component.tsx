@@ -192,7 +192,7 @@ export const CreateWorkout = () => {
                     )}
                 </div>
             ) : (
-                <EmptyState icon={<PlusOutlined />} title={t("workouts.workout_page.no_workout")} description="Tap the + button to add your first day" animated={false} className="pb-28" />
+                <EmptyState icon={<PlusOutlined />} title={t("workouts.workout_page.no_workout")} description={t('pages.create.empty_day_hint')} animated={false} className="pb-28" />
             )}
 
             {/* Edit Day name */}
@@ -235,12 +235,12 @@ export const CreateWorkout = () => {
                     setSelectedDay(undefined);
                 }}
             >
-                <p className="text-[var(--text-secondary)] m-0">This action cannot be undone. All exercises in this day will be permanently removed.</p>
+                <p className="text-[var(--text-secondary)] m-0">{t('pages.create.delete_day_warning')}</p>
             </CustomModal>
 
             {/* Publish Workout */}
             <CustomModal type="publish" title={t("workouts.workout_page.publish_workout_modal_title")} open={isPublishModalOpen} onOk={publishWorkout} onCancel={() => setIsPublishModalOpen(false)}>
-                <p className="text-[var(--text-secondary)] m-0">Your workout will be published and ready to use. You can start tracking your progress!</p>
+                <p className="text-[var(--text-secondary)] m-0">{t('pages.create.publish_confirmation')}</p>
             </CustomModal>
         </div>
     );

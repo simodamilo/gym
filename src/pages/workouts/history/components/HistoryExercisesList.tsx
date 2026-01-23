@@ -57,7 +57,7 @@ export const HistoryExercisesList = () => {
         label: (
             <div className="flex items-center justify-between w-full gap-4">
                 <div className="flex-1 flex flex-col gap-1">
-                    <span className="text-base font-semibold text-[var(--text-primary)]">{exercise.exercise?.name || "Exercise"}</span>
+                    <span className="text-base font-semibold text-[var(--text-primary)]">{exercise.exercise?.name || t('components.item_card.exercise_singular')}</span>
                 </div>
             </div>
         ),
@@ -97,7 +97,7 @@ export const HistoryExercisesList = () => {
                         })}
                     </>
                 ) : (
-                    <EmptyState icon={<FileTextOutlined />} title="No exercises yet" description="This workout has no exercises recorded" />
+                    <EmptyState icon={<FileTextOutlined />} title={t('pages.history.empty_exercises_title')} description={t('pages.history.empty_exercises_description')} />
                 )}
             </div>
         </div>

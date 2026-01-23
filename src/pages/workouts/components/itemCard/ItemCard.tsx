@@ -1,5 +1,6 @@
 import { DeleteOutlined, EditOutlined, HolderOutlined, RightOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import type { Day } from "../../../../store/draft/types";
 import { IconButton } from "../../../../components/iconButton/IconButton";
 
@@ -19,6 +20,7 @@ interface ItemCardProps {
 }
 
 export const ItemCard = (props: ItemCardProps) => {
+    const { t } = useTranslation();
     const {
         title,
         exerciseCount,
@@ -52,11 +54,11 @@ export const ItemCard = (props: ItemCardProps) => {
                     </h3>
                     <div className="flex items-center gap-2">
                         <span className="text-sm text-[var(--text-secondary)]">
-                            {exerciseCount} Exercise{exerciseCount !== 1 ? "s" : ""}
+                            {exerciseCount} {exerciseCount !== 1 ? t('components.item_card.exercise_plural') : t('components.item_card.exercise_singular')}
                         </span>
                         {isLast && (
                             <span className="text-xs font-semibold px-2 py-0.5 rounded bg-[var(--semantic-success)] text-white">
-                                LAST
+                                {t('components.item_card.last_badge')}
                             </span>
                         )}
                     </div>

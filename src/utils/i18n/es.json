@@ -1,6 +1,55 @@
 {
+    "app": {
+        "name": "GymTracker",
+        "tagline": "Rastrea Entrenamientos, Ejercicios y Mejores Marcas",
+        "meta": {
+            "description": "GymTracker - App gratuita de seguimiento de fitness y entrenamientos. Rastrea ejercicios, entrenamientos y mejores marcas. ¡Comienza tu viaje fitness hoy!",
+            "workouts_description": "Crea y rastrea tus rutinas de entrenamiento personalizadas. Monitorea el progreso, establece récords personales y alcanza tus metas fitness.",
+            "exercises_description": "Explora nuestra biblioteca completa de ejercicios. Rastrea tus mejores marcas y crea programas de entrenamiento personalizados.",
+            "profile_description": "Visualiza tu progreso fitness, rastrea cambios en el peso corporal y monitorea tus récords personales a lo largo del tiempo."
+        }
+    },
     "common": {
-        "back_btn": "Atrás"
+        "back_btn": "Atrás",
+        "months": {
+            "jan": "Ene",
+            "feb": "Feb",
+            "mar": "Mar",
+            "apr": "Abr",
+            "may": "May",
+            "jun": "Jun",
+            "jul": "Jul",
+            "aug": "Ago",
+            "sep": "Sep",
+            "oct": "Oct",
+            "nov": "Nov",
+            "dec": "Dic"
+        }
+    },
+    "navigation": {
+        "profile": "Perfil",
+        "workouts": "Entrenamientos",
+        "exercises": "Ejercicios",
+        "logout": "Cerrar Sesión",
+        "new_workout": "Nuevo Entrenamiento",
+        "new_exercise": "Nuevo Ejercicio"
+    },
+    "components": {
+        "modal": {
+            "cancel": "Cancelar",
+            "delete": "Eliminar",
+            "save": "Guardar",
+            "publish": "Publicar",
+            "ok": "OK"
+        },
+        "item_card": {
+            "exercise_singular": "Ejercicio",
+            "exercise_plural": "Ejercicios",
+            "last_badge": "ÚLTIMO"
+        },
+        "profile_header": {
+            "avatar_alt": "Avatar de Usuario"
+        }
     },
     "exercises": {
         "category_placeholder": "Selecciona una categoría",
@@ -15,6 +64,50 @@
         "add_exercise_btn": "Añadir",
         "delete_exercise_modal": {
             "description": "¿Estás seguro de que quieres eliminar este ejercicio?"
+        }
+    },
+    "pages": {
+        "exercises": {
+            "title": "Ejercicios",
+            "meta_title": "Ejercicios | GymTracker",
+            "dropdown": {
+                "track_pb": "Rastrear en Mejores Marcas",
+                "edit": "Editar",
+                "delete": "Eliminar"
+            },
+            "empty_state": {
+                "title_no_exercises": "Comienza a Construir tu Biblioteca de Ejercicios",
+                "title_no_results": "No se Encontraron Ejercicios",
+                "description_category": "No hay ejercicios en la categoría \"{{category}}\". Intenta seleccionar una categoría diferente o crea un nuevo ejercicio.",
+                "description_empty": "Comienza creando tu primer ejercicio usando el botón de abajo."
+            },
+            "modal": {
+                "delete_title": "Eliminar Ejercicio"
+            },
+            "create_button": "Crear"
+        },
+        "workouts": {
+            "title": "Entrenamientos",
+            "meta_title": "Entrenamientos | GymTracker"
+        },
+        "history": {
+            "unknown_date": "Fecha Desconocida",
+            "empty_state": "Comienza tu Viaje Fitness - Crea tu Primer Entrenamiento",
+            "empty_exercises_title": "Aún no hay ejercicios",
+            "empty_exercises_description": "Este entrenamiento no tiene ejercicios registrados"
+        },
+        "current": {
+            "empty_state": "No hay entrenamiento disponible. ¡Crea uno para comenzar!",
+            "workout_started_message": "Entrenamiento iniciado",
+            "empty_exercises_title": "Aún no hay ejercicios",
+            "empty_exercises_description": "Añade ejercicios a tu entrenamiento para comenzar"
+        },
+        "create": {
+            "empty_day_hint": "Toca el botón + para añadir tu primer día",
+            "empty_exercises_title": "Aún no hay ejercicios",
+            "empty_exercises_hint": "Toca el botón + para añadir tu primer ejercicio",
+            "delete_day_warning": "Esta acción no se puede deshacer. Todos los ejercicios de este día se eliminarán permanentemente.",
+            "publish_confirmation": "Tu entrenamiento será publicado y estará listo para usar. ¡Puedes comenzar a rastrear tu progreso!"
         }
     },
     "workouts": {

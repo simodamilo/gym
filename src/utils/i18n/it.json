@@ -1,0 +1,185 @@
+{
+    "app": {
+        "name": "GymTracker",
+        "tagline": "Traccia Allenamenti, Esercizi e Record Personali",
+        "meta": {
+            "description": "GymTracker - App gratuita per il monitoraggio del fitness e degli allenamenti. Traccia esercizi, allenamenti e record personali. Inizia il tuo percorso fitness oggi!",
+            "workouts_description": "Crea e traccia le tue routine di allenamento personalizzate. Monitora i progressi, stabilisci record personali e raggiungi i tuoi obiettivi fitness.",
+            "exercises_description": "Sfoglia la nostra libreria completa di esercizi. Traccia i tuoi record personali e crea programmi di allenamento personalizzati.",
+            "profile_description": "Visualizza i tuoi progressi fitness, traccia i cambiamenti del peso corporeo e monitora i tuoi record personali nel tempo."
+        }
+    },
+    "common": {
+        "back_btn": "Indietro",
+        "months": {
+            "jan": "Gen",
+            "feb": "Feb",
+            "mar": "Mar",
+            "apr": "Apr",
+            "may": "Mag",
+            "jun": "Giu",
+            "jul": "Lug",
+            "aug": "Ago",
+            "sep": "Set",
+            "oct": "Ott",
+            "nov": "Nov",
+            "dec": "Dic"
+        }
+    },
+    "navigation": {
+        "profile": "Profilo",
+        "workouts": "Allenamenti",
+        "exercises": "Esercizi",
+        "logout": "Esci",
+        "new_workout": "Nuovo Allenamento",
+        "new_exercise": "Nuovo Esercizio"
+    },
+    "components": {
+        "modal": {
+            "cancel": "Annulla",
+            "delete": "Elimina",
+            "save": "Salva",
+            "publish": "Pubblica",
+            "ok": "OK"
+        },
+        "item_card": {
+            "exercise_singular": "Esercizio",
+            "exercise_plural": "Esercizi",
+            "last_badge": "ULTIMO"
+        },
+        "profile_header": {
+            "avatar_alt": "Avatar Utente"
+        }
+    },
+    "exercises": {
+        "category_placeholder": "Seleziona una categoria",
+        "create_exercise_modal": {
+            "title": "Crea un nuovo esercizio"
+        },
+        "edit_exercise_modal": {
+            "title": "Modifica esercizio",
+            "name_placeholder": "Nome"
+        },
+        "name_placeholder": "Aggiungi un nuovo esercizio",
+        "add_exercise_btn": "Aggiungi",
+        "delete_exercise_modal": {
+            "description": "Sei sicuro di voler eliminare questo esercizio?"
+        }
+    },
+    "pages": {
+        "exercises": {
+            "title": "Esercizi",
+            "meta_title": "Esercizi | GymTracker",
+            "dropdown": {
+                "track_pb": "Traccia nei Record Personali",
+                "edit": "Modifica",
+                "delete": "Elimina"
+            },
+            "empty_state": {
+                "title_no_exercises": "Inizia a Costruire la Tua Libreria di Esercizi",
+                "title_no_results": "Nessun Esercizio Trovato",
+                "description_category": "Non ci sono esercizi nella categoria \"{{category}}\". Prova a selezionare una categoria diversa o crea un nuovo esercizio.",
+                "description_empty": "Inizia creando il tuo primo esercizio usando il pulsante qui sotto."
+            },
+            "modal": {
+                "delete_title": "Elimina Esercizio"
+            },
+            "create_button": "Crea"
+        },
+        "workouts": {
+            "title": "Allenamenti",
+            "meta_title": "Allenamenti | GymTracker"
+        },
+        "history": {
+            "unknown_date": "Data Sconosciuta",
+            "empty_state": "Inizia il Tuo Percorso Fitness - Crea il Tuo Primo Allenamento",
+            "empty_exercises_title": "Nessun esercizio ancora",
+            "empty_exercises_description": "Questo allenamento non ha esercizi registrati"
+        },
+        "current": {
+            "empty_state": "Nessun allenamento disponibile. Creane uno per iniziare!",
+            "workout_started_message": "Allenamento iniziato",
+            "empty_exercises_title": "Nessun esercizio ancora",
+            "empty_exercises_description": "Aggiungi esercizi al tuo allenamento per iniziare"
+        },
+        "create": {
+            "empty_day_hint": "Tocca il pulsante + per aggiungere il tuo primo giorno",
+            "empty_exercises_title": "Nessun esercizio ancora",
+            "empty_exercises_hint": "Tocca il pulsante + per aggiungere il tuo primo esercizio",
+            "delete_day_warning": "Questa azione non può essere annullata. Tutti gli esercizi di questo giorno verranno rimossi permanentemente.",
+            "publish_confirmation": "Il tuo allenamento verrà pubblicato e sarà pronto all'uso. Puoi iniziare a tracciare i tuoi progressi!"
+        }
+    },
+    "workouts": {
+        "current_tab": "Attuale",
+        "history_tab": "Cronologia",
+        "workout_page": {
+            "description": "Questa è la lista dei giorni",
+            "no_workout": "L'allenamento è ancora vuoto",
+            "is_last": "Ultimo",
+            "add_day_modal_title": "Aggiungi un nuovo giorno",
+            "day_name_placeholder": "Aggiungi un nome per il giorno",
+            "delete_day_modal_title": "Sei sicuro di voler eliminare questo giorno?",
+            "publish_workout_modal_title": "Sei sicuro di voler pubblicare l'allenamento?"
+        },
+        "exercises": {
+            "description": "Questa è la lista degli esercizi",
+            "category_placeholder": "Seleziona una categoria",
+            "exercise_placeholder": "Seleziona un esercizio",
+            "reps_placeholder_reps": "Aggiungi il numero di ripetizioni",
+            "reps_placeholder_time": "Aggiungi il numero di secondi",
+            "rest_placeholder": "Aggiungi il riposo",
+            "rest_label": "Riposo",
+            "notes_placeholder": "Aggiungi una nota",
+            "save_btn": "Salva",
+            "new_exercise_title": "Nuovo esercizio",
+            "kg": "Kg",
+            "reps": "Rip",
+            "secs": "Sec",
+            "start_workout": "Inizia Allenamento",
+            "reps_type_placeholder": "Seleziona il tipo di ripetizioni",
+            "superset": "Superset con il prossimo esercizio",
+            "confirm_save_base": "Sei sicuro di voler salvare i pesi attuali come base?",
+            "workout_started": "Allenamento Iniziato",
+            "initial": "Iniziale"
+        }
+    },
+    "profile": {
+        "personal_info_title": "Informazioni personali",
+        "weight_title": "Grafico del peso",
+        "one_rep_max": "1RM",
+        "settings_title": "Impostazioni",
+        "workouts": "Allenamenti",
+        "body_weight_progress": "Progressi Peso Corporeo",
+        "personal_bests": "Record Personali",
+        "no_personal_bests": "Nessun record personale ancora. Completa gli allenamenti per vedere i tuoi record!",
+        "loading": "Caricamento...",
+        "error_loading_personal_bests": "Errore nel caricamento dei record personali",
+        "add_pr_button": "Aggiungi record personale",
+        "add_pr_modal": {
+            "title": "Aggiungi Record Personale",
+            "cancel": "Annulla",
+            "save": "Salva RP",
+            "saving": "Salvataggio...",
+            "error_exercise_required": "Per favore seleziona un esercizio",
+            "error_weight_min": "Il peso deve essere almeno 0.5 kg",
+            "error_weight_max": "Il peso non può superare 999.9 kg",
+            "success_title": "Record Personale Aggiunto!",
+            "success_message": "Il tuo record personale è stato salvato con successo",
+            "error_title": "Impossibile Aggiungere RP",
+            "error_message": "Non è stato possibile salvare il tuo record personale. Riprova."
+        },
+        "weight_modal": {
+            "title": "Aggiungi un peso",
+            "placeholder": "Aggiungi un peso"
+        },
+        "settings": {
+            "title": "Impostazioni",
+            "theme": "Tema",
+            "dark": "Scuro",
+            "light": "Chiaro",
+            "language": "Lingua",
+            "sign_out": "Esci"
+        }
+    }
+}

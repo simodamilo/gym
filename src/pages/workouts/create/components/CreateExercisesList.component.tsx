@@ -142,7 +142,7 @@ export const CreateExercisesList = () => {
             label: (
                 <div className="flex items-center justify-between w-full gap-4">
                     <div className="flex-1 flex flex-col gap-1">
-                        <span className="text-base font-semibold text-[var(--text-primary)]">{exercise.exercise?.name || "New Exercise"}</span>
+                        <span className="text-base font-semibold text-[var(--text-primary)]">{exercise.exercise?.name || t('workouts.exercises.new_exercise_title')}</span>
                     </div>
                     {isDragEnable && <HolderOutlined className="text-xl cursor-grab active:cursor-grabbing flex-shrink-0 text-[var(--text-tertiary)]" />}
                 </div>
@@ -236,7 +236,7 @@ export const CreateExercisesList = () => {
                         )}
                     </>
                 ) : (
-                    <EmptyState icon={<FileTextOutlined />} title="No exercises yet" description="Tap the + button to add your first exercise" />
+                    <EmptyState icon={<FileTextOutlined />} title={t('pages.create.empty_exercises_title')} description={t('pages.create.empty_exercises_hint')} />
                 )}
             </div>
         </div>

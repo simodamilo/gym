@@ -119,7 +119,7 @@ export const CurrentExercisesList = () => {
             label: (
                 <div className="flex items-center justify-between w-full gap-4">
                     <div className="flex-1 flex flex-col gap-1">
-                        <span className="text-base font-semibold text-[var(--text-primary)]">{exercise.exercise?.name || "New Exercise"}</span>
+                        <span className="text-base font-semibold text-[var(--text-primary)]">{exercise.exercise?.name || t('workouts.exercises.new_exercise_title')}</span>
                     </div>
                 </div>
             ),
@@ -174,7 +174,7 @@ export const CurrentExercisesList = () => {
                         })}
                     </>
                 ) : (
-                    <EmptyState icon={<FileTextOutlined />} title="No exercises yet" description="Add exercises to your workout to get started" />
+                    <EmptyState icon={<FileTextOutlined />} title={t('pages.current.empty_exercises_title')} description={t('pages.current.empty_exercises_description')} />
                 )}
             </div>
 
@@ -189,7 +189,7 @@ export const CurrentExercisesList = () => {
                 onCancel={() => {
                     setShowConfirmSaveBase(false);
                 }}
-                okText="Save"
+                okText={t('workouts.exercises.save_btn')}
             >
                 <p className="text-[var(--text-secondary)] m-0">{t("workouts.exercises.confirm_save_base")}</p>
             </CustomModal>

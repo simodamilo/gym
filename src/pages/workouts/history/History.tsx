@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAppDispatch } from "../../../store";
 import { historySelectors } from "../../../store/history/history.selectors";
 import { historyActions } from "../../../store/history/history.actions";
@@ -10,6 +11,7 @@ import { currentActions } from "../../../store/current/current.actions";
 export const History = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const workouts = useSelector(historySelectors.getHistoryWorkouts);
 
@@ -21,7 +23,7 @@ export const History = () => {
     // Format date range for display
     const formatDateRange = (startDate?: number, endDate?: number): string => {
         if (!startDate || !endDate) {
-            return "Unknown Date";
+            return t('pages.history.unknown_date');
         }
 
         const start = new Date(startDate);
@@ -46,7 +48,7 @@ export const History = () => {
         return (
             <div className="flex h-full items-center justify-center">
                 <span className="text-[var(--text-tertiary)]">
-                    No workout history yet. Complete a workout to see it here!
+                    {t('pages.history.empty_state')}
                 </span>
             </div>
         );

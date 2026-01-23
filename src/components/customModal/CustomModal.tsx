@@ -1,6 +1,7 @@
 import { Modal } from "antd";
 import { DeleteOutlined, EditOutlined, CheckCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 export type ModalType = "delete" | "edit" | "publish" | "confirm";
 
@@ -23,8 +24,9 @@ export const CustomModal = ({
     title,
     children,
     okText,
-    cancelText = "Cancel",
+    cancelText,
 }: CustomModalProps) => {
+    const { t } = useTranslation();
     const getIcon = () => {
         switch (type) {
             case "delete":
@@ -58,16 +60,20 @@ export const CustomModal = ({
     const getDefaultOkText = () => {
         switch (type) {
             case "delete":
-                return "Delete";
+                return t('components.modal.delete');
             case "edit":
-                return "Save";
+                return t('components.modal.save');
             case "publish":
-                return "Publish";
+                return t('components.modal.publish');
             case "confirm":
-                return "OK";
+                return t('components.modal.ok');
             default:
-                return "OK";
+                return t('components.modal.ok');
         }
+    };
+
+    const getDefaultCancelText = () => {
+        return t('components.modal.cancel');
     };
 
     return (
@@ -110,7 +116,7 @@ export const CustomModal = ({
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                     >
-                        {cancelText}
+                        {cancelText || getDefaultCancelText()}
                     </motion.button>
                     <motion.button
                         onClick={onOk}

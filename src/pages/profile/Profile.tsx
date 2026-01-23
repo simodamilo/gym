@@ -23,16 +23,29 @@ interface GraphData {
     value: string;
 }
 
-function formatToShort(dateString: string) {
-    const date = new Date(dateString);
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const month = months[date.getMonth()];
-    return `${month}`;
-}
-
 export const Profile = () => {
     const dispatch = useAppDispatch();
     const { t } = useTranslation();
+
+    const formatToShort = (dateString: string) => {
+        const date = new Date(dateString);
+        const months = [
+            t('common.months.jan'),
+            t('common.months.feb'),
+            t('common.months.mar'),
+            t('common.months.apr'),
+            t('common.months.may'),
+            t('common.months.jun'),
+            t('common.months.jul'),
+            t('common.months.aug'),
+            t('common.months.sep'),
+            t('common.months.oct'),
+            t('common.months.nov'),
+            t('common.months.dec'),
+        ];
+        const month = months[date.getMonth()];
+        return `${month}`;
+    };
 
     const [email, setEmail] = useState<string>();
     const [openWeightModal, setOpenWeightModal] = useState<boolean>(false);

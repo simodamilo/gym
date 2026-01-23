@@ -1,5 +1,6 @@
 import { SettingOutlined } from "@ant-design/icons";
 import { Button } from "antd";
+import { useTranslation } from "react-i18next";
 
 interface ProfileHeaderProps {
     email?: string;
@@ -7,6 +8,7 @@ interface ProfileHeaderProps {
 }
 
 export const ProfileHeader = ({ email, onSettingsClick }: ProfileHeaderProps) => {
+    const { t } = useTranslation();
     return (
         <div className="flex justify-between items-center">
             {/* User Info */}
@@ -15,7 +17,7 @@ export const ProfileHeader = ({ email, onSettingsClick }: ProfileHeaderProps) =>
                 <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[var(--border-light)]">
                     <img
                         src={`https://api.dicebear.com/8.x/pixel-art/svg?seed=1234`}
-                        alt="User Avatar"
+                        alt={t('components.profile_header.avatar_alt')}
                         className="w-full h-full object-cover"
                     />
                 </div>

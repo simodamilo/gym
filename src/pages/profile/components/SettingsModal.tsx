@@ -86,6 +86,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
                         options={[
                             { value: "en", label: "English" },
                             { value: "es", label: "Español" },
+                            { value: "it", label: "Italiano" },
                         ]}
                     />
                 </div>

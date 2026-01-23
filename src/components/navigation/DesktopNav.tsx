@@ -1,6 +1,7 @@
 import { LogoutOutlined, PlayCircleOutlined, PlusOutlined, UnorderedListOutlined, UserOutlined } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { routes } from "../../utils/routing/routes";
 import { supabase } from "../../store/supabaseClient";
 import { exercisesCatalogActions } from "../../store/exercisesCatalog/exercisesCatalog.action";
@@ -8,7 +9,7 @@ import { useAppDispatch } from "../../store";
 import { currentActions } from "../../store/current/current.actions";
 
 interface MenuItem {
-    name: string;
+    nameKey: string;
     icon: React.ReactNode;
     path: string;
     action?: () => void;
@@ -18,6 +19,7 @@ export const DesktopNav = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+    const { t } = useTranslation();
 
     const handleLogout = async () => {
         const { error } = await supabase.auth.signOut();
@@ -36,9 +38,9 @@ export const DesktopNav = () => {
     };
 
     const menus: MenuItem[] = [
-        { name: "Profile", icon: <UserOutlined />, path: "/gym/profile" },
-        { name: "Workouts", icon: <PlayCircleOutlined />, path: "/gym/workouts" },
-        { name: "Exercises", icon: <UnorderedListOutlined />, path: "/gym/exercises" },
+        { nameKey: "navigation.profile", icon: <UserOutlined />, path: "/gym/profile" },
+        { nameKey: "navigation.workouts", icon: <PlayCircleOutlined />, path: "/gym/workouts" },
+        { nameKey: "navigation.exercises", icon: <UnorderedListOutlined />, path: "/gym/exercises" },
     ];
 
     const isActive = (path: string) => {
@@ -49,21 +51,21 @@ export const DesktopNav = () => {
         if (location.pathname === '/gym/profile') {
             return {
                 icon: <LogoutOutlined />,
-                label: 'Logout',
+                label: t('navigation.logout'),
                 onClick: handleLogout,
                 danger: true,
             };
         } else if (location.pathname.startsWith('/gym/workouts')) {
             return {
                 icon: <PlusOutlined />,
-                label: 'New Workout',
+                label: t('navigation.new_workout'),
                 onClick: handleCreateWorkout,
                 danger: false,
             };
         } else if (location.pathname.startsWith('/gym/exercises')) {
             return {
                 icon: <PlusOutlined />,
-                label: 'New Exercise',
+                label: t('navigation.new_exercise'),
                 onClick: handleCreateExercise,
                 danger: false,
             };
@@ -80,10 +82,10 @@ export const DesktopNav = () => {
             {/* Header */}
             <div className="p-6 border-b border-[var(--border-default)]">
                 <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                    GymTracker
+                    {t('app.name')}
                 </h1>
                 <p className="text-sm mt-1 text-[var(--text-tertiary)]">
-                    Track your fitness journey
+                    {t('app.tagline')}
                 </p>
             </div>
 
@@ -107,7 +109,7 @@ export const DesktopNav = () => {
                                     whileTap={{ scale: 0.98 }}
                                 >
                                     <span className="text-xl">{menu.icon}</span>
-                                    <span>{menu.name}</span>
+                                    <span>{t(menu.nameKey)}</span>
                                 </motion.button>
                             </li>
                         );

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Skeleton } from "antd";
+import { useTranslation } from "react-i18next";
 import { useAppDispatch } from "../../../store";
 import type { RootState } from "../../../store";
 import { currentActions } from "../../../store/current/current.actions";
@@ -11,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 export const Current = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const currentWorkout = useSelector((state: RootState) => currentSelectors.getCurrentWorkout(state));
     const isLoading = useSelector((state: RootState) => currentSelectors.isLoading(state));
@@ -29,7 +31,7 @@ export const Current = () => {
         return (
             <div className="flex h-full items-center justify-center">
                 <span className="text-[var(--text-tertiary)]">
-                    No workout available. Create one to get started!
+                    {t('pages.current.empty_state')}
                 </span>
             </div>
         );

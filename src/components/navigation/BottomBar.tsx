@@ -2,20 +2,15 @@ import { LogoutOutlined, PlayCircleOutlined, PlusOutlined, UnorderedListOutlined
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { routes } from "../../utils/routing/routes";
 import { supabase } from "../../store/supabaseClient";
 import { exercisesCatalogActions } from "../../store/exercisesCatalog/exercisesCatalog.action";
 import { useAppDispatch } from "../../store";
 import { currentActions } from "../../store/current/current.actions";
 
-const menus: MenuItem[] = [
-    { name: "Profile", icon: <UserOutlined />, path: "/gym/profile" },
-    { name: "Workout", icon: <PlayCircleOutlined />, path: "/gym/workouts" },
-    { name: "Exercise", icon: <UnorderedListOutlined />, path: "/gym/exercises" },
-];
-
 interface MenuItem {
-    name: string;
+    nameKey: string;
     icon: React.ReactNode;
     path: string;
 }
@@ -24,6 +19,13 @@ export const BottomBar = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+    const { t } = useTranslation();
+
+    const menus: MenuItem[] = [
+        { nameKey: "navigation.profile", icon: <UserOutlined />, path: "/gym/profile" },
+        { nameKey: "navigation.workouts", icon: <PlayCircleOutlined />, path: "/gym/workouts" },
+        { nameKey: "navigation.exercises", icon: <UnorderedListOutlined />, path: "/gym/exercises" },
+    ];
 
     const [active, setActive] = useState(1);
 
@@ -100,7 +102,7 @@ export const BottomBar = () => {
                             {menu.icon}
                         </span>
                         <span className={`text-[10px] font-semibold transition-colors duration-200 ${active === index ? "text-[var(--brand-primary)]" : "text-[var(--text-tertiary)]"}`}>
-                            {menu.name}
+                            {t(menu.nameKey)}
                         </span>
                     </motion.div>
                 ))}

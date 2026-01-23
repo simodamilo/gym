@@ -121,7 +121,7 @@ export const Exercises = () => {
         items: [
             {
                 key: "personal-best",
-                label: "Track in Personal Bests",
+                label: t('pages.exercises.dropdown.track_pb'),
                 icon: exercise.show_in_personal_best ? <CheckOutlined /> : <TrophyOutlined />,
                 onClick: () => {
                     togglePersonalBest(exercise);
@@ -132,7 +132,7 @@ export const Exercises = () => {
             },
             {
                 key: "edit",
-                label: "Edit",
+                label: t('pages.exercises.dropdown.edit'),
                 icon: <EditOutlined />,
                 onClick: () => {
                     setIsEditExerciseModalOpen(true);
@@ -141,7 +141,7 @@ export const Exercises = () => {
             },
             {
                 key: "delete",
-                label: "Delete",
+                label: t('pages.exercises.dropdown.delete'),
                 icon: <DeleteOutlined />,
                 danger: true,
                 onClick: () => {
@@ -156,7 +156,7 @@ export const Exercises = () => {
         <div className="w-full md:max-w-[1200px] m-auto flex flex-col gap-4 p-4 pb-0 overflow-y-auto h-full hide-scrollbar">
             {/* Page Header */}
             <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold text-[var(--text-primary)]">Exercises</h1>
+                <h1 className="text-3xl font-bold text-[var(--text-primary)]">{t('pages.exercises.title')}</h1>
             </div>
 
             {/* Search/Filter Bar */}
@@ -180,11 +180,11 @@ export const Exercises = () => {
                 {sortedCategories.length === 0 ? (
                     <EmptyState
                         icon={<InboxOutlined />}
-                        title={selectedCategory ? "No exercises found" : "No exercises yet"}
+                        title={selectedCategory ? t('pages.exercises.empty_state.title_no_results') : t('pages.exercises.empty_state.title_no_exercises')}
                         description={
                             selectedCategory
-                                ? `There are no exercises in the "${selectedCategory}" category. Try selecting a different category or create a new exercise.`
-                                : "Get started by creating your first exercise using the button below."
+                                ? t('pages.exercises.empty_state.description_category', { category: selectedCategory })
+                                : t('pages.exercises.empty_state.description_empty')
                         }
                         animated={false}
                     />
@@ -265,7 +265,7 @@ export const Exercises = () => {
                     setNewExerciseCategory(undefined);
                     setNewExerciseName("");
                 }}
-                okText="Create"
+                okText={t('pages.exercises.create_button')}
             >
                 <div className="flex flex-col gap-3">
                     <Select
@@ -314,7 +314,7 @@ export const Exercises = () => {
             {/* Delete exercise */}
             <CustomModal
                 type="delete"
-                title="Delete Exercise"
+                title={t('pages.exercises.modal.delete_title')}
                 open={isDeleteExerciseModalOpen}
                 onOk={() => deleteExercise()}
                 onCancel={() => {
