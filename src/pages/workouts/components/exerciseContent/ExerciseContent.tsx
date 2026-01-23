@@ -157,7 +157,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
     };
 
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 md:max-w-[400px] md:m-auto">
             {/* Checkbox for superset - only draft mode */}
             {props.isDraft && (
                 <Checkbox checked={dayExercise.isLinkedToNext} onChange={() => setDayExercise({ ...dayExercise, isLinkedToNext: !dayExercise.isLinkedToNext })}>

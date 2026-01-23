@@ -23,7 +23,7 @@ export const HistoryExercisesList = () => {
     useEffect(() => {
         if (workoutId) {
             const currentWorkout = archivedWorkouts.find((workout) => workout.id === workoutId);
-            const day = currentWorkout?.days.find(day => day.id === dayId)
+            const day = currentWorkout?.days.find((day) => day.id === dayId);
             if (day) {
                 setDay(day);
             }
@@ -57,20 +57,11 @@ export const HistoryExercisesList = () => {
         label: (
             <div className="flex items-center justify-between w-full gap-4">
                 <div className="flex-1 flex flex-col gap-1">
-                    <span className="text-base font-semibold text-[var(--text-primary)]">
-                        {exercise.exercise?.name || "Exercise"}
-                    </span>
+                    <span className="text-base font-semibold text-[var(--text-primary)]">{exercise.exercise?.name || "Exercise"}</span>
                 </div>
             </div>
         ),
-        children: (
-            <ExerciseContent
-                dayId={dayId!}
-                exerciseId={exercise.id}
-                dayExercise={exercise}
-                isHistory
-            />
-        ),
+        children: <ExerciseContent dayId={dayId!} exerciseId={exercise.id} dayExercise={exercise} isHistory />,
     });
 
     return (
@@ -86,11 +77,7 @@ export const HistoryExercisesList = () => {
                 </button>
             </div>
 
-            {day?.dayExercises && day?.dayExercises.length > 0 && (
-                <p className="text-left text-xs italic mb-4 text-[var(--text-secondary)]">
-                    {t("workouts.exercises.description")}
-                </p>
-            )}
+            {day?.dayExercises && day?.dayExercises.length > 0 && <p className="text-left text-xs italic mb-4 text-[var(--text-secondary)]">{t("workouts.exercises.description")}</p>}
 
             {/* Exercise list */}
             <div className="flex flex-col gap-3 overflow-y-auto pb-28 hide-scrollbar">
@@ -103,24 +90,14 @@ export const HistoryExercisesList = () => {
                             return (
                                 <SortableItem key={groupKey} id={group[0].id.toString()}>
                                     <div className="history-exercises-collapse">
-                                        <Collapse
-                                            accordion
-                                            items={renderedItems}
-                                            activeKey={activeKey}
-                                            onChange={(key) => setActiveKey(Array.isArray(key) ? key[0] : key)}
-                                            bordered={false}
-                                        />
+                                        <Collapse accordion items={renderedItems} activeKey={activeKey} onChange={(key) => setActiveKey(Array.isArray(key) ? key[0] : key)} bordered={false} />
                                     </div>
                                 </SortableItem>
                             );
                         })}
                     </>
                 ) : (
-                    <EmptyState
-                        icon={<FileTextOutlined />}
-                        title="No exercises yet"
-                        description="This workout has no exercises recorded"
-                    />
+                    <EmptyState icon={<FileTextOutlined />} title="No exercises yet" description="This workout has no exercises recorded" />
                 )}
             </div>
         </div>

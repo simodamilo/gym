@@ -38,7 +38,7 @@ export const HistoryWorkout = () => {
     }
 
     return (
-        <div className={`w-full h-full max-h-full md:w-3xl flex flex-col gap-2 justify-around pt-4`}>
+        <div className={`w-full h-full max-h-full flex flex-col gap-2 justify-around pt-4`}>
             <div className="flex flex-col gap-4">
                 <div className={`flex w-full justify-start`}>
                     <button
@@ -55,25 +55,23 @@ export const HistoryWorkout = () => {
                 {days && days.length > 0 && <p className="text-left text-[12px] italic">{t("workouts.workout_page.description")}</p>}
             </div>
             {days && days.length > 0 ? (
-                <div ref={scrollContainerRef} className="flex-1 overflow-y-auto flex flex-col gap-2 hide-scrollbar pb-28 rounded-b-xl">
-                    {
-                        days.map((day) => {
-                            const exerciseCount = day.dayExercises?.length || 0;
+                <div ref={scrollContainerRef} className="flex-1 overflow-y-auto flex flex-col gap-2 hide-scrollbar pb-28 rounded-b-xl px-2">
+                    {days.map((day) => {
+                        const exerciseCount = day.dayExercises?.length || 0;
 
-                            return (
-                                <ItemCard
-                                    key={day.id}
-                                    title={day.name || ''}
-                                    exerciseCount={exerciseCount}
-                                    onClick={() => {
-                                        navigate(`${day?.id}/exercises`);
-                                    }}
-                                    trainingCounter={day.counter}
-                                    borderColor="var(--semantic-success)"
-                                />
-                            );
-                        })
-                    }
+                        return (
+                            <ItemCard
+                                key={day.id}
+                                title={day.name || ""}
+                                exerciseCount={exerciseCount}
+                                onClick={() => {
+                                    navigate(`${day?.id}/exercises`);
+                                }}
+                                trainingCounter={day.counter}
+                                borderColor="var(--semantic-success)"
+                            />
+                        );
+                    })}
                 </div>
             ) : (
                 <div className="flex h-full items-center mx-auto">{t("workouts.workout_page.no_workout")}</div>
