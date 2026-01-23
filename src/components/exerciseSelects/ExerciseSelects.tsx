@@ -31,7 +31,7 @@ export const ExerciseSelects = (props: ExerciseSelectsProps) => {
         <div className="flex flex-col gap-2">
             <Select
                 allowClear
-                className="w-full md:w-xl text-left !text-[16px]"
+                className="w-full text-left !text-[16px] rounded-xl"
                 placeholder={t("workouts.exercises.category_placeholder")}
                 value={selectedCategory}
                 onChange={(value) => {
@@ -40,12 +40,14 @@ export const ExerciseSelects = (props: ExerciseSelectsProps) => {
                 }}
                 options={Categories}
                 disabled={props.isReadOnly || isLoadingExercises}
+                size="large"
+                listHeight={180}
             />
             <Select
                 allowClear
-                className="w-full md:w-xl text-left !text-[16px]"
+                className="w-full text-left !text-[16px] rounded-xl"
                 placeholder={t("workouts.exercises.exercise_placeholder")}
-                value={props.selectedExercise?.name}
+                value={props.selectedExercise?.id}
                 onChange={(value) => props.onChange(value)}
                 options={exercises
                     .filter((exercise) => exercise.category === selectedCategory)
@@ -55,6 +57,8 @@ export const ExerciseSelects = (props: ExerciseSelectsProps) => {
                         value: exercise.id,
                     }))}
                 disabled={props.isReadOnly || !selectedCategory || isLoadingExercises}
+                size="large"
+                listHeight={180}
             />
         </div>
     );

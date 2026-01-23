@@ -31,7 +31,7 @@ export const CreateExercisesList = () => {
     const [isDragEnable, setIsDragEnable] = useState<boolean>(false);
 
     useEffect(() => {
-        const day = workout?.days.find(day => day.id === dayId);
+        const day = workout?.days.find((day) => day.id === dayId);
         if (day) {
             const mutable: DayExercise[] = [...day.dayExercises];
             mutable.sort((a: DayExercise, b: DayExercise) => a.orderNumber - b.orderNumber);
@@ -51,7 +51,7 @@ export const CreateExercisesList = () => {
                 delay: 200,
                 tolerance: 50,
             },
-        })
+        }),
     );
 
     const handleDragEnd = (event: DragEndEvent) => {
@@ -92,7 +92,7 @@ export const CreateExercisesList = () => {
                     dayId: dayId,
                     workoutId: workout?.id,
                     isOrderUpdate: true,
-                })
+                }),
             );
         }
     };
@@ -104,7 +104,7 @@ export const CreateExercisesList = () => {
                     dayExercises: [exercise],
                     dayId: dayId,
                     workoutId: workout?.id,
-                })
+                }),
             );
         }
     };
@@ -137,25 +137,14 @@ export const CreateExercisesList = () => {
     };
 
     const renderItem = (exercise: DayExercise) => {
-        const setsCount = exercise.sets?.length || 0;
-
         return {
             key: exercise.id,
             label: (
                 <div className="flex items-center justify-between w-full gap-4">
                     <div className="flex-1 flex flex-col gap-1">
-                        <span className="text-base font-semibold text-[var(--text-primary)]">
-                            {exercise.exercise?.name || "New Exercise"}
-                        </span>
-                        {setsCount > 0 && (
-                            <span className="text-sm text-[var(--text-secondary)]">
-                                {setsCount} set{setsCount !== 1 ? 's' : ''}
-                            </span>
-                        )}
+                        <span className="text-base font-semibold text-[var(--text-primary)]">{exercise.exercise?.name || "New Exercise"}</span>
                     </div>
-                    {isDragEnable && (
-                        <HolderOutlined className="text-xl cursor-grab active:cursor-grabbing flex-shrink-0 text-[var(--text-tertiary)]" />
-                    )}
+                    {isDragEnable && <HolderOutlined className="text-xl cursor-grab active:cursor-grabbing flex-shrink-0 text-[var(--text-tertiary)]" />}
                 </div>
             ),
             children: (
@@ -184,11 +173,10 @@ export const CreateExercisesList = () => {
                     <ArrowLeftOutlined />
                 </button>
 
-                <div className="flex gap-2">
+                <div className="flex gap-2 px-1">
                     <IconButton icon={<PlusOutlined />} onClick={handleAddExercise} />
                     {mutableDayExercises && mutableDayExercises.length > 1 && (
                         <IconButton
-                            active={isDragEnable}
                             icon={<MoveIcon className="text-xl" />}
                             onClick={() => {
                                 if (!isDragEnable) {
@@ -201,11 +189,7 @@ export const CreateExercisesList = () => {
                 </div>
             </div>
 
-            {mutableDayExercises && mutableDayExercises.length > 0 && (
-                <p className="text-left text-xs italic mb-4 text-[var(--text-secondary)]">
-                    {t("workouts.exercises.description")}
-                </p>
-            )}
+            {mutableDayExercises && mutableDayExercises.length > 0 && <p className="text-left text-xs italic mb-4 text-[var(--text-secondary)]">{t("workouts.exercises.description")}</p>}
 
             {/* Exercise list */}
             <div className="flex flex-col flex-1 gap-3 overflow-y-auto pb-28 hide-scrollbar">
@@ -220,13 +204,7 @@ export const CreateExercisesList = () => {
                                     return (
                                         <SortableItem key={groupKey} id={group[0].id.toString()}>
                                             <div className="history-exercises-collapse">
-                                                <Collapse
-                                                    accordion
-                                                    items={renderedItems}
-                                                    activeKey={activeKey}
-                                                    onChange={(key) => setActiveKey(Array.isArray(key) ? key[0] : key)}
-                                                    bordered={false}
-                                                />
+                                                <Collapse accordion items={renderedItems} activeKey={activeKey} onChange={(key) => setActiveKey(Array.isArray(key) ? key[0] : key)} bordered={false} />
                                             </div>
                                         </SortableItem>
                                     );
@@ -258,11 +236,7 @@ export const CreateExercisesList = () => {
                         )}
                     </>
                 ) : (
-                    <EmptyState
-                        icon={<FileTextOutlined />}
-                        title="No exercises yet"
-                        description="Tap the + button to add your first exercise"
-                    />
+                    <EmptyState icon={<FileTextOutlined />} title="No exercises yet" description="Tap the + button to add your first exercise" />
                 )}
             </div>
         </div>

@@ -66,7 +66,7 @@ export const CreateWorkout = () => {
                 delay: 200,
                 tolerance: 50,
             },
-        })
+        }),
     );
 
     const handleDragEnd = (event: DragEndEvent) => {
@@ -91,8 +91,8 @@ export const CreateWorkout = () => {
                             order: item.order,
                             workout_id: workout!.id,
                         };
-                    })
-                )
+                    }),
+                ),
             );
         }
     };
@@ -112,7 +112,7 @@ export const CreateWorkout = () => {
                         counter: 0,
                         is_last: false,
                     },
-                ])
+                ]),
             );
 
             setIsEditModalOpen(false);
@@ -131,10 +131,11 @@ export const CreateWorkout = () => {
 
     const publishWorkout = async () => {
         await dispatch(draftActions.publishDraftWorkout());
-        navigate("/gym/workouts");
+        navigate(routes.workoutsCurrent);
+        dispatch(currentActions.showSwitcher(true));
     };
 
-    if ((isLoadingWorkout) && !workout) {
+    if (isLoadingWorkout && !workout) {
         return <Skeleton active />;
     }
 
@@ -155,9 +156,7 @@ export const CreateWorkout = () => {
                     <div className="flex gap-2">
                         {days && days.length > 0 && <IconButton icon={<UploadOutlined />} onClick={() => setIsPublishModalOpen(true)} />}
                         <IconButton icon={<PlusOutlined />} onClick={() => setIsEditModalOpen(true)} />
-                        {days && days.length > 1 && (
-                            <IconButton active={isDragEnable} icon={<MoveIcon className="text-xl" />} onClick={() => setIsDragEnable(!isDragEnable)} />
-                        )}
+                        {days && days.length > 1 && <IconButton icon={<MoveIcon className="text-xl" />} onClick={() => setIsDragEnable(!isDragEnable)} />}
                     </div>
                 </div>
                 {days && days.length > 0 && <p className="text-left text-[12px] italic">{t("workouts.workout_page.description")}</p>}
@@ -169,7 +168,7 @@ export const CreateWorkout = () => {
                             return (
                                 <ItemCard
                                     key={index}
-                                    title={day.name || ''}
+                                    title={day.name || ""}
                                     exerciseCount={day.dayExercises.length}
                                     onClick={() => navigate(`${day?.id}/exercises`)}
                                     isCreation
@@ -180,21 +179,11 @@ export const CreateWorkout = () => {
                         })
                     ) : (
                         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                            <SortableContext
-                                items={days.map((item) => item.id.toString()).filter((id): id is string => id !== undefined && id !== null)}
-                                strategy={verticalListSortingStrategy}
-                            >
+                            <SortableContext items={days.map((item) => item.id.toString()).filter((id): id is string => id !== undefined && id !== null)} strategy={verticalListSortingStrategy}>
                                 {days.map((day) => {
                                     return (
                                         <SortableItem key={day.id} id={day.id}>
-                                            <ItemCard
-                                                title={day.name || ''}
-                                                exerciseCount={day.dayExercises.length}
-                                                isCreation
-                                                day={day}
-                                                handleDayUpdate={handleDayUpdate}
-                                                isDraggable
-                                            />
+                                            <ItemCard title={day.name || ""} exerciseCount={day.dayExercises.length} isCreation day={day} handleDayUpdate={handleDayUpdate} isDraggable />
                                         </SortableItem>
                                     );
                                 })}
@@ -203,13 +192,7 @@ export const CreateWorkout = () => {
                     )}
                 </div>
             ) : (
-                <EmptyState
-                    icon={<PlusOutlined />}
-                    title={t("workouts.workout_page.no_workout")}
-                    description="Tap the + button to add your first day"
-                    animated={false}
-                    className="pb-28"
-                />
+                <EmptyState icon={<PlusOutlined />} title={t("workouts.workout_page.no_workout")} description="Tap the + button to add your first day" animated={false} className="pb-28" />
             )}
 
             {/* Edit Day name */}
@@ -252,22 +235,12 @@ export const CreateWorkout = () => {
                     setSelectedDay(undefined);
                 }}
             >
-                <p className="text-[var(--text-secondary)] m-0">
-                    This action cannot be undone. All exercises in this day will be permanently removed.
-                </p>
+                <p className="text-[var(--text-secondary)] m-0">This action cannot be undone. All exercises in this day will be permanently removed.</p>
             </CustomModal>
 
             {/* Publish Workout */}
-            <CustomModal
-                type="publish"
-                title={t("workouts.workout_page.publish_workout_modal_title")}
-                open={isPublishModalOpen}
-                onOk={publishWorkout}
-                onCancel={() => setIsPublishModalOpen(false)}
-            >
-                <p className="text-[var(--text-secondary)] m-0">
-                    Your workout will be published and ready to use. You can start tracking your progress!
-                </p>
+            <CustomModal type="publish" title={t("workouts.workout_page.publish_workout_modal_title")} open={isPublishModalOpen} onOk={publishWorkout} onCancel={() => setIsPublishModalOpen(false)}>
+                <p className="text-[var(--text-secondary)] m-0">Your workout will be published and ready to use. You can start tracking your progress!</p>
             </CustomModal>
         </div>
     );

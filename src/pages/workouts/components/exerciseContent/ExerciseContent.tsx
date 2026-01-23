@@ -110,11 +110,17 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
     };
 
     const updateSet = (fieldToUpdate: string, newValue: string, setId: string) => {
+        // Convert comma to period for weight field (DB compatibility)
+        let valueToStore = newValue;
+        if (fieldToUpdate === "weight" && newValue) {
+            valueToStore = newValue.replace(/,/g, ".");
+        }
+
         const newSets: Set[] = [...dayExercise.sets].map((set) => {
             if (set.id === setId) {
                 return {
                     ...set,
-                    [fieldToUpdate]: newValue,
+                    [fieldToUpdate]: valueToStore,
                 };
             }
             return set;
@@ -235,9 +241,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                                         </div>
                                         <div className="w-[60%]">
                                             <Input
-                                                type="tel"
-                                                inputMode="numeric"
-                                                pattern="[0-9]*"
+                                                inputMode="decimal"
                                                 key={set.id}
                                                 addonBefore={getAddon()}
                                                 value={set.weight}

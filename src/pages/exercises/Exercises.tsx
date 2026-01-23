@@ -24,6 +24,7 @@ export const Exercises = () => {
     const [isEditExerciseModalOpen, setIsEditExerciseModalOpen] = useState<boolean>(false);
     const [isDeleteExerciseModalOpen, setIsDeleteExerciseModalOpen] = useState<boolean>(false);
     const [selectedExercise, setSelectedExercise] = useState<ExerciseCatalog>();
+    const [dropdownPlacements, setDropdownPlacements] = useState<Record<string, "bottomRight" | "topRight">>({});
 
     const exercises: ExerciseCatalog[] = useSelector((state: RootState) => exercisesSelectors.getExercises(state));
     const isCreateModalOpen: boolean = useSelector(exercisesSelectors.isModalOpen);
@@ -97,6 +98,24 @@ export const Exercises = () => {
         );
     };
 
+    // Calculate dropdown placement based on button position
+    const calculateDropdownPlacement = (exerciseId: string, triggerElement: HTMLElement): "bottomRight" | "topRight" => {
+        const rect = triggerElement.getBoundingClientRect();
+        const spaceBelow = window.innerHeight - rect.bottom;
+        const DROPDOWN_HEIGHT = 200; // Approximate height of dropdown menu
+
+        // If less than dropdown height space below, open upward
+        const placement = spaceBelow < DROPDOWN_HEIGHT ? "topRight" : "bottomRight";
+
+        // Update state for this exercise
+        setDropdownPlacements((prev) => ({
+            ...prev,
+            [exerciseId]: placement,
+        }));
+
+        return placement;
+    };
+
     // Create dropdown menu for each exercise
     const getDropdownMenu = (exercise: ExerciseCatalog): MenuProps => ({
         items: [
@@ -134,7 +153,7 @@ export const Exercises = () => {
     });
 
     return (
-        <div className="flex flex-col gap-4 p-4 pb-0 overflow-y-auto h-full hide-scrollbar">
+        <div className="w-full md:max-w-[1200px] m-auto flex flex-col gap-4 p-4 pb-0 overflow-y-auto h-full hide-scrollbar">
             {/* Page Header */}
             <div className="flex items-center justify-between">
                 <h1 className="text-3xl font-bold text-[var(--text-primary)]">Exercises</h1>
@@ -144,7 +163,7 @@ export const Exercises = () => {
             <div className="flex flex-col text-left md:flex-row items-start gap-2">
                 <Select
                     allowClear
-                    className="w-full md:w-xl exercises-select rounded-xl"
+                    className="w-full exercises-select rounded-xl"
                     placeholder={t("exercises.category_placeholder")}
                     value={selectedCategory}
                     onChange={(value) => {
@@ -208,10 +227,21 @@ export const Exercises = () => {
                                             <Dropdown
                                                 menu={getDropdownMenu(exercise)}
                                                 trigger={["click"]}
-                                                placement="bottomRight"
+                                                placement={dropdownPlacements[exercise.id] || "bottomRight"}
                                                 getPopupContainer={(trigger) => trigger.parentElement || document.body}
+                                                onOpenChange={(open) => {
+                                                    if (open) {
+                                                        const buttonElement = document.querySelector(`[data-exercise-id="${exercise.id}"]`) as HTMLElement;
+                                                        if (buttonElement) {
+                                                            calculateDropdownPlacement(exercise.id, buttonElement);
+                                                        }
+                                                    }
+                                                }}
                                             >
-                                                <button className="w-8 h-8 flex items-center justify-center text-[var(--text-tertiary)] hover:bg-[var(--bg-secondary)] rounded-lg transition-colors">
+                                                <button
+                                                    data-exercise-id={exercise.id}
+                                                    className="w-8 h-8 flex items-center justify-center text-[var(--text-tertiary)] hover:bg-[var(--bg-secondary)] rounded-lg transition-colors"
+                                                >
                                                     <MoreOutlined className="text-lg" />
                                                 </button>
                                             </Dropdown>

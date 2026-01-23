@@ -107,7 +107,7 @@ export const AddPersonalBestModal = ({
                     <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-br from-purple-500/20 to-blue-500/20 max-[480px]:w-14 max-[480px]:h-14">
                         <TrophyOutlined className="text-[32px] text-purple-400 max-[480px]:text-[28px]" />
                     </div>
-                    <h3 className="m-0 text-xl font-semibold text-white text-center leading-snug max-[480px]:text-lg">
+                    <h3 className="m-0 text-xl font-semibold text-[var(--text-primary)] text-center leading-snug max-[480px]:text-lg">
                         {t("profile.add_pr_modal.title")}
                     </h3>
                 </div>
@@ -142,7 +142,7 @@ export const AddPersonalBestModal = ({
                     <motion.button
                         onClick={onClose}
                         disabled={isLoading}
-                        className="flex-1 h-11 rounded-xl border-none text-[15px] font-semibold cursor-pointer transition-all duration-200 flex items-center justify-center bg-neutral-800 text-white border border-neutral-700 hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed max-[480px]:h-10 max-[480px]:text-sm"
+                        className="flex-1 h-11 rounded-xl border-none text-[15px] font-semibold cursor-pointer transition-all duration-200 flex items-center justify-center bg-[var(--bg-secondary)] text-[var(--text-primary)] border border-[var(--border-light)] hover:bg-[var(--bg-tertiary)] disabled:opacity-50 disabled:cursor-not-allowed max-[480px]:h-10 max-[480px]:text-sm"
                         whileHover={{ scale: isLoading ? 1 : 1.02 }}
                         whileTap={{ scale: isLoading ? 1 : 0.98 }}
                     >

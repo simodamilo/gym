@@ -72,16 +72,16 @@ export const WeightInput = ({
 
     return (
         <div className="w-full">
-            <label className="block text-sm text-neutral-400 mb-2">
+            <label className="block text-sm text-[var(--text-tertiary)] mb-2">
                 Weight (kg)
             </label>
             <div
-                className={`flex items-center rounded-xl bg-neutral-800 border transition-colors ${
+                className={`flex items-center rounded-xl bg-[var(--bg-secondary)] border transition-colors ${
                     error
                         ? "border-red-500"
                         : isFocused
                         ? "border-blue-500"
-                        : "border-neutral-700"
+                        : "border-[var(--border-light)]"
                 } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
             >
                 {/* Decrement Button */}
@@ -89,7 +89,7 @@ export const WeightInput = ({
                     type="button"
                     onClick={handleDecrement}
                     disabled={disabled || value <= min}
-                    className="w-12 h-12 flex items-center justify-center text-neutral-400 hover:text-white hover:bg-neutral-700 rounded-l-xl transition-colors disabled:opacity-30 disabled:cursor-not-allowed active:scale-95"
+                    className="w-12 h-12 flex items-center justify-center text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)] rounded-l-xl transition-colors disabled:opacity-30 disabled:cursor-not-allowed active:scale-95"
                     aria-label="Decrease weight"
                 >
                     <MinusOutlined className="text-lg" />
@@ -107,7 +107,7 @@ export const WeightInput = ({
                     step={step}
                     min={min}
                     max={max}
-                    className="flex-1 bg-transparent text-center text-2xl font-semibold text-white outline-none py-3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    className="flex-1 bg-transparent text-center text-2xl font-semibold text-[var(--text-primary)] outline-none py-3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     aria-label="Weight value"
                 />
 
@@ -116,7 +116,7 @@ export const WeightInput = ({
                     type="button"
                     onClick={handleIncrement}
                     disabled={disabled || value >= max}
-                    className="w-12 h-12 flex items-center justify-center text-neutral-400 hover:text-white hover:bg-neutral-700 rounded-r-xl transition-colors disabled:opacity-30 disabled:cursor-not-allowed active:scale-95"
+                    className="w-12 h-12 flex items-center justify-center text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)] rounded-r-xl transition-colors disabled:opacity-30 disabled:cursor-not-allowed active:scale-95"
                     aria-label="Increase weight"
                 >
                     <PlusOutlined className="text-lg" />
@@ -132,7 +132,7 @@ export const WeightInput = ({
 
             {/* Helper Text */}
             {!error && (
-                <p className="text-neutral-500 text-xs mt-1">
+                <p className="text-[var(--text-tertiary)] text-xs mt-1">
                     Min: {min}kg, Max: {max}kg
                 </p>
             )}

@@ -29,7 +29,7 @@ export const CurrentExercisesList = () => {
     const [showConfirmSaveBase, setShowConfirmSaveBase] = useState<boolean>(false);
 
     useEffect(() => {
-        const day = workout?.days.find(day => day.id === dayId);
+        const day = workout?.days.find((day) => day.id === dayId);
         if (day) {
             const mutable: DayExercise[] = [...day.dayExercises];
             mutable.sort((a: DayExercise, b: DayExercise) => a.orderNumber - b.orderNumber);
@@ -44,7 +44,7 @@ export const CurrentExercisesList = () => {
     };
 
     const isAlreadyStarted = () => {
-        const day = workout?.days.find(day => day.id === dayId);
+        const day = workout?.days.find((day) => day.id === dayId);
         if (day?.lastWorkout) {
             const savedDate = new Date(day.lastWorkout);
             const today = new Date();
@@ -67,7 +67,7 @@ export const CurrentExercisesList = () => {
                     counter: newDay.counter ? newDay.counter + 1 : 1,
                     is_last: true,
                     order: newDay.order,
-                })
+                }),
             );
         }
     };
@@ -79,7 +79,7 @@ export const CurrentExercisesList = () => {
                 dayExercises: [exercise],
                 dayId: dayId,
                 workoutId: workout?.id,
-            })
+            }),
         );
         if (!isAlreadyStarted()) {
             handleStartClick();
@@ -119,22 +119,11 @@ export const CurrentExercisesList = () => {
             label: (
                 <div className="flex items-center justify-between w-full gap-4">
                     <div className="flex-1 flex flex-col gap-1">
-                        <span className="text-base font-semibold text-[var(--text-primary)]">
-                            {exercise.exercise?.name || "New Exercise"}
-                        </span>
+                        <span className="text-base font-semibold text-[var(--text-primary)]">{exercise.exercise?.name || "New Exercise"}</span>
                     </div>
                 </div>
             ),
-            children: (
-                <ExerciseContent
-                    dayId={dayId!}
-                    exerciseId={exercise.id}
-                    dayExercise={exercise}
-                    saveExercises={saveExercises}
-                    deleteExercise={deleteExercise}
-                    isCurrent
-                />
-            ),
+            children: <ExerciseContent dayId={dayId!} exerciseId={exercise.id} dayExercise={exercise} saveExercises={saveExercises} deleteExercise={deleteExercise} isCurrent />,
         };
     };
 
@@ -165,11 +154,7 @@ export const CurrentExercisesList = () => {
                 </div>
             </div>
 
-            {mutableDayExercises && mutableDayExercises.length > 0 && (
-                <p className="text-left text-xs italic mb-4 text-[var(--text-secondary)]">
-                    {t("workouts.exercises.description")}
-                </p>
-            )}
+            {mutableDayExercises && mutableDayExercises.length > 0 && <p className="text-left text-xs italic mb-4 text-[var(--text-secondary)]">{t("workouts.exercises.description")}</p>}
 
             {/* Exercise list */}
             <div className="flex flex-col gap-3 overflow-y-auto pb-28 hide-scrollbar">
@@ -182,31 +167,20 @@ export const CurrentExercisesList = () => {
                             return (
                                 <SortableItem key={groupKey} id={group[0].id.toString()}>
                                     <div className="history-exercises-collapse">
-                                        <Collapse
-                                            accordion
-                                            items={renderedItems}
-                                            activeKey={activeKey}
-                                            onChange={(key) => setActiveKey(Array.isArray(key) ? key[0] : key)}
-                                            bordered={false}
-                                        />
+                                        <Collapse accordion items={renderedItems} activeKey={activeKey} onChange={(key) => setActiveKey(Array.isArray(key) ? key[0] : key)} bordered={false} />
                                     </div>
                                 </SortableItem>
                             );
                         })}
                     </>
                 ) : (
-                    <EmptyState
-                        icon={<FileTextOutlined />}
-                        title="No exercises yet"
-                        description="Add exercises to your workout to get started"
-                    />
+                    <EmptyState icon={<FileTextOutlined />} title="No exercises yet" description="Add exercises to your workout to get started" />
                 )}
             </div>
 
             {/* Confirmation modal */}
             <CustomModal
                 type="confirm"
-                title={t("workouts.exercises.confirm_save_base_title") || "Save Base Weight"}
                 open={showConfirmSaveBase}
                 onOk={() => {
                     saveAsBaseWeight();
@@ -217,9 +191,7 @@ export const CurrentExercisesList = () => {
                 }}
                 okText="Save"
             >
-                <p className="text-[var(--text-secondary)] m-0">
-                    {t("workouts.exercises.confirm_save_base")}
-                </p>
+                <p className="text-[var(--text-secondary)] m-0">{t("workouts.exercises.confirm_save_base")}</p>
             </CustomModal>
         </div>
     );

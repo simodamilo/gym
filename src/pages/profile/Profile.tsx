@@ -76,7 +76,7 @@ export const Profile = () => {
                         name: formatToShort(progress.period.toString()),
                         value: progress.value,
                     };
-                })
+                }),
             );
         }
     }, [progresses]);
@@ -95,7 +95,7 @@ export const Profile = () => {
                     period: existingWeight ? existingWeight.period : date,
                     value: newWeight,
                     unit: existingWeight ? existingWeight.unit : "kg",
-                })
+                }),
             );
         }
         setOpenWeightModal(false);
@@ -105,22 +105,15 @@ export const Profile = () => {
     const currentWeight = dataWeights.length > 0 ? dataWeights[dataWeights.length - 1].value : undefined;
 
     return (
-        <div className="flex flex-col gap-4 p-4 pb-28 overflow-y-auto h-full hide-scrollbar">
+        <div className="w-full md:max-w-[1200px] m-auto flex flex-col gap-4 p-4 pb-28 overflow-y-auto h-full hide-scrollbar">
             {/* Profile Header */}
-            <ProfileHeader
-                email={email}
-                onSettingsClick={() => setOpenSettingsModal(true)}
-            />
+            <ProfileHeader email={email} onSettingsClick={() => setOpenSettingsModal(true)} />
 
             {/* Workout Stats */}
             <WorkoutStatsCard workoutCount={historyWorkouts.length} />
 
             {/* Body Weight Chart */}
-            <BodyWeightChart
-                data={dataWeights}
-                currentWeight={currentWeight}
-                onEditClick={() => setOpenWeightModal(true)}
-            />
+            <BodyWeightChart data={dataWeights} currentWeight={currentWeight} onEditClick={() => setOpenWeightModal(true)} />
 
             {/* Personal Bests */}
             <PersonalBests />
@@ -148,10 +141,7 @@ export const Profile = () => {
             </CustomModal>
 
             {/* Settings Modal */}
-            <SettingsModal
-                open={openSettingsModal}
-                onClose={() => setOpenSettingsModal(false)}
-            />
+            <SettingsModal open={openSettingsModal} onClose={() => setOpenSettingsModal(false)} />
         </div>
     );
 };
