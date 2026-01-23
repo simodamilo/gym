@@ -46,7 +46,7 @@ export const Exercises = () => {
                 id: uuidv4(),
                 name: newExerciseName,
                 category: newExerciseCategory,
-            })
+            }),
         );
         setNewExerciseName("");
         setNewExerciseCategory(undefined);
@@ -73,13 +73,16 @@ export const Exercises = () => {
         return !selectedCategory || exercise.category === selectedCategory;
     });
 
-    const groupedExercises = filteredExercises.reduce((acc, exercise) => {
-        if (!acc[exercise.category]) {
-            acc[exercise.category] = [];
-        }
-        acc[exercise.category].push(exercise);
-        return acc;
-    }, {} as Record<string, ExerciseCatalog[]>);
+    const groupedExercises = filteredExercises.reduce(
+        (acc, exercise) => {
+            if (!acc[exercise.category]) {
+                acc[exercise.category] = [];
+            }
+            acc[exercise.category].push(exercise);
+            return acc;
+        },
+        {} as Record<string, ExerciseCatalog[]>,
+    );
 
     // Sort categories alphabetically
     const sortedCategories = Object.keys(groupedExercises).sort();
@@ -90,7 +93,7 @@ export const Exercises = () => {
             exercisesCatalogActions.togglePersonalBest({
                 id: exercise.id,
                 showInPersonalBest: !exercise.show_in_personal_best,
-            })
+            }),
         );
     };
 
@@ -131,7 +134,7 @@ export const Exercises = () => {
     });
 
     return (
-        <div className="w-full h-screen md:w-3xl flex flex-col gap-6 p-4 pb-28 overflow-hidden bg-[var(--bg-secondary)]">
+        <div className="flex flex-col gap-4 p-4 pb-0 overflow-y-auto h-full hide-scrollbar">
             {/* Page Header */}
             <div className="flex items-center justify-between">
                 <h1 className="text-3xl font-bold text-[var(--text-primary)]">Exercises</h1>
@@ -154,7 +157,7 @@ export const Exercises = () => {
             </div>
 
             {/* Exercise List - Grouped by Category */}
-            <div className="flex flex-col flex-1 gap-6 overflow-auto hide-scrollbar">
+            <div className="flex flex-col flex-1 gap-6 pb-28 overflow-auto hide-scrollbar">
                 {sortedCategories.length === 0 ? (
                     <EmptyState
                         icon={<InboxOutlined />}
@@ -168,16 +171,12 @@ export const Exercises = () => {
                     />
                 ) : (
                     sortedCategories.map((category) => {
-                        const categoryExercises = groupedExercises[category].sort((a, b) =>
-                            a.name.localeCompare(b.name, undefined, { sensitivity: "base" })
-                        );
+                        const categoryExercises = groupedExercises[category].sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" }));
 
                         return (
                             <div key={category} className="flex flex-col gap-3">
                                 {/* Category Header */}
-                                <h2 className="text-sm font-bold text-[var(--accent-teal)] uppercase tracking-wide">
-                                    {category}
-                                </h2>
+                                <h2 className="text-sm font-bold text-[var(--accent-teal)] uppercase tracking-wide">{category}</h2>
 
                                 {/* Exercise Cards */}
                                 <div className="flex flex-col gap-3">
@@ -196,15 +195,13 @@ export const Exercises = () => {
                                                     {/* Trophy Badge - shown when tracked in personal bests */}
                                                     {exercise.show_in_personal_best && (
                                                         <div className="absolute -top-1 -right-1 w-5 h-5 bg-[var(--accent-teal)] rounded-full flex items-center justify-center shadow-md">
-                                                            <TrophyOutlined className="text-white text-xs" />
+                                                            <TrophyOutlined className="text-[var(--text-inverse)] text-xs" />
                                                         </div>
                                                     )}
                                                 </div>
 
                                                 {/* Exercise Name */}
-                                                <div className="font-semibold text-[var(--text-primary)]">
-                                                    {exercise.name}
-                                                </div>
+                                                <div className="font-semibold text-[var(--text-primary)]">{exercise.name}</div>
                                             </div>
 
                                             {/* Right side: Three-dot Menu */}
