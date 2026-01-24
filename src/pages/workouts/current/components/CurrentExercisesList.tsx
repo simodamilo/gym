@@ -1,0 +1,198 @@
+import { ArrowLeftOutlined, PlayCircleOutlined, SaveOutlined, FileTextOutlined } from "@ant-design/icons";
+import { useAppDispatch, type RootState } from "../../../../store";
+import { useEffect, useState } from "react";
+import { Collapse } from "antd";
+import { SortableItem } from "../../../../components/sortableItem/SortableItem";
+import { CustomModal } from "../../../../components/customModal";
+import type { Day, DayExercise } from "../../../../store/draft/types";
+import { useTranslation } from "react-i18next";
+import { currentActions } from "../../../../store/current/current.actions";
+import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { currentSelectors } from "../../../../store/current/current.selectors";
+import { routes } from "../../../../utils/routing/routes";
+import { ExerciseContent } from "../../components/exerciseContent/ExerciseContent";
+import { IconButton } from "../../../../components/iconButton/IconButton";
+import { draftActions } from "../../../../store/draft/draft.actions";
+import { EmptyState } from "../../../../components/emptyState/EmptyState";
+
+export const CurrentExercisesList = () => {
+    const { t } = useTranslation();
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+
+    const { dayId } = useParams();
+    const workout = useSelector((state: RootState) => currentSelectors.getCurrentWorkout(state));
+
+    const [activeKey, setActiveKey] = useState<string>();
+    const [mutableDayExercises, setMutableDayExercises] = useState<DayExercise[]>([]);
+    const [showConfirmSaveBase, setShowConfirmSaveBase] = useState<boolean>(false);
+
+    useEffect(() => {
+        const day = workout?.days.find((day) => day.id === dayId);
+        if (day) {
+            const mutable: DayExercise[] = [...day.dayExercises];
+            mutable.sort((a: DayExercise, b: DayExercise) => a.orderNumber - b.orderNumber);
+            setMutableDayExercises(mutable);
+        }
+    }, [workout, dayId]);
+
+    const saveAsBaseWeight = async () => {
+        if (dayId) {
+            await dispatch(currentActions.saveBaseWeight({ dayExercises: mutableDayExercises, dayId }));
+        }
+    };
+
+    const isAlreadyStarted = () => {
+        const day = workout?.days.find((day) => day.id === dayId);
+        if (day?.lastWorkout) {
+            const savedDate = new Date(day.lastWorkout);
+            const today = new Date();
+
+            return savedDate.getFullYear() === today.getFullYear() && savedDate.getMonth() === today.getMonth() && savedDate.getDate() === today.getDate();
+        }
+    };
+
+    const handleStartClick = async () => {
+        const now = new Date();
+        const newDay: Day | undefined = workout?.days.find((day) => day.id === dayId);
+
+        if (newDay) {
+            await dispatch(
+                currentActions.updateDayStart({
+                    id: newDay.id,
+                    last_workout: now.getTime(),
+                    workout_id: workout!.id,
+                    name: newDay.name,
+                    counter: newDay.counter ? newDay.counter + 1 : 1,
+                    is_last: true,
+                    order: newDay.order,
+                }),
+            );
+        }
+    };
+
+    const saveExercises = async (exercise: DayExercise) => {
+        if (!workout || !dayId) return;
+        await dispatch(
+            draftActions.upsertExercises({
+                dayExercises: [exercise],
+                dayId: dayId,
+                workoutId: workout?.id,
+            }),
+        );
+        if (!isAlreadyStarted()) {
+            handleStartClick();
+        }
+    };
+
+    /* only used if isReadOnly is false */
+    const deleteExercise = async (exerciseId: string) => {
+        await dispatch(draftActions.deleteExercise(exerciseId));
+    };
+
+    const groupLinkedItems = (items: DayExercise[]) => {
+        const groups: DayExercise[][] = [];
+        let currentGroup: DayExercise[] = [];
+
+        for (let i = 0; i < items.length; i++) {
+            const current = items[i];
+            currentGroup.push(current);
+
+            if (!current.isLinkedToNext) {
+                groups.push(currentGroup);
+                currentGroup = [];
+            }
+        }
+
+        // in caso ci sia un gruppo non pushato
+        if (currentGroup.length > 0) {
+            groups.push(currentGroup);
+        }
+
+        return groups;
+    };
+
+    const renderItem = (exercise: DayExercise) => {
+        return {
+            key: exercise.id,
+            label: (
+                <div className="flex items-center justify-between w-full gap-4">
+                    <div className="flex-1 flex flex-col gap-1">
+                        <span className="text-base font-semibold text-[var(--text-primary)]">{exercise.exercise?.name || t('workouts.exercises.new_exercise_title')}</span>
+                    </div>
+                </div>
+            ),
+            children: <ExerciseContent dayId={dayId!} exerciseId={exercise.id} dayExercise={exercise} saveExercises={saveExercises} deleteExercise={deleteExercise} isCurrent />,
+        };
+    };
+
+    return (
+        <div className="w-full h-full max-h-full flex flex-col overflow-hidden pt-4">
+            {/* Header with close button and action buttons */}
+            <div className="flex justify-between items-center gap-4 mb-4">
+                <button
+                    onClick={() => {
+                        navigate(routes.workoutsCurrent);
+                        dispatch(currentActions.showSwitcher(true));
+                    }}
+                    className="bg-transparent border-0 p-0 cursor-pointer text-2xl leading-none transition-all duration-150 flex items-center justify-center hover:-translate-x-0.5 active:scale-95 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                    aria-label="Go back"
+                >
+                    <ArrowLeftOutlined />
+                </button>
+
+                <div className="flex gap-2 items-center">
+                    {mutableDayExercises.length > 0 && mutableDayExercises[0].sets.length > 0 && !mutableDayExercises[0].sets[0].baseWeight && (
+                        <IconButton icon={<SaveOutlined />} onClick={() => setShowConfirmSaveBase(true)} />
+                    )}
+                    {isAlreadyStarted() ? (
+                        <div className="text-[15px] font-medium text-[var(--text-primary)]">{t("workouts.exercises.workout_started")}</div>
+                    ) : (
+                        <IconButton icon={<PlayCircleOutlined />} onClick={() => handleStartClick()} />
+                    )}
+                </div>
+            </div>
+
+            {mutableDayExercises && mutableDayExercises.length > 0 && <p className="text-left text-xs italic mb-4 text-[var(--text-secondary)]">{t("workouts.exercises.description")}</p>}
+
+            {/* Exercise list */}
+            <div className="flex flex-col gap-3 overflow-y-auto pb-28 hide-scrollbar">
+                {mutableDayExercises.length > 0 ? (
+                    <>
+                        {groupLinkedItems(mutableDayExercises).map((group) => {
+                            const renderedItems = group.map((exercise) => renderItem(exercise));
+                            const groupKey = group.map((g) => g.id).join("-");
+
+                            return (
+                                <SortableItem key={groupKey} id={group[0].id.toString()}>
+                                    <div className="history-exercises-collapse">
+                                        <Collapse accordion items={renderedItems} activeKey={activeKey} onChange={(key) => setActiveKey(Array.isArray(key) ? key[0] : key)} bordered={false} />
+                                    </div>
+                                </SortableItem>
+                            );
+                        })}
+                    </>
+                ) : (
+                    <EmptyState icon={<FileTextOutlined />} title={t('pages.current.empty_exercises_title')} description={t('pages.current.empty_exercises_description')} />
+                )}
+            </div>
+
+            {/* Confirmation modal */}
+            <CustomModal
+                type="confirm"
+                open={showConfirmSaveBase}
+                onOk={() => {
+                    saveAsBaseWeight();
+                    setShowConfirmSaveBase(false);
+                }}
+                onCancel={() => {
+                    setShowConfirmSaveBase(false);
+                }}
+                okText={t('workouts.exercises.save_btn')}
+            >
+                <p className="text-[var(--text-secondary)] m-0">{t("workouts.exercises.confirm_save_base")}</p>
+            </CustomModal>
+        </div>
+    );
+};

@@ -56,6 +56,20 @@ export const exercisesReducer = {
                 state.isLoading = false;
                 state.isError = true;
             })
+            .addCase(exercisesCatalogActions.togglePersonalBest.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(exercisesCatalogActions.togglePersonalBest.fulfilled, (state, action) => {
+                state.isLoading = false;
+                if (action.payload && action.payload.length > 0) {
+                    state.exercises = [...state.exercises.map((exercise) => (exercise.id === action.payload[0].id ? action.payload[0] : exercise))];
+                }
+            })
+            .addCase(exercisesCatalogActions.togglePersonalBest.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                console.error("Failed to toggle personal best:", action.payload);
+            })
             .addCase(exercisesCatalogActions.manageCreateModal, (state, action) => {
                 state.showCreationModal = action.payload;
             });

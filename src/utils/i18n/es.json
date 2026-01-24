@@ -1,0 +1,207 @@
+{
+    "app": {
+        "name": "GymTracker",
+        "tagline": "Rastrea Entrenamientos, Ejercicios y Mejores Marcas",
+        "meta": {
+            "description": "GymTracker - App gratuita de seguimiento de fitness y entrenamientos. Rastrea ejercicios, entrenamientos y mejores marcas. ¡Comienza tu viaje fitness hoy!",
+            "workouts_description": "Crea y rastrea tus rutinas de entrenamiento personalizadas. Monitorea el progreso, establece récords personales y alcanza tus metas fitness.",
+            "exercises_description": "Explora nuestra biblioteca completa de ejercicios. Rastrea tus mejores marcas y crea programas de entrenamiento personalizados.",
+            "profile_description": "Visualiza tu progreso fitness, rastrea cambios en el peso corporal y monitorea tus récords personales a lo largo del tiempo."
+        }
+    },
+    "seo": {
+        "titles": {
+            "login": "Iniciar Sesión - GymTracker",
+            "signup": "Registrarse - GymTracker",
+            "forgot_password": "Restablecer Contraseña - GymTracker",
+            "workouts_current": "Entrenamiento Actual - GymTracker",
+            "workouts_history": "Historial de Entrenamientos - GymTracker",
+            "workouts_create": "Crear Entrenamiento - GymTracker",
+            "profile": "Perfil - GymTracker",
+            "exercises": "Biblioteca de Ejercicios - GymTracker"
+        },
+        "descriptions": {
+            "login": "Inicia sesión en GymTracker para acceder a tus entrenamientos y rastrear tu progreso fitness.",
+            "signup": "Crea tu cuenta gratuita de GymTracker y comienza a rastrear tu viaje fitness hoy.",
+            "forgot_password": "Restablece tu contraseña de GymTracker para recuperar el acceso a tu cuenta de seguimiento de entrenamientos.",
+            "workouts_current": "Rastrea tu entrenamiento actual en progreso. Registra series, repeticiones y pesos para cada ejercicio.",
+            "workouts_history": "Visualiza tu historial completo de entrenamientos. Revisa entrenamientos pasados y rastrea tu progreso fitness a lo largo del tiempo.",
+            "workouts_create": "Crea una nueva rutina de entrenamiento personalizada. Añade ejercicios, establece repeticiones y construye tu programa de entrenamiento perfecto.",
+            "profile": "Visualiza tu perfil fitness. Rastrea cambios en el peso corporal, revisa mejores marcas y monitorea tu progreso.",
+            "exercises": "Explora nuestra biblioteca completa de ejercicios. Añade nuevos ejercicios y construye tus programas de entrenamiento personalizados."
+        }
+    },
+    "common": {
+        "back_btn": "Atrás",
+        "months": {
+            "jan": "Ene",
+            "feb": "Feb",
+            "mar": "Mar",
+            "apr": "Abr",
+            "may": "May",
+            "jun": "Jun",
+            "jul": "Jul",
+            "aug": "Ago",
+            "sep": "Sep",
+            "oct": "Oct",
+            "nov": "Nov",
+            "dec": "Dic"
+        }
+    },
+    "navigation": {
+        "profile": "Perfil",
+        "workouts": "Entrenamientos",
+        "exercises": "Ejercicios",
+        "logout": "Cerrar Sesión",
+        "new_workout": "Nuevo Entrenamiento",
+        "new_exercise": "Nuevo Ejercicio"
+    },
+    "components": {
+        "modal": {
+            "cancel": "Cancelar",
+            "delete": "Eliminar",
+            "save": "Guardar",
+            "publish": "Publicar",
+            "ok": "OK"
+        },
+        "item_card": {
+            "exercise_singular": "Ejercicio",
+            "exercise_plural": "Ejercicios",
+            "last_badge": "ÚLTIMO"
+        },
+        "profile_header": {
+            "avatar_alt": "Avatar de Usuario"
+        }
+    },
+    "exercises": {
+        "category_placeholder": "Selecciona una categoría",
+        "create_exercise_modal": {
+            "title": "Crear un nuevo ejercicio"
+        },
+        "edit_exercise_modal": {
+            "title": "Editar ejercicio",
+            "name_placeholder": "Nombre"
+        },
+        "name_placeholder": "Añade un nuevo ejercicio",
+        "add_exercise_btn": "Añadir",
+        "delete_exercise_modal": {
+            "description": "¿Estás seguro de que quieres eliminar este ejercicio?"
+        }
+    },
+    "pages": {
+        "exercises": {
+            "title": "Ejercicios",
+            "meta_title": "Ejercicios | GymTracker",
+            "dropdown": {
+                "track_pb": "Rastrear en Mejores Marcas",
+                "edit": "Editar",
+                "delete": "Eliminar"
+            },
+            "empty_state": {
+                "title_no_exercises": "Comienza a Construir tu Biblioteca de Ejercicios",
+                "title_no_results": "No se Encontraron Ejercicios",
+                "description_category": "No hay ejercicios en la categoría \"{{category}}\". Intenta seleccionar una categoría diferente o crea un nuevo ejercicio.",
+                "description_empty": "Comienza creando tu primer ejercicio usando el botón de abajo."
+            },
+            "modal": {
+                "delete_title": "Eliminar Ejercicio"
+            },
+            "create_button": "Crear"
+        },
+        "workouts": {
+            "title": "Entrenamientos",
+            "meta_title": "Entrenamientos | GymTracker"
+        },
+        "history": {
+            "unknown_date": "Fecha Desconocida",
+            "empty_state": "Comienza tu Viaje Fitness - Crea tu Primer Entrenamiento",
+            "empty_exercises_title": "Aún no hay ejercicios",
+            "empty_exercises_description": "Este entrenamiento no tiene ejercicios registrados"
+        },
+        "current": {
+            "empty_state": "No hay entrenamiento disponible. ¡Crea uno para comenzar!",
+            "workout_started_message": "Entrenamiento iniciado",
+            "empty_exercises_title": "Aún no hay ejercicios",
+            "empty_exercises_description": "Añade ejercicios a tu entrenamiento para comenzar"
+        },
+        "create": {
+            "empty_day_hint": "Toca el botón + para añadir tu primer día",
+            "empty_exercises_title": "Aún no hay ejercicios",
+            "empty_exercises_hint": "Toca el botón + para añadir tu primer ejercicio",
+            "delete_day_warning": "Esta acción no se puede deshacer. Todos los ejercicios de este día se eliminarán permanentemente.",
+            "publish_confirmation": "Tu entrenamiento será publicado y estará listo para usar. ¡Puedes comenzar a rastrear tu progreso!"
+        }
+    },
+    "workouts": {
+        "current_tab": "Actual",
+        "history_tab": "Historial",
+        "workout_page": {
+            "description": "Esta es la lista de días",
+            "no_workout": "El entrenamiento está vacío",
+            "is_last": "Último",
+            "add_day_modal_title": "Añadir un nuevo día",
+            "day_name_placeholder": "Añade un nombre para el día",
+            "delete_day_modal_title": "¿Estás seguro de que quieres eliminar este día?",
+            "publish_workout_modal_title": "¿Estás seguro de que quieres publicar el entrenamiento?"
+        },
+        "exercises": {
+            "description": "Esta es la lista de ejercicios",
+            "category_placeholder": "Selecciona una categoría",
+            "exercise_placeholder": "Selecciona un ejercicio",
+            "reps_placeholder_reps": "Añade el número de repeticiones",
+            "reps_placeholder_time": "Añade el número de segundos",
+            "rest_placeholder": "Añade el descanso",
+            "rest_label": "Descanso",
+            "notes_placeholder": "Añade una nota",
+            "save_btn": "Guardar",
+            "new_exercise_title": "Nuevo ejercicio",
+            "kg": "Kg",
+            "reps": "Reps",
+            "secs": "Segs",
+            "start_workout": "Iniciar Entrenamiento",
+            "reps_type_placeholder": "Selecciona el tipo de repeticiones",
+            "superset": "Superserie con el siguiente ejercicio",
+            "confirm_save_base": "¿Estás seguro de que quieres guardar los pesos actuales como base?",
+            "workout_started": "Entrenamiento Iniciado",
+            "initial": "Inicial"
+        }
+    },
+    "profile": {
+        "personal_info_title": "Información personal",
+        "weight_title": "Gráfico de peso",
+        "one_rep_max": "1RM",
+        "settings_title": "Configuración",
+        "workouts": "Entrenamientos",
+        "body_weight_progress": "Progreso de Peso Corporal",
+        "personal_bests": "Mejores Marcas Personales",
+        "no_personal_bests": "Aún no hay mejores marcas. ¡Completa entrenamientos para ver tus récords!",
+        "loading": "Cargando...",
+        "error_loading_personal_bests": "Error al cargar mejores marcas",
+        "add_pr_button": "Añadir marca personal",
+        "add_pr_modal": {
+            "title": "Añadir Marca Personal",
+            "cancel": "Cancelar",
+            "save": "Guardar MP",
+            "saving": "Guardando...",
+            "error_exercise_required": "Por favor selecciona un ejercicio",
+            "error_weight_min": "El peso debe ser al menos 0.5 kg",
+            "error_weight_max": "El peso no puede exceder 999.9 kg",
+            "success_title": "¡Marca Personal Añadida!",
+            "success_message": "Tu marca personal ha sido guardada exitosamente",
+            "error_title": "Error al Añadir MP",
+            "error_message": "No se pudo guardar tu marca personal. Por favor intenta de nuevo."
+        },
+        "weight_modal": {
+            "title": "Añadir un peso",
+            "placeholder": "Añade un peso"
+        },
+        "settings": {
+            "title": "Configuración",
+            "theme": "Tema",
+            "dark": "Oscuro",
+            "light": "Claro",
+            "language": "Idioma",
+            "sign_out": "Cerrar Sesión"
+        }
+    }
+}

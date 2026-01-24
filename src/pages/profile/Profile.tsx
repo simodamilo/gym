@@ -1,40 +1,61 @@
-import { Button, Input, Modal } from "antd";
+import { Input } from "antd";
 import { supabase } from "../../store/supabaseClient";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { EditOutlined } from "@ant-design/icons";
 import { useAppDispatch } from "../../store";
 import { progressHistoryActions } from "../../store/progressHistory/progressHistory.action";
 import { v4 as uuidv4 } from "uuid";
 import { useSelector } from "react-redux";
 import { progressesSelectors } from "../../store/progressHistory/progressHistory.selector";
+import { historySelectors } from "../../store/history/history.selectors";
+import { historyActions } from "../../store/history/history.actions";
+import { personalBestsActions } from "../../store/personalBests/personalBests.actions";
+import { exercisesCatalogActions } from "../../store/exercisesCatalog/exercisesCatalog.action";
+import { ProfileHeader } from "./components/ProfileHeader";
+import { WorkoutStatsCard } from "./components/WorkoutStatsCard";
+import { BodyWeightChart } from "./components/BodyWeightChart";
+import { PersonalBests } from "./components/PersonalBests";
+import { SettingsModal } from "./components/SettingsModal";
+import { CustomModal } from "../../components/customModal/CustomModal";
+import { PageSEO } from "../../components/seo/PageSEO";
 
 interface GraphData {
     name: string;
     value: string;
 }
 
-function formatToShort(dateString: string) {
-    const date = new Date(dateString);
-
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-    const month = months[date.getMonth()];
-
-    return `${month}`;
-}
-
 export const Profile = () => {
     const dispatch = useAppDispatch();
     const { t } = useTranslation();
 
+    const formatToShort = (dateString: string) => {
+        const date = new Date(dateString);
+        const months = [
+            t('common.months.jan'),
+            t('common.months.feb'),
+            t('common.months.mar'),
+            t('common.months.apr'),
+            t('common.months.may'),
+            t('common.months.jun'),
+            t('common.months.jul'),
+            t('common.months.aug'),
+            t('common.months.sep'),
+            t('common.months.oct'),
+            t('common.months.nov'),
+            t('common.months.dec'),
+        ];
+        const month = months[date.getMonth()];
+        return `${month}`;
+    };
+
     const [email, setEmail] = useState<string>();
     const [openWeightModal, setOpenWeightModal] = useState<boolean>(false);
+    const [openSettingsModal, setOpenSettingsModal] = useState<boolean>(false);
     const [newWeight, setNewWeight] = useState<string>();
 
     const progresses = useSelector(progressesSelectors.getProgresses);
-    const [dataWeights, setDataWeights] = useState<GraphData[]>();
+    const historyWorkouts = useSelector(historySelectors.getHistoryWorkouts);
+    const [dataWeights, setDataWeights] = useState<GraphData[]>([]);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -55,6 +76,9 @@ export const Profile = () => {
 
         fetchUser();
         dispatch(progressHistoryActions.fetchProgressesByType());
+        dispatch(historyActions.fetchHistoryWorkout());
+        dispatch(personalBestsActions.fetchPersonalBests());
+        dispatch(exercisesCatalogActions.fetchExercisesCatalog());
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -66,7 +90,7 @@ export const Profile = () => {
                         name: formatToShort(progress.period.toString()),
                         value: progress.value,
                     };
-                })
+                }),
             );
         }
     }, [progresses]);
@@ -85,84 +109,56 @@ export const Profile = () => {
                     period: existingWeight ? existingWeight.period : date,
                     value: newWeight,
                     unit: existingWeight ? existingWeight.unit : "kg",
-                })
+                }),
             );
         }
         setOpenWeightModal(false);
         setNewWeight(undefined);
     };
 
+    const currentWeight = dataWeights.length > 0 ? dataWeights[dataWeights.length - 1].value : undefined;
+
     return (
-        <div className="flex flex-col gap-4 justify-between p-4 pb-28">
-            <div className="flex flex-col gap-2">
-                <div className="flex gap-2">
-                    <div className="w-[40%] bg-[var(--primary-color)] color-[var(--white-color)] rounded-md p-2">
-                        <img src={"https://api.dicebear.com/8.x/pixel-art/svg?seed=t7xz3urh"} alt="User Avatar" />
-                    </div>
-                    <div className="w-[60%] bg-[var(--primary-color)] color-[var(--white-color)] rounded-md p-2">
-                        <p className="font-bold text-xl">{t("profile.personal_info_title")}</p>
-                        {email}
-                    </div>
-                </div>
-                <div className="bg-[var(--primary-color)] color-[var(--white-color)] rounded-md p-4">
-                    <div className="flex justify-between items-center mb-4">
-                        <p className="font-bold text-xl">{t("profile.weight_title")}</p>
-                        <Button size="large" icon={<EditOutlined />} type="primary" shape="circle" onClick={() => setOpenWeightModal(true)} />
-                    </div>
+        <>
+            <PageSEO titleKey="seo.titles.profile" descriptionKey="seo.descriptions.profile" />
+            <div className="w-full md:max-w-[1200px] m-auto flex flex-col gap-4 p-4 pb-28 overflow-y-auto h-full hide-scrollbar">
+            {/* Profile Header */}
+            <ProfileHeader email={email} onSettingsClick={() => setOpenSettingsModal(true)} />
 
-                    <ResponsiveContainer width="100%" height={200}>
-                        <LineChart data={dataWeights} margin={{ top: 20, right: 20, left: 0 }}>
-                            <XAxis dataKey="name" />
-                            <YAxis width={30} domain={[40, "auto"]} />
-                            <Tooltip
-                                content={({ active, payload, label }) => {
-                                    if (active && payload && payload.length) {
-                                        return (
-                                            <div
-                                                style={{
-                                                    background: "rgba(0,0,0,0.75)",
-                                                    color: "#fff",
-                                                    padding: "8px 12px",
-                                                    borderRadius: "8px",
-                                                    fontSize: "14px",
-                                                }}
-                                            >
-                                                <p style={{ margin: 0 }}>{`Date: ${label}`}</p>
-                                                <p style={{ margin: 0 }}>{`Weight: ${payload[0].value} kg`}</p>
-                                            </div>
-                                        );
-                                    }
-                                    return null;
-                                }}
-                            />
-                            <Line type="monotone" dataKey="value" stroke="#FFFFFF" />
-                        </LineChart>
-                    </ResponsiveContainer>
-                </div>
-                <div className="bg-[var(--primary-color)] color-[var(--white-color)] rounded-md p-2">
-                    <p className="font-bold text-xl">{t("profile.one_rep_max")}</p>
-                </div>
-                {/*<div className="flex flex-col gap-2 bg-[var(--primary-color)] color-[var(--white-color)] rounded-md p-2">
-                    <p className="font-bold text-xl">{t("profile.settings_title")}</p>
-                    <div className="flex justify-between items-center">
-                        Dark Mode
-                        <DarkModeToggle />
-                    </div>
-                </div>*/}
-            </div>
+            {/* Workout Stats */}
+            <WorkoutStatsCard workoutCount={historyWorkouts.length} />
 
-            <Modal
+            {/* Body Weight Chart */}
+            <BodyWeightChart data={dataWeights} currentWeight={currentWeight} onEditClick={() => setOpenWeightModal(true)} />
+
+            {/* Personal Bests */}
+            <PersonalBests />
+
+            {/* Weight Modal */}
+            <CustomModal
                 title={t("profile.weight_modal.title")}
-                closable={{ "aria-label": "Custom Close Button" }}
                 open={openWeightModal}
                 onOk={saveWeight}
                 onCancel={() => {
                     setOpenWeightModal(false);
                     setNewWeight(undefined);
                 }}
+                type="edit"
+                okText="Save"
+                cancelText="Cancel"
             >
-                <Input placeholder={t("profile.weight_modal.placeholder")} value={newWeight} onChange={(input) => setNewWeight(input.target.value)} />
-            </Modal>
-        </div>
+                <Input
+                    placeholder={t("profile.weight_modal.placeholder")}
+                    value={newWeight}
+                    onChange={(input) => setNewWeight(input.target.value)}
+                    size="large"
+                    className="bg-neutral-800 border-neutral-700 text-white placeholder:text-neutral-500"
+                />
+            </CustomModal>
+
+            {/* Settings Modal */}
+            <SettingsModal open={openSettingsModal} onClose={() => setOpenSettingsModal(false)} />
+            </div>
+        </>
     );
 };

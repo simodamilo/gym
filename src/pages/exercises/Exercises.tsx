@@ -4,12 +4,15 @@ import { exercisesCatalogActions } from "../../store/exercisesCatalog/exercisesC
 import { useSelector } from "react-redux";
 import { exercisesSelectors } from "../../store/exercisesCatalog/exercisesCatalog.selector";
 import type { ExerciseCatalog } from "../../store/exercisesCatalog/types";
-import { Input, Modal, Select } from "antd";
+import { Input, Select, Dropdown } from "antd";
+import type { MenuProps } from "antd";
 import { useTranslation } from "react-i18next";
 import { v4 as uuidv4 } from "uuid";
 import { Categories } from "../../utils/constants";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { IconButton } from "../../components/iconButton/IconButton";
+import { DeleteOutlined, EditOutlined, MoreOutlined, AppstoreOutlined, InboxOutlined, TrophyOutlined, CheckOutlined } from "@ant-design/icons";
+import { CustomModal } from "../../components/customModal/CustomModal";
+import { EmptyState } from "../../components/emptyState/EmptyState";
+import { PageSEO } from "../../components/seo/PageSEO";
 
 export const Exercises = () => {
     const dispatch = useAppDispatch();
@@ -22,6 +25,7 @@ export const Exercises = () => {
     const [isEditExerciseModalOpen, setIsEditExerciseModalOpen] = useState<boolean>(false);
     const [isDeleteExerciseModalOpen, setIsDeleteExerciseModalOpen] = useState<boolean>(false);
     const [selectedExercise, setSelectedExercise] = useState<ExerciseCatalog>();
+    const [dropdownPlacements, setDropdownPlacements] = useState<Record<string, "bottomRight" | "topRight">>({});
 
     const exercises: ExerciseCatalog[] = useSelector((state: RootState) => exercisesSelectors.getExercises(state));
     const isCreateModalOpen: boolean = useSelector(exercisesSelectors.isModalOpen);
@@ -44,7 +48,7 @@ export const Exercises = () => {
                 id: uuidv4(),
                 name: newExerciseName,
                 category: newExerciseCategory,
-            })
+            }),
         );
         setNewExerciseName("");
         setNewExerciseCategory(undefined);
@@ -66,56 +70,196 @@ export const Exercises = () => {
         }
     };
 
+    // Group exercises by category
+    const filteredExercises = exercises.filter((exercise: ExerciseCatalog) => {
+        return !selectedCategory || exercise.category === selectedCategory;
+    });
+
+    const groupedExercises = filteredExercises.reduce(
+        (acc, exercise) => {
+            if (!acc[exercise.category]) {
+                acc[exercise.category] = [];
+            }
+            acc[exercise.category].push(exercise);
+            return acc;
+        },
+        {} as Record<string, ExerciseCatalog[]>,
+    );
+
+    // Sort categories alphabetically
+    const sortedCategories = Object.keys(groupedExercises).sort();
+
+    // Toggle personal best tracking for an exercise
+    const togglePersonalBest = async (exercise: ExerciseCatalog) => {
+        await dispatch(
+            exercisesCatalogActions.togglePersonalBest({
+                id: exercise.id,
+                showInPersonalBest: !exercise.show_in_personal_best,
+            }),
+        );
+    };
+
+    // Calculate dropdown placement based on button position
+    const calculateDropdownPlacement = (exerciseId: string, triggerElement: HTMLElement): "bottomRight" | "topRight" => {
+        const rect = triggerElement.getBoundingClientRect();
+        const spaceBelow = window.innerHeight - rect.bottom;
+        const DROPDOWN_HEIGHT = 200; // Approximate height of dropdown menu
+
+        // If less than dropdown height space below, open upward
+        const placement = spaceBelow < DROPDOWN_HEIGHT ? "topRight" : "bottomRight";
+
+        // Update state for this exercise
+        setDropdownPlacements((prev) => ({
+            ...prev,
+            [exerciseId]: placement,
+        }));
+
+        return placement;
+    };
+
+    // Create dropdown menu for each exercise
+    const getDropdownMenu = (exercise: ExerciseCatalog): MenuProps => ({
+        items: [
+            {
+                key: "personal-best",
+                label: t('pages.exercises.dropdown.track_pb'),
+                icon: exercise.show_in_personal_best ? <CheckOutlined /> : <TrophyOutlined />,
+                onClick: () => {
+                    togglePersonalBest(exercise);
+                },
+            },
+            {
+                type: "divider",
+            },
+            {
+                key: "edit",
+                label: t('pages.exercises.dropdown.edit'),
+                icon: <EditOutlined />,
+                onClick: () => {
+                    setIsEditExerciseModalOpen(true);
+                    setSelectedExercise(exercise);
+                },
+            },
+            {
+                key: "delete",
+                label: t('pages.exercises.dropdown.delete'),
+                icon: <DeleteOutlined />,
+                danger: true,
+                onClick: () => {
+                    setIsDeleteExerciseModalOpen(true);
+                    setSelectedExercise(exercise);
+                },
+            },
+        ],
+    });
+
     return (
-        <div className="w-full h-screen md:w-3xl flex flex-col gap-4 p-4 overflow-hidden">
+        <>
+            <PageSEO titleKey="seo.titles.exercises" descriptionKey="seo.descriptions.exercises" />
+            <div className="w-full md:max-w-[1200px] m-auto flex flex-col gap-4 p-4 pb-0 overflow-y-auto h-full hide-scrollbar">
+            {/* Page Header */}
+            <div className="flex items-center justify-between">
+                <h1 className="text-3xl font-bold text-[var(--text-primary)]">{t('pages.exercises.title')}</h1>
+            </div>
+
+            {/* Search/Filter Bar */}
             <div className="flex flex-col text-left md:flex-row items-start gap-2">
                 <Select
                     allowClear
-                    className="w-full md:w-xl"
+                    className="w-full exercises-select rounded-xl"
                     placeholder={t("exercises.category_placeholder")}
                     value={selectedCategory}
                     onChange={(value) => {
                         setSelectedCategory(value ?? undefined);
                     }}
                     options={Categories}
+                    size="large"
+                    listHeight={180}
                 />
             </div>
 
-            <div className="flex flex-col gap-2 pb-28 overflow-auto hide-scrollbar rounded-b-xl">
-                {exercises
-                    .filter((exercise: ExerciseCatalog) => {
-                        return !selectedCategory || exercise.category === selectedCategory;
-                    })
-                    .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" }))
-                    .map((exercise: ExerciseCatalog) => {
+            {/* Exercise List - Grouped by Category */}
+            <div className="flex flex-col flex-1 gap-6 pb-28 overflow-auto hide-scrollbar">
+                {sortedCategories.length === 0 ? (
+                    <EmptyState
+                        icon={<InboxOutlined />}
+                        title={selectedCategory ? t('pages.exercises.empty_state.title_no_results') : t('pages.exercises.empty_state.title_no_exercises')}
+                        description={
+                            selectedCategory
+                                ? t('pages.exercises.empty_state.description_category', { category: selectedCategory })
+                                : t('pages.exercises.empty_state.description_empty')
+                        }
+                        animated={false}
+                    />
+                ) : (
+                    sortedCategories.map((category) => {
+                        const categoryExercises = groupedExercises[category].sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" }));
+
                         return (
-                            <div key={exercise.id} className="bg-[var(--primary-color)] shadow-lg rounded-lg flex justify-between items-center p-3">
-                                <div>{exercise.name}</div>
-                                <div className="flex justify-between items-center gap-4">
-                                    <IconButton
-                                        size="SMALL"
-                                        icon={<DeleteOutlined />}
-                                        onClick={() => {
-                                            setIsDeleteExerciseModalOpen(true);
-                                            setSelectedExercise(exercise);
-                                        }}
-                                    />
-                                    <IconButton
-                                        size="SMALL"
-                                        icon={<EditOutlined />}
-                                        onClick={() => {
-                                            setIsEditExerciseModalOpen(true);
-                                            setSelectedExercise(exercise);
-                                        }}
-                                    />
+                            <div key={category} className="flex flex-col gap-3">
+                                {/* Category Header */}
+                                <h2 className="text-sm font-bold text-[var(--accent-teal)] uppercase tracking-wide">{category}</h2>
+
+                                {/* Exercise Cards */}
+                                <div className="flex flex-col gap-3">
+                                    {categoryExercises.map((exercise: ExerciseCatalog) => (
+                                        <div
+                                            key={exercise.id}
+                                            className="bg-[var(--bg-elevated)] rounded-2xl shadow-[var(--shadow-sm)] flex items-center justify-between p-4 hover:shadow-[var(--shadow-md)] transition-shadow border border-[var(--border-light)]"
+                                        >
+                                            {/* Left side: Icon + Exercise Info */}
+                                            <div className="flex items-center gap-4 flex-1">
+                                                {/* Exercise Icon */}
+                                                <div className="relative">
+                                                    <div className="w-10 h-10 bg-[var(--brand-primary-light)] rounded-lg flex items-center justify-center flex-shrink-0">
+                                                        <AppstoreOutlined className="text-[var(--brand-primary)] text-lg" />
+                                                    </div>
+                                                    {/* Trophy Badge - shown when tracked in personal bests */}
+                                                    {exercise.show_in_personal_best && (
+                                                        <div className="absolute -top-1 -right-1 w-5 h-5 bg-[var(--accent-teal)] rounded-full flex items-center justify-center shadow-md">
+                                                            <TrophyOutlined className="text-[var(--text-inverse)] text-xs" />
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                {/* Exercise Name */}
+                                                <div className="font-semibold text-[var(--text-primary)]">{exercise.name}</div>
+                                            </div>
+
+                                            {/* Right side: Three-dot Menu */}
+                                            <Dropdown
+                                                menu={getDropdownMenu(exercise)}
+                                                trigger={["click"]}
+                                                placement={dropdownPlacements[exercise.id] || "bottomRight"}
+                                                getPopupContainer={(trigger) => trigger.parentElement || document.body}
+                                                onOpenChange={(open) => {
+                                                    if (open) {
+                                                        const buttonElement = document.querySelector(`[data-exercise-id="${exercise.id}"]`) as HTMLElement;
+                                                        if (buttonElement) {
+                                                            calculateDropdownPlacement(exercise.id, buttonElement);
+                                                        }
+                                                    }
+                                                }}
+                                            >
+                                                <button
+                                                    data-exercise-id={exercise.id}
+                                                    className="w-8 h-8 flex items-center justify-center text-[var(--text-tertiary)] hover:bg-[var(--bg-secondary)] rounded-lg transition-colors"
+                                                >
+                                                    <MoreOutlined className="text-lg" />
+                                                </button>
+                                            </Dropdown>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         );
-                    })}
+                    })
+                )}
             </div>
 
             {/* Create exercise */}
-            <Modal
+            <CustomModal
+                type="edit"
                 title={t("exercises.create_exercise_modal.title")}
                 open={isCreateModalOpen}
                 onOk={() => addExercise()}
@@ -124,25 +268,28 @@ export const Exercises = () => {
                     setNewExerciseCategory(undefined);
                     setNewExerciseName("");
                 }}
+                okText={t('pages.exercises.create_button')}
             >
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-3">
                     <Select
                         allowClear
-                        className="w-full md:w-xl"
+                        className="w-full"
                         placeholder={t("exercises.category_placeholder")}
                         value={newExerciseCategory}
                         onChange={(value) => {
                             setNewExerciseCategory(value ?? undefined);
                         }}
                         options={Categories}
+                        listHeight={180}
                     />
 
                     <Input placeholder={t("exercises.name_placeholder")} value={newExerciseName} onChange={(input) => setNewExerciseName(input.target.value)} />
                 </div>
-            </Modal>
+            </CustomModal>
 
             {/* Edit exercise */}
-            <Modal
+            <CustomModal
+                type="edit"
                 title={t("exercises.edit_exercise_modal.title")}
                 open={isEditExerciseModalOpen}
                 onOk={() => updateExercise()}
@@ -165,10 +312,12 @@ export const Exercises = () => {
                         })
                     }
                 />
-            </Modal>
+            </CustomModal>
 
             {/* Delete exercise */}
-            <Modal
+            <CustomModal
+                type="delete"
+                title={t('pages.exercises.modal.delete_title')}
                 open={isDeleteExerciseModalOpen}
                 onOk={() => deleteExercise()}
                 onCancel={() => {
@@ -176,10 +325,9 @@ export const Exercises = () => {
                     setSelectedExercise(undefined);
                 }}
             >
-                <div className="w-[90%]">
-                    <p>{t("exercises.delete_exercise_modal.description")}</p>
-                </div>
-            </Modal>
-        </div>
+                {t("exercises.delete_exercise_modal.description")}
+            </CustomModal>
+            </div>
+        </>
     );
 };

@@ -3,7 +3,8 @@ import { NotificationProvider } from "./components/notificationProvider/Notifica
 import { Outlet } from "react-router-dom";
 import { useEffect } from "react";
 import { useAuth } from "./utils/auth/AuthProvider";
-import { BottomBar } from "./components/bottomBar/BottomBar";
+import { BottomBar } from "./components/navigation/BottomBar";
+import { DesktopNav } from "./components/navigation/DesktopNav";
 
 function App() {
     const { user } = useAuth();
@@ -22,9 +23,17 @@ function App() {
 
     return (
         <NotificationProvider>
-            <div className="w-screen h-dvh flex flex-col">
+            <div className="w-screen h-dvh flex bg-[var(--bg-secondary)]">
+                {/* Desktop Navigation - hidden on mobile */}
+                {user && <DesktopNav />}
+
+                {/* Main Content Area */}
+                <div className="flex-1 flex flex-col overflow-hidden">
+                    <Outlet />
+                </div>
+
+                {/* Mobile Bottom Navigation - hidden on desktop */}
                 {user && <BottomBar />}
-                <Outlet />
             </div>
         </NotificationProvider>
     );

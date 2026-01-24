@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { PageSwitcher } from "../../components/pageSwitcher/PageSwitcher";
 import { useSelector } from "react-redux";
 import { currentSelectors } from "../../store/current/current.selectors";
@@ -8,6 +9,7 @@ import { routes } from "../../utils/routing/routes";
 
 export const Workouts = () => {
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const [page, setPage] = useState<string>("current");
 
@@ -18,10 +20,21 @@ export const Workouts = () => {
     }, [page, navigate]);
 
     return (
-        <div className="w-full h-dvh md:w-3xl flex flex-col gap-2 p-4 overflow-hidden">
-            {showSwitcher && <PageSwitcher active={page} onChange={(key) => setPage(key)} />}
+        <div className="w-full md:max-w-[1200px] h-full flex flex-col m-auto mt-4 overflow-hidden bg-[var(--bg-secondary)]">
+            {/* Header with title and dark mode toggle */}
+            <div className="flex items-center justify-between px-4">
+                <h1 className="text-3xl font-bold m-0 text-[var(--text-primary)]">{t('pages.workouts.title')}</h1>
+            </div>
 
-            <Outlet />
+            {/* Container with max width for desktop */}
+            {showSwitcher && (
+                <div className="w-full flex flex-col px-4 md:px-4 py-4 overflow-hidden max-w-7xl mx-auto">
+                    <PageSwitcher active={page} onChange={(key) => setPage(key)} />
+                </div>
+            )}
+            <div className="flex-1 px-4 overflow-auto md:pb-8 hide-scrollbar relative">
+                <Outlet />
+            </div>
         </div>
     );
 };

@@ -1,12 +1,17 @@
-import type { AuthError, Provider, Session, User } from "@supabase/supabase-js";
+import type { AuthError, Session, User } from "@supabase/supabase-js";
 import { createContext, useState, useEffect, useContext, type ReactNode } from "react";
 import { supabase } from "../../store/supabaseClient";
+import { Spin } from "antd";
 
 interface AuthContextType {
     user: User | null;
     session: Session | null;
-    signIn: () => Promise<{ data: { provider: Provider; url: string | null }; error: AuthError | null }>;
+    loading: boolean;
+    signInWithEmail: (email: string, password: string) => Promise<{ error: AuthError | null }>;
+    signUp: (email: string, password: string) => Promise<{ error: AuthError | null }>;
     signOut: () => Promise<{ error: AuthError | null }>;
+    resetPassword: (email: string) => Promise<{ error: AuthError | null }>;
+    updatePassword: (newPassword: string) => Promise<{ error: AuthError | null }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -14,9 +19,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 // eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = (): AuthContextType => {
     const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error("useAuth must be used within an AuthProvider");
-    }
+    if (!context) throw new Error("useAuth must be used within an AuthProvider");
     return context;
 };
 
@@ -26,31 +29,45 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-            console.log("session onAuthStateChange: ", session);
+        const initAuth = async () => {
+            const { data, error } = await supabase.auth.getSession();
+            if (error) console.error("Error getting session:", error);
+            setSession(data.session);
+            setUser(data.session?.user ?? null);
+            setLoading(false);
+        };
+
+        initAuth();
+
+        const {
+            data: { subscription },
+        } = supabase.auth.onAuthStateChange((_event, session) => {
             setSession(session);
             setUser(session?.user || null);
             setLoading(false);
         });
+
+        // ✅ Start automatic token refresh (no cleanup needed)
+        supabase.auth.startAutoRefresh();
+
         return () => {
-            listener?.subscription.unsubscribe();
+            subscription.unsubscribe();
         };
     }, []);
 
-    // In case we want to manually trigger a signIn (instead of using Auth UI)
-    const signIn = async () => {
-        const { data, error } = await supabase.auth.signInWithOAuth({
-            provider: "google",
-            options: { skipBrowserRedirect: false },
-        });
-        console.log("data: ", data);
-        console.log("error: ", error);
-        return { data, error };
+    // --- AUTH ACTIONS ---
+    const signInWithEmail = async (email: string, password: string) => {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        return { error };
+    };
+
+    const signUp = async (email: string, password: string) => {
+        const { error } = await supabase.auth.signUp({ email, password });
+        return { error };
     };
 
     const signOut = async () => {
         const { error } = await supabase.auth.signOut();
-        console.log("error: ", error);
         if (!error) {
             setUser(null);
             setSession(null);
@@ -58,7 +75,40 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         return { error };
     };
 
-    return <AuthContext.Provider value={{ user, session, signIn, signOut }}>{!loading ? children : `<div>Loading...</div>`}</AuthContext.Provider>;
+    const resetPassword = async (email: string) => {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: "https://simodamilo.github.io/gym/reset-password",
+        });
+        return { error };
+    };
+
+    const updatePassword = async (newPassword: string) => {
+        const { error } = await supabase.auth.updateUser({ password: newPassword });
+        return { error };
+    };
+
+    return (
+        <AuthContext.Provider
+            value={{
+                user,
+                session,
+                loading,
+                signInWithEmail,
+                signUp,
+                signOut,
+                resetPassword,
+                updatePassword,
+            }}
+        >
+            {!loading ? (
+                children
+            ) : (
+                <div>
+                    <Spin />
+                </div>
+            )}
+        </AuthContext.Provider>
+    );
 };
 
 export default AuthProvider;

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { exercisesSelectors } from "../../../../store/exercisesCatalog/exercisesCatalog.selector";
 import { exercisesCatalogActions } from "../../../../store/exercisesCatalog/exercisesCatalog.action";
-import { Checkbox, Input, Select, Tooltip } from "antd";
+import { Checkbox, Divider, Input, Select, Tooltip } from "antd";
 import type { DayExercise, Set } from "../../../../store/draft/types";
 import { DeleteOutlined, InfoCircleOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { draftSelectors } from "../../../../store/draft/draft.selectors";
@@ -13,15 +13,15 @@ import { v4 as uuidv4 } from "uuid";
 import type { ExerciseCatalog } from "../../../../store/exercisesCatalog/types";
 import { RepsTypes } from "../../../../utils/constants";
 import { ExerciseSelects } from "../../../../components/exerciseSelects/ExerciseSelects";
-import { IconButton } from "../../../../components/iconButton/IconButton";
 import { Button } from "../../../../components/button/Button";
+import { IconButton } from "../../../../components/iconButton/IconButton";
 
 export interface ExerciseContentProps {
     dayId: string;
     exerciseId: string;
     dayExercise: DayExercise;
-    saveExercises: (dayExercise: DayExercise) => void;
-    deleteExercise: (dayExerciseId: string) => void;
+    saveExercises?: (dayExercise: DayExercise) => void;
+    deleteExercise?: (dayExerciseId: string) => void;
     isDraft?: boolean;
     isCurrent?: boolean;
     isHistory?: boolean;
@@ -110,11 +110,17 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
     };
 
     const updateSet = (fieldToUpdate: string, newValue: string, setId: string) => {
+        // Convert comma to period for weight field (DB compatibility)
+        let valueToStore = newValue;
+        if (fieldToUpdate === "weight" && newValue) {
+            valueToStore = newValue.replace(/,/g, ".");
+        }
+
         const newSets: Set[] = [...dayExercise.sets].map((set) => {
             if (set.id === setId) {
                 return {
                     ...set,
-                    [fieldToUpdate]: newValue,
+                    [fieldToUpdate]: valueToStore,
                 };
             }
             return set;
@@ -132,7 +138,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
 
     const saveWeights = () => {
         if (props.isCurrent && isExerciseUpdated) {
-            props.saveExercises(dayExercise);
+            props.saveExercises?.(dayExercise);
             setIsExerciseUpdated(false);
         }
     };
@@ -151,12 +157,15 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
     };
 
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 md:max-w-[400px] md:m-auto">
+            {/* Checkbox for superset - only draft mode */}
             {props.isDraft && (
                 <Checkbox checked={dayExercise.isLinkedToNext} onChange={() => setDayExercise({ ...dayExercise, isLinkedToNext: !dayExercise.isLinkedToNext })}>
                     {t("workouts.exercises.superset")}
                 </Checkbox>
             )}
+
+            {/* Exercise selection - only draft mode */}
             {props.isDraft && (
                 <ExerciseSelects
                     selectedExercise={dayExercise.exercise}
@@ -170,7 +179,11 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                     }}
                 />
             )}
-            <div className="flex flex-col gap-2 border rounded-md border-none bg-[#ededed] p-3">
+
+            {props.isDraft && <Divider />}
+
+            {/* Sets and Reps */}
+            <div className="flex flex-col gap-2">
                 {props.isDraft && (
                     <div className="flex justify-between gap-2 items-center">
                         <div className="w-full">
@@ -193,8 +206,8 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                         </div>
                         {props.isDraft && dayExercise.repsType !== "custom" && (
                             <div className="flex justify-end gap-2 ">
-                                <IconButton size="SMALL" icon={<MinusOutlined />} onClick={removeSet} disabled={dayExercise.sets.length === 0 || !dayExercise.repsType || isLoadingExercises} />
-                                <IconButton size="SMALL" icon={<PlusOutlined />} onClick={addSet} disabled={!dayExercise.repsType || isLoadingExercises} />
+                                <IconButton icon={<MinusOutlined />} onClick={removeSet} disabled={dayExercise.sets.length === 0 || !dayExercise.repsType || isLoadingExercises} />
+                                <IconButton icon={<PlusOutlined />} onClick={addSet} disabled={!dayExercise.repsType || isLoadingExercises} />
                             </div>
                         )}
                     </div>
@@ -228,9 +241,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                                         </div>
                                         <div className="w-[60%]">
                                             <Input
-                                                type="tel"
-                                                inputMode="numeric"
-                                                pattern="[0-9]*"
+                                                inputMode="decimal"
                                                 key={set.id}
                                                 addonBefore={getAddon()}
                                                 value={set.weight}
@@ -256,26 +267,31 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                         })
                 )}
             </div>
+            <Divider />
+
+            {/* Initial Weight and Rest */}
             <div className="flex gap-4">
-                <Tooltip
-                    title={
-                        <div>
-                            {[...(dayExercise.sets ?? [])]
-                                .sort((a, b) => a.setNumber - b.setNumber)
-                                .map((set: Set) => {
-                                    return (
-                                        <div>
-                                            {set.setNumber} - {set.baseWeight}
-                                        </div>
-                                    );
-                                })}
+                {!props.isDraft && (
+                    <Tooltip
+                        title={
+                            <div>
+                                {[...(dayExercise.sets ?? [])]
+                                    .sort((a, b) => a.setNumber - b.setNumber)
+                                    .map((set: Set) => {
+                                        return (
+                                            <div>
+                                                {set.setNumber} - {set.baseWeight}
+                                            </div>
+                                        );
+                                    })}
+                            </div>
+                        }
+                    >
+                        <div className="flex items-center border border-[#EDEDED] rounded-md px-2">
+                            <p>{t("workouts.exercises.initial")}</p>
                         </div>
-                    }
-                >
-                    <div className="flex items-center border border-[#EDEDED] rounded-md px-2">
-                        <p>{t("workouts.exercises.initial")}</p>
-                    </div>
-                </Tooltip>
+                    </Tooltip>
+                )}
                 <Input
                     readOnly={props.isCurrent || props.isHistory}
                     addonBefore={t("workouts.exercises.rest_label")}
@@ -297,6 +313,8 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                     </Tooltip>
                 )}
             </div>
+
+            {/* Notes */}
             {!props.isHistory && (
                 <TextArea
                     rows={4}
@@ -317,8 +335,8 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
             )}
             {props.isDraft && (
                 <div className="flex items-center gap-4">
-                    <IconButton size="SMALL" icon={<DeleteOutlined />} disabled={props.isNew} onClick={() => props.deleteExercise(props.exerciseId)} />
-                    <Button label={t("workouts.exercises.save_btn")} onClick={() => props.saveExercises(dayExercise)} disabled={!hasValidFields()} />
+                    <IconButton icon={<DeleteOutlined />} disabled={props.isNew} onClick={() => props.deleteExercise?.(props.exerciseId)} />
+                    <Button label={t("workouts.exercises.save_btn")} onClick={() => props.saveExercises?.(dayExercise)} disabled={!hasValidFields()} />
                 </div>
             )}
         </div>

@@ -79,7 +79,7 @@ const saveBaseWeight = createAsyncThunk("data/saveBaseWeight", async (payloadDat
         });
 
         getNotificationApi().success({
-            message: `Successfully saved`,
+            message: `Base weights saved`,
             placement: "bottom",
             className: "custom-success-notification",
         });

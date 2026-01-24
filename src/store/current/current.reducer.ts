@@ -7,6 +7,7 @@ const currentState: CurrentState = {
     workout: undefined,
     isLoading: false,
     isError: false,
+    showSwitcher: true
 };
 
 export const currentReducer = {

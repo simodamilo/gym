@@ -1,34 +1,22 @@
+import { motion } from "framer-motion";
+
 interface ButtonProps {
     onClick: () => void;
     label: string;
-    active?: boolean;
     disabled?: boolean;
 }
 
-export const Button = ({ onClick, label, active, disabled }: ButtonProps) => {
-    const borderStyle = active
-        ? "white"
-        : `conic-gradient(
-             from 80deg, transparent 0deg, var(--secondary-color) 0deg, var(--white-color) 12deg, var(--white-color) 168deg, var(--secondary-color) 180deg, transparent 180deg),
-           conic-gradient(
-             from 260deg, transparent 0deg, var(--secondary-color) 0deg, var(--white-color) 12deg,  var(--white-color) 168deg, var(--secondary-color) 180deg, transparent 180deg)`;
-
+export const Button = ({ onClick, label, disabled }: ButtonProps) => {
     return (
-        <button
+        <motion.button
             disabled={disabled}
             onClick={onClick}
-            className={`flex items-center rounded-md justify-center transition-all duration-300 ease-out relative overflow-hidden group active:scale-95`}
-            style={{
-                background: disabled ? undefined : borderStyle,
-                padding: "2px",
-                transition: "background 1s ease-out ease-in",
-                width: "100%",
-            }}
-            aria-label="Icon button"
+            className="w-full h-10 rounded-full flex items-center justify-center border cursor-pointer shadow-var-sm bg-[var(--bg-elevated)] border-[var(--border-default)] text-[var(--text-primary)]"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ duration: 0.2 }}
         >
-            <div className={`w-full h-full ${disabled ? "bg-[rgba(36,36,36,0.5)]" : "bg-[rgba(36,36,36,0.9)]"} rounded-md flex items-center justify-center py-1 px-2`}>
-                <span className="text-[var(--white-color)] text-sm font-bold">{label}</span>
-            </div>
-        </button>
+            <span className="text-[var(--text-primary)] text-sm font-medium">{label}</span>
+        </motion.button>
     );
 };
