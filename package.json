@@ -6,7 +6,8 @@
   "homepage": "https://simodamilo.github.io/gym",
   "scripts": {
     "dev": "vite --host",
-    "build": "tsc -b && vite build && cp dist/index.html dist/404.html",
+    "build": "npm run generate:sitemap && tsc -b && vite build && cp dist/index.html dist/404.html",
+    "generate:sitemap": "node scripts/generate-sitemap.js",
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
