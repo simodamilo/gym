@@ -19,6 +19,7 @@ import { CustomModal } from "../../../components/customModal";
 import { ItemCard } from "../components/itemCard/ItemCard";
 import { currentActions } from "../../../store/current/current.actions";
 import { EmptyState } from "../../../components/emptyState/EmptyState";
+import { PageSEO } from "../../../components/seo/PageSEO";
 
 export const CreateWorkout = () => {
     const { t } = useTranslation();
@@ -136,11 +137,18 @@ export const CreateWorkout = () => {
     };
 
     if (isLoadingWorkout && !workout) {
-        return <Skeleton active />;
+        return (
+            <>
+                <PageSEO titleKey="seo.titles.workouts_create" descriptionKey="seo.descriptions.workouts_create" />
+                <Skeleton active />
+            </>
+        );
     }
 
     return (
-        <div className={`w-full h-full max-h-full md:max-w-4xl lg:max-w-5xl xl:max-w-6xl flex flex-col gap-2 justify-between py-4`}>
+        <>
+            <PageSEO titleKey="seo.titles.workouts_create" descriptionKey="seo.descriptions.workouts_create" />
+            <div className={`w-full h-full max-h-full md:max-w-4xl lg:max-w-5xl xl:max-w-6xl flex flex-col gap-2 justify-between py-4`}>
             <div className="flex flex-col gap-4">
                 <div className="flex w-full items-center gap-4 justify-between">
                     <button
@@ -242,6 +250,7 @@ export const CreateWorkout = () => {
             <CustomModal type="publish" title={t("workouts.workout_page.publish_workout_modal_title")} open={isPublishModalOpen} onOk={publishWorkout} onCancel={() => setIsPublishModalOpen(false)}>
                 <p className="text-[var(--text-secondary)] m-0">{t('pages.create.publish_confirmation')}</p>
             </CustomModal>
-        </div>
+            </div>
+        </>
     );
 };

@@ -9,6 +9,28 @@
             "profile_description": "View your fitness progress, track body weight changes, and monitor your personal best records over time."
         }
     },
+    "seo": {
+        "titles": {
+            "login": "Login - GymTracker",
+            "signup": "Sign Up - GymTracker",
+            "forgot_password": "Reset Password - GymTracker",
+            "workouts_current": "Current Workout - GymTracker",
+            "workouts_history": "Workout History - GymTracker",
+            "workouts_create": "Create Workout - GymTracker",
+            "profile": "Profile - GymTracker",
+            "exercises": "Exercise Library - GymTracker"
+        },
+        "descriptions": {
+            "login": "Sign in to GymTracker to access your workouts and track your fitness progress.",
+            "signup": "Create your free GymTracker account and start tracking your fitness journey today.",
+            "forgot_password": "Reset your GymTracker password to regain access to your workout tracking account.",
+            "workouts_current": "Track your current workout in progress. Record sets, reps, and weights for each exercise.",
+            "workouts_history": "View your complete workout history. Review past workouts and track your fitness progress over time.",
+            "workouts_create": "Create a new custom workout routine. Add exercises, set reps, and build your perfect training program.",
+            "profile": "View your fitness profile. Track body weight changes, review personal bests, and monitor your progress.",
+            "exercises": "Browse our comprehensive exercise library. Add new exercises and build your custom workout programs."
+        }
+    },
     "common": {
         "back_btn": "Back",
         "months": {

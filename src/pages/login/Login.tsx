@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../utils/auth/AuthProvider";
 import { routes } from "../../utils/routing/routes";
+import { PageSEO } from "../../components/seo/PageSEO";
 
 export const Login = () => {
     const navigate = useNavigate();
@@ -28,8 +29,10 @@ export const Login = () => {
     };
 
     return (
-        <div className="h-dvh flex items-center justify-center px-4 bg-[#2d2d2d]">
-            <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
+        <>
+            <PageSEO titleKey="seo.titles.login" descriptionKey="seo.descriptions.login" />
+            <div className="h-dvh flex items-center justify-center px-4 bg-[#2d2d2d]">
+                <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
                 <h2 className="text-2xl font-bold text-center mb-8 text-gray-900">Accedi</h2>
 
                 <form onSubmit={handleLogin} className="space-y-4">
@@ -68,6 +71,7 @@ export const Login = () => {
                     </p>
                 </div>
             </div>
-        </div>
+            </div>
+        </>
     );
 };

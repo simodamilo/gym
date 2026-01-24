@@ -17,6 +17,7 @@ import { BodyWeightChart } from "./components/BodyWeightChart";
 import { PersonalBests } from "./components/PersonalBests";
 import { SettingsModal } from "./components/SettingsModal";
 import { CustomModal } from "../../components/customModal/CustomModal";
+import { PageSEO } from "../../components/seo/PageSEO";
 
 interface GraphData {
     name: string;
@@ -118,7 +119,9 @@ export const Profile = () => {
     const currentWeight = dataWeights.length > 0 ? dataWeights[dataWeights.length - 1].value : undefined;
 
     return (
-        <div className="w-full md:max-w-[1200px] m-auto flex flex-col gap-4 p-4 pb-28 overflow-y-auto h-full hide-scrollbar">
+        <>
+            <PageSEO titleKey="seo.titles.profile" descriptionKey="seo.descriptions.profile" />
+            <div className="w-full md:max-w-[1200px] m-auto flex flex-col gap-4 p-4 pb-28 overflow-y-auto h-full hide-scrollbar">
             {/* Profile Header */}
             <ProfileHeader email={email} onSettingsClick={() => setOpenSettingsModal(true)} />
 
@@ -155,6 +158,7 @@ export const Profile = () => {
 
             {/* Settings Modal */}
             <SettingsModal open={openSettingsModal} onClose={() => setOpenSettingsModal(false)} />
-        </div>
+            </div>
+        </>
     );
 };

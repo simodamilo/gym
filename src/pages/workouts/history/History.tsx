@@ -7,6 +7,7 @@ import { historySelectors } from "../../../store/history/history.selectors";
 import { historyActions } from "../../../store/history/history.actions";
 import { ItemCard } from "../components/itemCard/ItemCard";
 import { currentActions } from "../../../store/current/current.actions";
+import { PageSEO } from "../../../components/seo/PageSEO";
 
 export const History = () => {
     const dispatch = useAppDispatch();
@@ -46,16 +47,21 @@ export const History = () => {
 
     if (!workouts || workouts.length === 0) {
         return (
-            <div className="flex h-full items-center justify-center">
-                <span className="text-[var(--text-tertiary)]">
-                    {t('pages.history.empty_state')}
-                </span>
-            </div>
+            <>
+                <PageSEO titleKey="seo.titles.workouts_history" descriptionKey="seo.descriptions.workouts_history" />
+                <div className="flex h-full items-center justify-center">
+                    <span className="text-[var(--text-tertiary)]">
+                        {t('pages.history.empty_state')}
+                    </span>
+                </div>
+            </>
         );
     }
 
     return (
-        <div className="flex flex-col gap-3 pb-28 hide-scrollbar overflow-auto md:px-2">
+        <>
+            <PageSEO titleKey="seo.titles.workouts_history" descriptionKey="seo.descriptions.workouts_history" />
+            <div className="flex flex-col gap-3 pb-28 hide-scrollbar overflow-auto md:px-2">
             {workouts.map((workout) => {
                 // Calculate total exercises across all days
                 const totalExercises = workout.days?.reduce(
@@ -76,6 +82,7 @@ export const History = () => {
                     />
                 );
             })}
-        </div>
+            </div>
+        </>
     );
 };

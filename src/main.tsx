@@ -11,6 +11,7 @@ import AuthProvider, { useAuth } from "./utils/auth/AuthProvider.tsx";
 import { router } from "./utils/routing/router.tsx";
 import { ConfigProvider, theme as antdTheme } from 'antd';
 import { ThemeProvider, useTheme } from "./theme/ThemeProvider.tsx";
+import { HelmetProvider } from 'react-helmet-async';
 
 const MIN_SPLASH_TIME = 1000;
 
@@ -151,12 +152,14 @@ const RootWithSplash = () => {
 
 createRoot(document.getElementById("root")!).render(
     <Provider store={store}>
-        <ThemeProvider>
-            <AntdConfigWrapper>
-                <AuthProvider>
-                    <RootWithSplash />
-                </AuthProvider>
-            </AntdConfigWrapper>
-        </ThemeProvider>
+        <HelmetProvider>
+            <ThemeProvider>
+                <AntdConfigWrapper>
+                    <AuthProvider>
+                        <RootWithSplash />
+                    </AuthProvider>
+                </AntdConfigWrapper>
+            </ThemeProvider>
+        </HelmetProvider>
     </Provider>
 );

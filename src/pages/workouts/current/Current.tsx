@@ -8,6 +8,7 @@ import { currentActions } from "../../../store/current/current.actions";
 import { currentSelectors } from "../../../store/current/current.selectors";
 import { ItemCard } from "../components/itemCard/ItemCard";
 import { useNavigate } from "react-router-dom";
+import { PageSEO } from "../../../components/seo/PageSEO";
 
 export const Current = () => {
     const dispatch = useAppDispatch();
@@ -23,17 +24,25 @@ export const Current = () => {
     }, []);
 
     if (isLoading && !currentWorkout) {
-        return <Skeleton active />;
+        return (
+            <>
+                <PageSEO titleKey="seo.titles.workouts_current" descriptionKey="seo.descriptions.workouts_current" />
+                <Skeleton active />
+            </>
+        );
     }
 
     // Show card list view
     if (!currentWorkout || !currentWorkout.days || currentWorkout.days.length === 0) {
         return (
-            <div className="flex h-full items-center justify-center">
-                <span className="text-[var(--text-tertiary)]">
-                    {t('pages.current.empty_state')}
-                </span>
-            </div>
+            <>
+                <PageSEO titleKey="seo.titles.workouts_current" descriptionKey="seo.descriptions.workouts_current" />
+                <div className="flex h-full items-center justify-center">
+                    <span className="text-[var(--text-tertiary)]">
+                        {t('pages.current.empty_state')}
+                    </span>
+                </div>
+            </>
         );
     }
 
@@ -41,7 +50,9 @@ export const Current = () => {
     const sortedDays = [...currentWorkout.days].sort((a, b) => (a.order || 0) - (b.order || 0));
 
     return (
-        <div className="flex flex-col gap-3 pb-28 hide-scrollbar overflow-auto md:px-2">
+        <>
+            <PageSEO titleKey="seo.titles.workouts_current" descriptionKey="seo.descriptions.workouts_current" />
+            <div className="flex flex-col gap-3 pb-28 hide-scrollbar overflow-auto md:px-2">
             {sortedDays.map((day) => {
                 const exerciseCount = day.dayExercises?.length || 0;
 
@@ -60,6 +71,7 @@ export const Current = () => {
                     />
                 );
             })}
-        </div>
+            </div>
+        </>
     );
 };

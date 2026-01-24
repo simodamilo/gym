@@ -9,6 +9,28 @@
             "profile_description": "Visualizza i tuoi progressi fitness, traccia i cambiamenti del peso corporeo e monitora i tuoi record personali nel tempo."
         }
     },
+    "seo": {
+        "titles": {
+            "login": "Accedi - GymTracker",
+            "signup": "Registrati - GymTracker",
+            "forgot_password": "Reimposta Password - GymTracker",
+            "workouts_current": "Allenamento Corrente - GymTracker",
+            "workouts_history": "Cronologia Allenamenti - GymTracker",
+            "workouts_create": "Crea Allenamento - GymTracker",
+            "profile": "Profilo - GymTracker",
+            "exercises": "Libreria Esercizi - GymTracker"
+        },
+        "descriptions": {
+            "login": "Accedi a GymTracker per accedere ai tuoi allenamenti e tracciare i tuoi progressi fitness.",
+            "signup": "Crea il tuo account gratuito GymTracker e inizia a tracciare il tuo percorso fitness oggi.",
+            "forgot_password": "Reimposta la tua password GymTracker per recuperare l'accesso al tuo account di tracciamento allenamenti.",
+            "workouts_current": "Traccia il tuo allenamento corrente in corso. Registra serie, ripetizioni e pesi per ogni esercizio.",
+            "workouts_history": "Visualizza la tua cronologia completa degli allenamenti. Rivedi gli allenamenti passati e traccia i tuoi progressi fitness nel tempo.",
+            "workouts_create": "Crea una nuova routine di allenamento personalizzata. Aggiungi esercizi, imposta ripetizioni e costruisci il tuo programma di allenamento perfetto.",
+            "profile": "Visualizza il tuo profilo fitness. Traccia i cambiamenti del peso corporeo, rivedi i record personali e monitora i tuoi progressi.",
+            "exercises": "Sfoglia la nostra libreria completa di esercizi. Aggiungi nuovi esercizi e costruisci i tuoi programmi di allenamento personalizzati."
+        }
+    },
     "common": {
         "back_btn": "Indietro",
         "months": {

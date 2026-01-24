@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../../utils/auth/AuthProvider";
 import { routes } from "../../utils/routing/routes";
 import { useNavigate } from "react-router-dom";
+import { PageSEO } from "../../components/seo/PageSEO";
 
 export const ForgotPassword = () => {
     const navigate = useNavigate();
@@ -24,8 +25,10 @@ export const ForgotPassword = () => {
     };
 
     return (
-        <div className="h-dvh flex items-center justify-center px-4 bg-[#2d2d2d]">
-            <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
+        <>
+            <PageSEO titleKey="seo.titles.forgot_password" descriptionKey="seo.descriptions.forgot_password" />
+            <div className="h-dvh flex items-center justify-center px-4 bg-[#2d2d2d]">
+                <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
                 <h2 className="text-2xl font-bold text-center mb-8 text-gray-900">Reset Password</h2>
 
                 {success ? (
@@ -59,6 +62,7 @@ export const ForgotPassword = () => {
                     </p>
                 </div>
             </div>
-        </div>
+            </div>
+        </>
     );
 };

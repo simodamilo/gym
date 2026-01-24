@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../utils/auth/AuthProvider";
 import { routes } from "../../utils/routing/routes";
+import { PageSEO } from "../../components/seo/PageSEO";
 
 export const Signup = () => {
     const navigate = useNavigate();
@@ -30,8 +31,10 @@ export const Signup = () => {
     };
 
     return (
-        <div className="h-dvh flex items-center justify-center px-4 bg-[#2d2d2d]">
-            <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
+        <>
+            <PageSEO titleKey="seo.titles.signup" descriptionKey="seo.descriptions.signup" />
+            <div className="h-dvh flex items-center justify-center px-4 bg-[#2d2d2d]">
+                <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
                 <h2 className="text-2xl font-bold text-center mb-8 text-gray-900">Registrati</h2>
 
                 {success ? (
@@ -73,6 +76,7 @@ export const Signup = () => {
                     </p>
                 </div>
             </div>
-        </div>
+            </div>
+        </>
     );
 };

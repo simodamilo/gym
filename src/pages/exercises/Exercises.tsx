@@ -12,6 +12,7 @@ import { Categories } from "../../utils/constants";
 import { DeleteOutlined, EditOutlined, MoreOutlined, AppstoreOutlined, InboxOutlined, TrophyOutlined, CheckOutlined } from "@ant-design/icons";
 import { CustomModal } from "../../components/customModal/CustomModal";
 import { EmptyState } from "../../components/emptyState/EmptyState";
+import { PageSEO } from "../../components/seo/PageSEO";
 
 export const Exercises = () => {
     const dispatch = useAppDispatch();
@@ -153,7 +154,9 @@ export const Exercises = () => {
     });
 
     return (
-        <div className="w-full md:max-w-[1200px] m-auto flex flex-col gap-4 p-4 pb-0 overflow-y-auto h-full hide-scrollbar">
+        <>
+            <PageSEO titleKey="seo.titles.exercises" descriptionKey="seo.descriptions.exercises" />
+            <div className="w-full md:max-w-[1200px] m-auto flex flex-col gap-4 p-4 pb-0 overflow-y-auto h-full hide-scrollbar">
             {/* Page Header */}
             <div className="flex items-center justify-between">
                 <h1 className="text-3xl font-bold text-[var(--text-primary)]">{t('pages.exercises.title')}</h1>
@@ -324,6 +327,7 @@ export const Exercises = () => {
             >
                 {t("exercises.delete_exercise_modal.description")}
             </CustomModal>
-        </div>
+            </div>
+        </>
     );
 };
