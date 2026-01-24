@@ -161,6 +161,42 @@ export const CreateExercisesList = () => {
         };
     };
 
+    const renderSuperset = (group: DayExercise[]) => {
+        const groupKey = group.map(g => g.id).join('-');
+        return {
+            key: groupKey,
+            label: (
+                <div className="flex items-center justify-between w-full gap-4">
+                    <div className="flex-1 flex flex-col gap-1">
+                        <span className="text-base font-semibold text-[var(--text-primary)]">
+                            {group.map(ex => ex.exercise?.name || t('workouts.exercises.new_exercise_title')).join(' + ')}
+                        </span>
+                        <span className="text-xs text-[var(--text-secondary)]">Superset</span>
+                    </div>
+                    {isDragEnable && <HolderOutlined className="text-xl cursor-grab active:cursor-grabbing flex-shrink-0 text-[var(--text-tertiary)]" />}
+                </div>
+            ),
+            children: (
+                <div className="flex flex-col gap-6">
+                    {group.map((exercise, index) => (
+                        <div key={exercise.id}>
+                            {index > 0 && <div className="border-t border-[var(--border-color)] my-4" />}
+                            <ExerciseContent
+                                dayId={dayId!}
+                                exerciseId={exercise.id}
+                                dayExercise={exercise}
+                                saveExercises={saveExercises}
+                                deleteExercise={deleteExercise}
+                                isDraft
+                                isNew={!exercise.exercise?.name}
+                            />
+                        </div>
+                    ))}
+                </div>
+            ),
+        };
+    };
+
     return (
         <div className="w-full h-full max-h-full flex flex-col overflow-hidden pt-4">
             {/* Header with back button and action buttons */}
@@ -198,13 +234,13 @@ export const CreateExercisesList = () => {
                         {activeKey !== undefined || !isDragEnable ? (
                             <>
                                 {groupLinkedItems(mutableDayExercises).map((group) => {
-                                    const renderedItems = group.map((exercise) => renderItem(exercise));
+                                    const item = group.length > 1 ? renderSuperset(group) : renderItem(group[0]);
                                     const groupKey = group.map((g) => g.id).join("-");
 
                                     return (
                                         <SortableItem key={groupKey} id={group[0].id.toString()}>
                                             <div className="history-exercises-collapse">
-                                                <Collapse accordion items={renderedItems} activeKey={activeKey} onChange={(key) => setActiveKey(Array.isArray(key) ? key[0] : key)} bordered={false} />
+                                                <Collapse accordion items={[item]} activeKey={activeKey} onChange={(key) => setActiveKey(Array.isArray(key) ? key[0] : key)} bordered={false} />
                                             </div>
                                         </SortableItem>
                                     );
