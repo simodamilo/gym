@@ -35,7 +35,8 @@
       "Bash(if not exist \"docs\\\\2026-01-18\" mkdir \"docs\\\\2026-01-18\")",
       "Bash(ipconfig:*)",
       "Bash(find:*)",
-      "Bash(if not exist \"C:\\\\Users\\\\simod\\\\Desktop\\\\Projects\\\\gym\\\\docs\\\\2026-01-23\" mkdir \"C:\\\\Users\\\\simod\\\\Desktop\\\\Projects\\\\gym\\\\docs\\\\2026-01-23\")"
+      "Bash(if not exist \"C:\\\\Users\\\\simod\\\\Desktop\\\\Projects\\\\gym\\\\docs\\\\2026-01-23\" mkdir \"C:\\\\Users\\\\simod\\\\Desktop\\\\Projects\\\\gym\\\\docs\\\\2026-01-23\")",
+      "Bash(if not exist \"c:\\\\Users\\\\simod\\\\Desktop\\\\Projects\\\\gym\\\\docs\\\\2026-01-24\" mkdir \"c:\\\\Users\\\\simod\\\\Desktop\\\\Projects\\\\gym\\\\docs\\\\2026-01-24\")"
     ]
   }
 }

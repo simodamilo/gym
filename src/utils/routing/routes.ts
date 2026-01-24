@@ -1,5 +1,8 @@
 export const routes = {
     login: "/gym/login",
+    signup: "/gym/signup",
+    forgotPassword: "/gym/forgot-password",
+    resetPassword: "/gym/reset-password",
     workouts: "/gym/workouts",
     workoutsCurrent: "/gym/workouts/current/days",
     workoutsExercises: "/gym/workouts/current/exercises",
