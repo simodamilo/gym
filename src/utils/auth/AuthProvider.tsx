@@ -1,6 +1,7 @@
 import type { AuthError, Session, User } from "@supabase/supabase-js";
 import { createContext, useState, useEffect, useContext, type ReactNode } from "react";
 import { supabase } from "../../store/supabaseClient";
+import { Spin } from "antd";
 
 interface AuthContextType {
     user: User | null;
@@ -99,7 +100,13 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
                 updatePassword,
             }}
         >
-            {!loading ? children : <div>Loading...</div>}
+            {!loading ? (
+                children
+            ) : (
+                <div>
+                    <Spin />
+                </div>
+            )}
         </AuthContext.Provider>
     );
 };

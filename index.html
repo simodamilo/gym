@@ -29,6 +29,13 @@
             justify-content: center;
         }
 
+        /* Hide splash screen on desktop (screens >= 768px) */
+        @media (min-width: 768px) {
+            #splash-screen {
+                display: none !important;
+            }
+        }
+
         .splash-content {
             display: flex;
             flex-direction: column;

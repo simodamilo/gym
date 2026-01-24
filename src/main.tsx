@@ -14,6 +14,16 @@ import { ThemeProvider, useTheme } from "./theme/ThemeProvider.tsx";
 
 const MIN_SPLASH_TIME = 1000;
 
+// Check if running in PWA/mobile mode
+const isMobileOrPWA = () => {
+    // Check if running in standalone mode (PWA)
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+    // Check if mobile device based on screen width
+    const isMobile = window.innerWidth < 768;
+
+    return isStandalone || isMobile;
+};
+
 // Wrapper component that provides Ant Design theme configuration based on app theme
 const AntdConfigWrapper = ({ children }: { children: React.ReactNode }) => {
     const { mode } = useTheme();
@@ -59,7 +69,9 @@ const RootWithSplash = () => {
 
     const isLoadingWorkout = useSelector((state: RootState) => currentSelectors.isLoading(state));
 
-    const [showSplash, setShowSplash] = useState(true);
+    // Only show splash on mobile/PWA, skip on Desktop
+    const shouldShowSplash = isMobileOrPWA();
+    const [showSplash, setShowSplash] = useState(shouldShowSplash);
     const splashStartTime = useRef(Date.now());
 
     useEffect(() => {
@@ -70,28 +82,67 @@ const RootWithSplash = () => {
 
     /* Management of Splash screen */
     useEffect(() => {
+        // Skip splash screen management if not on mobile/PWA
+        if (!shouldShowSplash) {
+            setShowSplash(false);
+            // Remove HTML splash screen element
+            const splashElement = document.getElementById('splash-screen');
+            if (splashElement) {
+                splashElement.remove();
+            }
+            return;
+        }
+
         if (!user) {
             const elapsed = Date.now() - splashStartTime.current;
             const remaining = MIN_SPLASH_TIME - elapsed;
 
             if (remaining > 0) {
-                const timer = setTimeout(() => setShowSplash(false), remaining);
+                const timer = setTimeout(() => {
+                    setShowSplash(false);
+                    // Remove HTML splash screen element with fade-out
+                    const splashElement = document.getElementById('splash-screen');
+                    if (splashElement) {
+                        splashElement.classList.add('fade-out');
+                        setTimeout(() => splashElement.remove(), 500);
+                    }
+                }, remaining);
                 return () => clearTimeout(timer);
             } else {
                 setShowSplash(false);
+                // Remove HTML splash screen element with fade-out
+                const splashElement = document.getElementById('splash-screen');
+                if (splashElement) {
+                    splashElement.classList.add('fade-out');
+                    setTimeout(() => splashElement.remove(), 500);
+                }
             }
         } else if (!isLoadingWorkout) {
             const elapsed = Date.now() - splashStartTime.current;
             const remaining = MIN_SPLASH_TIME - elapsed;
 
             if (remaining > 0) {
-                const timer = setTimeout(() => setShowSplash(false), remaining);
+                const timer = setTimeout(() => {
+                    setShowSplash(false);
+                    // Remove HTML splash screen element with fade-out
+                    const splashElement = document.getElementById('splash-screen');
+                    if (splashElement) {
+                        splashElement.classList.add('fade-out');
+                        setTimeout(() => splashElement.remove(), 500);
+                    }
+                }, remaining);
                 return () => clearTimeout(timer);
             } else {
                 setShowSplash(false);
+                // Remove HTML splash screen element with fade-out
+                const splashElement = document.getElementById('splash-screen');
+                if (splashElement) {
+                    splashElement.classList.add('fade-out');
+                    setTimeout(() => splashElement.remove(), 500);
+                }
             }
         }
-    }, [user, isLoadingWorkout]);
+    }, [user, isLoadingWorkout, shouldShowSplash]);
 
     if (showSplash) return null;
 
