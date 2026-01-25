@@ -31,18 +31,18 @@ export const Profile = () => {
     const formatToShort = (dateString: string) => {
         const date = new Date(dateString);
         const months = [
-            t('common.months.jan'),
-            t('common.months.feb'),
-            t('common.months.mar'),
-            t('common.months.apr'),
-            t('common.months.may'),
-            t('common.months.jun'),
-            t('common.months.jul'),
-            t('common.months.aug'),
-            t('common.months.sep'),
-            t('common.months.oct'),
-            t('common.months.nov'),
-            t('common.months.dec'),
+            t("common.months.jan"),
+            t("common.months.feb"),
+            t("common.months.mar"),
+            t("common.months.apr"),
+            t("common.months.may"),
+            t("common.months.jun"),
+            t("common.months.jul"),
+            t("common.months.aug"),
+            t("common.months.sep"),
+            t("common.months.oct"),
+            t("common.months.nov"),
+            t("common.months.dec"),
         ];
         const month = months[date.getMonth()];
         return `${month}`;
@@ -93,6 +93,7 @@ export const Profile = () => {
                 }),
             );
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [progresses]);
 
     const saveWeight = () => {
@@ -121,43 +122,43 @@ export const Profile = () => {
     return (
         <>
             <PageSEO titleKey="seo.titles.profile" descriptionKey="seo.descriptions.profile" />
-            <div className="w-full md:max-w-[1200px] m-auto flex flex-col gap-4 p-4 pb-28 overflow-y-auto h-full hide-scrollbar">
-            {/* Profile Header */}
-            <ProfileHeader email={email} onSettingsClick={() => setOpenSettingsModal(true)} />
+            <div className="w-full md:max-w-[1200px] m-auto flex flex-col gap-4 p-4 pb-28 md:pb-14 overflow-y-auto h-full hide-scrollbar">
+                {/* Profile Header */}
+                <ProfileHeader email={email} onSettingsClick={() => setOpenSettingsModal(true)} />
 
-            {/* Workout Stats */}
-            <WorkoutStatsCard workoutCount={historyWorkouts.length} />
+                {/* Workout Stats */}
+                <WorkoutStatsCard workoutCount={historyWorkouts.length} />
 
-            {/* Body Weight Chart */}
-            <BodyWeightChart data={dataWeights} currentWeight={currentWeight} onEditClick={() => setOpenWeightModal(true)} />
+                {/* Body Weight Chart */}
+                <BodyWeightChart data={dataWeights} currentWeight={currentWeight} onEditClick={() => setOpenWeightModal(true)} />
 
-            {/* Personal Bests */}
-            <PersonalBests />
+                {/* Personal Bests */}
+                <PersonalBests />
 
-            {/* Weight Modal */}
-            <CustomModal
-                title={t("profile.weight_modal.title")}
-                open={openWeightModal}
-                onOk={saveWeight}
-                onCancel={() => {
-                    setOpenWeightModal(false);
-                    setNewWeight(undefined);
-                }}
-                type="edit"
-                okText="Save"
-                cancelText="Cancel"
-            >
-                <Input
-                    placeholder={t("profile.weight_modal.placeholder")}
-                    value={newWeight}
-                    onChange={(input) => setNewWeight(input.target.value)}
-                    size="large"
-                    className="bg-neutral-800 border-neutral-700 text-white placeholder:text-neutral-500"
-                />
-            </CustomModal>
+                {/* Weight Modal */}
+                <CustomModal
+                    title={t("profile.weight_modal.title")}
+                    open={openWeightModal}
+                    onOk={saveWeight}
+                    onCancel={() => {
+                        setOpenWeightModal(false);
+                        setNewWeight(undefined);
+                    }}
+                    type="edit"
+                    okText="Save"
+                    cancelText="Cancel"
+                >
+                    <Input
+                        placeholder={t("profile.weight_modal.placeholder")}
+                        value={newWeight}
+                        onChange={(input) => setNewWeight(input.target.value)}
+                        size="large"
+                        className="bg-neutral-800 border-neutral-700 text-white placeholder:text-neutral-500"
+                    />
+                </CustomModal>
 
-            {/* Settings Modal */}
-            <SettingsModal open={openSettingsModal} onClose={() => setOpenSettingsModal(false)} />
+                {/* Settings Modal */}
+                <SettingsModal open={openSettingsModal} onClose={() => setOpenSettingsModal(false)} />
             </div>
         </>
     );
