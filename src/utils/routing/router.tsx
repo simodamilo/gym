@@ -14,6 +14,7 @@ import { HistoryWorkout } from "../../pages/workouts/history/components/HistoryW
 import { HistoryExercisesList } from "../../pages/workouts/history/components/HistoryExercisesList";
 import { Signup } from "../../pages/signup/Signup";
 import { ForgotPassword } from "../../pages/forgotPassword/ForgotPassword";
+import { ResetPassword } from "../../pages/resetPassword/ResetPassword";
 
 export const router = createBrowserRouter([
     {
@@ -24,6 +25,7 @@ export const router = createBrowserRouter([
             { index: true, element: <Navigate to="/gym/login" replace /> },
             { path: "signup", element: <Signup /> },
             { path: "forgot-password", element: <ForgotPassword /> },
+            { path: "reset-password", element: <ResetPassword /> },
             {
                 path: "login",
                 element: <Login />,
