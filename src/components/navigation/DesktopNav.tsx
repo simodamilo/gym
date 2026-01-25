@@ -82,7 +82,7 @@ export const DesktopNav = () => {
             <div className="p-6 border-b border-[var(--border-default)] text-[var(--text-tertiary)]">
                 <div className="flex gap-4 items-center mb-2">
                     <div className="flex items-center gap-3">
-                        <img src={logo} alt="GymTracker Logo" className="w-10 h-10" />
+                        <img src={logo} alt={t("accessibility.logo_alt")} className="w-10 h-10" />
                     </div>
                     <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text">{t("app.name")}</h1>
                 </div>

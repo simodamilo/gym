@@ -84,9 +84,9 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
                         onChange={handleLanguageChange}
                         className="w-[150px]"
                         options={[
-                            { value: "en", label: "English" },
-                            { value: "es", label: "Español" },
-                            { value: "it", label: "Italiano" },
+                            { value: "en", label: t("languages.english") },
+                            { value: "es", label: t("languages.spanish") },
+                            { value: "it", label: t("languages.italian") },
                         ]}
                     />
                 </div>

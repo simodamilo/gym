@@ -33,6 +33,46 @@
             "exercises": "Sfoglia la nostra libreria completa di esercizi. Aggiungi nuovi esercizi e costruisci i tuoi programmi di allenamento personalizzati."
         }
     },
+    "auth": {
+        "login": {
+            "title": "Accedi",
+            "email_placeholder": "Email",
+            "password_placeholder": "Password",
+            "login_button": "Accedi",
+            "logging_in": "Accesso in corso...",
+            "signup_link": "Registrati",
+            "forgot_password_link": "Hai dimenticato la password?"
+        },
+        "signup": {
+            "title": "Registrati",
+            "email_placeholder": "Email",
+            "password_placeholder": "Password",
+            "signup_button": "Registrati",
+            "signing_up": "Creazione account...",
+            "success_message": "Registrazione completata! Controlla la tua email per confermare l'account.",
+            "login_link": "Accedi"
+        },
+        "forgot_password": {
+            "title": "Reimposta Password",
+            "email_placeholder": "Email",
+            "success_message": "Controlla la tua email per reimpostare la password.",
+            "send_button": "Invia email di reset",
+            "sending": "Invio email...",
+            "login_link": "Accedi"
+        },
+        "reset_password": {
+            "title": "Imposta Nuova Password",
+            "new_password_placeholder": "Nuova Password",
+            "confirm_password_placeholder": "Conferma Password",
+            "update_button": "Aggiorna Password",
+            "updating": "Aggiornamento...",
+            "success_message": "Password aggiornata con successo!",
+            "redirect_message": "Verrai reindirizzato alla pagina di login...",
+            "login_link": "Torna al login",
+            "error_passwords_mismatch": "Le password non corrispondono",
+            "error_password_length": "La password deve essere di almeno 6 caratteri"
+        }
+    },
     "common": {
         "back_btn": "Indietro",
         "months": {
@@ -49,6 +89,17 @@
             "nov": "Nov",
             "dec": "Dic"
         }
+    },
+    "accessibility": {
+        "logo_alt": "Logo GymTracker",
+        "theme_toggle_light": "Passa alla modalità chiara",
+        "theme_toggle_dark": "Passa alla modalità scura",
+        "change_language": "Cambia lingua"
+    },
+    "languages": {
+        "english": "English",
+        "spanish": "Español",
+        "italian": "Italiano"
     },
     "navigation": {
         "profile": "Profilo",

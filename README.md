@@ -4,37 +4,34 @@ A modern Progressive Web App (PWA) designed to help you track your workouts, mon
 
 ## Live App
 
-**Try it now:** [https://simodamilo.github.io/gym/login](https://simodamilo.github.io/gym/login)
+**Try it now:** [https://simodamilo.github.io/gym](https://simodamilo.github.io/gym)
 
 Install it on your phone as a PWA for the best experience (see installation instructions below).
 
 ## Features
 
--   🏋️ **Workout Management**
+- 🏋️ **Workout Management**
+    - Create and customize workout routines
+    - Track sets, reps, and weights
+    - Organize exercises by days
+    - Support for supersets
+    - Real-time workout tracking
 
-    -   Create and customize workout routines
-    -   Track sets, reps, and weights
-    -   Organize exercises by days
-    -   Support for supersets
-    -   Real-time workout tracking
+- 📊 **Progress Tracking**
+    - Weight tracking with visual graphs
+    - Exercise history
+    - Personal records monitoring
 
--   📊 **Progress Tracking**
+- 🎯 **Exercise Library**
+    - Categorized exercise database
+    - Custom exercise creation
+    - Exercise categories (Chest, Back, Legs, etc.)
 
-    -   Weight tracking with visual graphs
-    -   Exercise history
-    -   Personal records monitoring
-
--   🎯 **Exercise Library**
-
-    -   Categorized exercise database
-    -   Custom exercise creation
-    -   Exercise categories (Chest, Back, Legs, etc.)
-
--   🌓 **User Experience**
-    -   Dark/Light mode support
-    -   Mobile-first responsive design
-    -   PWA with offline capabilities
-    -   Drag and drop interface for workout organization
+- 🌓 **User Experience**
+    - Dark/Light mode support
+    - Mobile-first responsive design
+    - PWA with offline capabilities
+    - Drag and drop interface for workout organization
 
 ## How to Use on Mobile
 
@@ -42,7 +39,7 @@ This app is a Progressive Web App (PWA), which means you can install it on your 
 
 ### Installation on Android
 
-1. Open the app in **Chrome** or **Samsung Internet** browser: [https://simodamilo.github.io/gym/login](https://simodamilo.github.io/gym/login)
+1. Open the app in **Chrome** or **Samsung Internet** browser: [https://simodamilo.github.io/gym](https://simodamilo.github.io/gym)
 2. Tap the **three-dot menu** (⋮) in the top-right corner
 3. Select **"Add to Home screen"** or **"Install app"**
 4. Confirm the installation by tapping **"Add"** or **"Install"**
@@ -50,13 +47,14 @@ This app is a Progressive Web App (PWA), which means you can install it on your 
 6. Tap the icon to launch the app in full-screen mode
 
 **Alternative method:**
+
 - Look for the **"Install"** banner that appears at the bottom of the screen
 - Tap **"Install"** when prompted
 
 ### Installation on iOS (iPhone/iPad)
 
-1. Open the app in **Safari** browser: [https://simodamilo.github.io/gym/login](https://simodamilo.github.io/gym/login)
-   - Note: PWA installation only works in Safari on iOS
+1. Open the app in **Safari** browser: [https://simodamilo.github.io/gym](https://simodamilo.github.io/gym)
+    - Note: PWA installation only works in Safari on iOS
 2. Tap the **Share button** (□↑) at the bottom of the screen
 3. Scroll down and tap **"Add to Home Screen"**
 4. Edit the name if desired, then tap **"Add"** in the top-right corner
@@ -66,6 +64,7 @@ This app is a Progressive Web App (PWA), which means you can install it on your 
 ### Using the PWA
 
 Once installed:
+
 - The app launches in full-screen mode without browser controls
 - Works offline after the first load (cached data)
 - Receives updates automatically when online
@@ -74,37 +73,37 @@ Once installed:
 
 ### Benefits of Installing as PWA
 
--   **Faster access**: Launch directly from your home screen
--   **Offline mode**: Continue tracking workouts without internet
--   **Native feel**: Full-screen experience without browser UI
--   **Auto-updates**: Always get the latest version automatically
--   **Storage**: Local data storage for better performance
+- **Faster access**: Launch directly from your home screen
+- **Offline mode**: Continue tracking workouts without internet
+- **Native feel**: Full-screen experience without browser UI
+- **Auto-updates**: Always get the latest version automatically
+- **Storage**: Local data storage for better performance
 
 ## Technologies Used
 
 ### Frontend
 
--   React 19
--   TypeScript
--   Vite
--   Redux Toolkit for state management
--   React Router for navigation
--   Ant Design (antd) for UI components
--   Tailwind CSS for styling
--   Framer Motion for animations
--   i18next for internationalization
--   Recharts for data visualization
+- React 19
+- TypeScript
+- Vite
+- Redux Toolkit for state management
+- React Router for navigation
+- Ant Design (antd) for UI components
+- Tailwind CSS for styling
+- Framer Motion for animations
+- i18next for internationalization
+- Recharts for data visualization
 
 ### Backend & Authentication
 
--   Supabase for backend services
--   Supabase Auth for authentication
+- Supabase for backend services
+- Supabase Auth for authentication
 
 ### Development Tools
 
--   ESLint for code linting
--   GitHub Actions for CI/CD
--   GitHub Pages for hosting
+- ESLint for code linting
+- GitHub Actions for CI/CD
+- GitHub Pages for hosting
 
 ## Installation
 
