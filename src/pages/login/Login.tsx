@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../../utils/auth/AuthProvider";
 import { routes } from "../../utils/routing/routes";
 import { PageSEO } from "../../components/seo/PageSEO";
+import { PublicPageSettings } from "../../components/publicPageSettings/PublicPageSettings";
 
 export const Login = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { user, signInWithEmail } = useAuth();
 
@@ -31,42 +34,43 @@ export const Login = () => {
     return (
         <>
             <PageSEO titleKey="seo.titles.login" descriptionKey="seo.descriptions.login" />
-            <div className="h-dvh flex items-center justify-center px-4 bg-[#2d2d2d]">
-                <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
-                <h2 className="text-2xl font-bold text-center mb-8 text-gray-900">Accedi</h2>
+            <div className="h-dvh flex items-center justify-center px-4 bg-[var(--bg-primary)] relative">
+                <PublicPageSettings />
+                <div className="w-full max-w-md bg-[var(--bg-elevated)] shadow-xl rounded-2xl p-8">
+                <h2 className="text-2xl font-bold text-center mb-8 text-[var(--text-primary)]">{t("auth.login.title")}</h2>
 
                 <form onSubmit={handleLogin} className="space-y-4">
                     <input
                         type="email"
-                        placeholder="Email"
-                        className="w-full bg-gray-100 border border-gray-200 px-4 py-3 rounded-lg text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        placeholder={t("auth.login.email_placeholder")}
+                        className="w-full bg-[var(--bg-primary)] border border-[var(--border-default)] px-4 py-3 rounded-lg text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
                     <input
                         type="password"
-                        placeholder="Password"
-                        className="w-full bg-gray-100 border border-gray-200 px-4 py-3 rounded-lg text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                        placeholder={t("auth.login.password_placeholder")}
+                        className="w-full bg-[var(--bg-primary)] border border-[var(--border-default)] px-4 py-3 rounded-lg text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
                     {error && <p className="text-red-500 text-sm">{error}</p>}
-                    <button type="submit" disabled={loading} className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white py-3 rounded-lg font-medium transition-colors">
-                        {loading ? "Accesso in corso..." : "Accedi"}
+                    <button type="submit" disabled={loading} className="w-full bg-[var(--brand-primary)] hover:bg-[var(--brand-hover)] disabled:opacity-50 text-white py-3 rounded-lg font-medium transition-colors">
+                        {loading ? t("auth.login.logging_in") : t("auth.login.login_button")}
                     </button>
                 </form>
 
                 <div className="mt-6 text-center space-y-2">
                     <p className="text-sm">
-                        <span className="text-indigo-600 hover:underline cursor-pointer font-medium" onClick={() => navigate(routes.signup)}>
-                            Registrati
+                        <span className="text-[var(--brand-primary)] hover:underline cursor-pointer font-medium" onClick={() => navigate(routes.signup)}>
+                            {t("auth.login.signup_link")}
                         </span>
                     </p>
                     <p className="text-sm">
-                        <span className="text-indigo-600 hover:underline cursor-pointer font-medium" onClick={() => navigate(routes.forgotPassword)}>
-                            Hai dimenticato la password?
+                        <span className="text-[var(--brand-primary)] hover:underline cursor-pointer font-medium" onClick={() => navigate(routes.forgotPassword)}>
+                            {t("auth.login.forgot_password_link")}
                         </span>
                     </p>
                 </div>

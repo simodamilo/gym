@@ -145,8 +145,8 @@ export const Profile = () => {
                         setNewWeight(undefined);
                     }}
                     type="edit"
-                    okText="Save"
-                    cancelText="Cancel"
+                    okText={t("components.modal.save")}
+                    cancelText={t("components.modal.cancel")}
                 >
                     <Input
                         placeholder={t("profile.weight_modal.placeholder")}

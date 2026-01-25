@@ -1,10 +1,13 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../../utils/auth/AuthProvider";
 import { routes } from "../../utils/routing/routes";
 import { useNavigate } from "react-router-dom";
 import { PageSEO } from "../../components/seo/PageSEO";
+import { PublicPageSettings } from "../../components/publicPageSettings/PublicPageSettings";
 
 export const ResetPassword = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { updatePassword } = useAuth();
     const [password, setPassword] = useState("");
@@ -19,13 +22,13 @@ export const ResetPassword = () => {
 
         // Validate passwords match
         if (password !== confirmPassword) {
-            setError("Le password non corrispondono");
+            setError(t("auth.reset_password.error_passwords_mismatch"));
             return;
         }
 
         // Validate password length
         if (password.length < 6) {
-            setError("La password deve essere di almeno 6 caratteri");
+            setError(t("auth.reset_password.error_password_length"));
             return;
         }
 
@@ -48,21 +51,22 @@ export const ResetPassword = () => {
     return (
         <>
             <PageSEO titleKey="seo.titles.reset_password" descriptionKey="seo.descriptions.reset_password" />
-            <div className="h-dvh flex items-center justify-center px-4 bg-[#2d2d2d]">
-                <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
-                    <h2 className="text-2xl font-bold text-center mb-8 text-gray-900">Imposta Nuova Password</h2>
+            <div className="h-dvh flex items-center justify-center px-4 bg-[var(--bg-primary)] relative">
+                <PublicPageSettings />
+                <div className="w-full max-w-md bg-[var(--bg-elevated)] shadow-xl rounded-2xl p-8">
+                    <h2 className="text-2xl font-bold text-center mb-8 text-[var(--text-primary)]">{t("auth.reset_password.title")}</h2>
 
                     {success ? (
                         <div className="text-center">
-                            <p className="text-green-600 mb-4">Password aggiornata con successo!</p>
-                            <p className="text-gray-600 text-sm">Verrai reindirizzato alla pagina di login...</p>
+                            <p className="text-green-600 mb-4">{t("auth.reset_password.success_message")}</p>
+                            <p className="text-[var(--text-secondary)] text-sm">{t("auth.reset_password.redirect_message")}</p>
                         </div>
                     ) : (
                         <form onSubmit={handleReset} className="space-y-4">
                             <input
                                 type="password"
-                                placeholder="Nuova Password"
-                                className="w-full bg-gray-100 border border-gray-200 px-4 py-3 rounded-lg text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                placeholder={t("auth.reset_password.new_password_placeholder")}
+                                className="w-full bg-[var(--bg-primary)] border border-[var(--border-default)] px-4 py-3 rounded-lg text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
@@ -70,8 +74,8 @@ export const ResetPassword = () => {
                             />
                             <input
                                 type="password"
-                                placeholder="Conferma Password"
-                                className="w-full bg-gray-100 border border-gray-200 px-4 py-3 rounded-lg text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                placeholder={t("auth.reset_password.confirm_password_placeholder")}
+                                className="w-full bg-[var(--bg-primary)] border border-[var(--border-default)] px-4 py-3 rounded-lg text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                 required
@@ -81,17 +85,17 @@ export const ResetPassword = () => {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white py-3 rounded-lg font-medium transition-colors"
+                                className="w-full bg-[var(--brand-primary)] hover:bg-[var(--brand-hover)] disabled:opacity-50 text-white py-3 rounded-lg font-medium transition-colors"
                             >
-                                {loading ? "Aggiornamento..." : "Aggiorna Password"}
+                                {loading ? t("auth.reset_password.updating") : t("auth.reset_password.update_button")}
                             </button>
                         </form>
                     )}
 
                     <div className="mt-6 text-center">
                         <p className="text-sm">
-                            <span className="text-indigo-600 hover:underline cursor-pointer font-medium" onClick={() => navigate(routes.login)}>
-                                Torna al login
+                            <span className="text-[var(--brand-primary)] hover:underline cursor-pointer font-medium" onClick={() => navigate(routes.login)}>
+                                {t("auth.reset_password.login_link")}
                             </span>
                         </p>
                     </div>

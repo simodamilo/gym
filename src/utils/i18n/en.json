@@ -33,6 +33,46 @@
             "exercises": "Browse our comprehensive exercise library. Add new exercises and build your custom workout programs."
         }
     },
+    "auth": {
+        "login": {
+            "title": "Log In",
+            "email_placeholder": "Email",
+            "password_placeholder": "Password",
+            "login_button": "Log In",
+            "logging_in": "Logging in...",
+            "signup_link": "Sign Up",
+            "forgot_password_link": "Forgot your password?"
+        },
+        "signup": {
+            "title": "Sign Up",
+            "email_placeholder": "Email",
+            "password_placeholder": "Password",
+            "signup_button": "Sign Up",
+            "signing_up": "Creating account...",
+            "success_message": "Registration complete! Check your email to confirm your account.",
+            "login_link": "Log In"
+        },
+        "forgot_password": {
+            "title": "Reset Password",
+            "email_placeholder": "Email",
+            "success_message": "Check your email to reset your password.",
+            "send_button": "Send reset email",
+            "sending": "Sending email...",
+            "login_link": "Log In"
+        },
+        "reset_password": {
+            "title": "Set New Password",
+            "new_password_placeholder": "New Password",
+            "confirm_password_placeholder": "Confirm Password",
+            "update_button": "Update Password",
+            "updating": "Updating...",
+            "success_message": "Password updated successfully!",
+            "redirect_message": "You will be redirected to the login page...",
+            "login_link": "Back to login",
+            "error_passwords_mismatch": "Passwords do not match",
+            "error_password_length": "Password must be at least 6 characters"
+        }
+    },
     "common": {
         "back_btn": "Back",
         "months": {
@@ -49,6 +89,17 @@
             "nov": "Nov",
             "dec": "Dec"
         }
+    },
+    "accessibility": {
+        "logo_alt": "GymTracker Logo",
+        "theme_toggle_light": "Switch to light mode",
+        "theme_toggle_dark": "Switch to dark mode",
+        "change_language": "Change language"
+    },
+    "languages": {
+        "english": "English",
+        "spanish": "Español",
+        "italian": "Italiano"
     },
     "navigation": {
         "profile": "Profile",

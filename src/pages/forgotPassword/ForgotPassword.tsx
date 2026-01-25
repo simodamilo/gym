@@ -1,10 +1,13 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../../utils/auth/AuthProvider";
 import { routes } from "../../utils/routing/routes";
 import { useNavigate } from "react-router-dom";
 import { PageSEO } from "../../components/seo/PageSEO";
+import { PublicPageSettings } from "../../components/publicPageSettings/PublicPageSettings";
 
 export const ForgotPassword = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { resetPassword } = useAuth();
     const [email, setEmail] = useState("");
@@ -27,18 +30,19 @@ export const ForgotPassword = () => {
     return (
         <>
             <PageSEO titleKey="seo.titles.forgot_password" descriptionKey="seo.descriptions.forgot_password" />
-            <div className="h-dvh flex items-center justify-center px-4 bg-[#2d2d2d]">
-                <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
-                <h2 className="text-2xl font-bold text-center mb-8 text-gray-900">Reset Password</h2>
+            <div className="h-dvh flex items-center justify-center px-4 bg-[var(--bg-primary)] relative">
+                <PublicPageSettings />
+                <div className="w-full max-w-md bg-[var(--bg-elevated)] shadow-xl rounded-2xl p-8">
+                <h2 className="text-2xl font-bold text-center mb-8 text-[var(--text-primary)]">{t("auth.forgot_password.title")}</h2>
 
                 {success ? (
-                    <p className="text-green-600 text-center">Controlla la tua email per reimpostare la password.</p>
+                    <p className="text-green-600 text-center">{t("auth.forgot_password.success_message")}</p>
                 ) : (
                     <form onSubmit={handleReset} className="space-y-4">
                         <input
                             type="email"
-                            placeholder="Email"
-                            className="w-full bg-gray-100 border border-gray-200 px-4 py-3 rounded-lg text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                            placeholder={t("auth.forgot_password.email_placeholder")}
+                            className="w-full bg-[var(--bg-primary)] border border-[var(--border-default)] px-4 py-3 rounded-lg text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
@@ -47,17 +51,17 @@ export const ForgotPassword = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white py-3 rounded-lg font-medium transition-colors"
+                            className="w-full bg-[var(--brand-primary)] hover:bg-[var(--brand-hover)] disabled:opacity-50 text-white py-3 rounded-lg font-medium transition-colors"
                         >
-                            {loading ? "Invio email..." : "Invia email di reset"}
+                            {loading ? t("auth.forgot_password.sending") : t("auth.forgot_password.send_button")}
                         </button>
                     </form>
                 )}
 
                 <div className="mt-6 text-center">
                     <p className="text-sm">
-                        <span className="text-indigo-600 hover:underline cursor-pointer font-medium" onClick={() => navigate(routes.login)}>
-                            Accedi
+                        <span className="text-[var(--brand-primary)] hover:underline cursor-pointer font-medium" onClick={() => navigate(routes.login)}>
+                            {t("auth.forgot_password.login_link")}
                         </span>
                     </p>
                 </div>
