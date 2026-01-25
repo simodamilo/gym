@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { PageSwitcher } from "../../components/pageSwitcher/PageSwitcher";
 import { useSelector } from "react-redux";
@@ -9,11 +9,21 @@ import { routes } from "../../utils/routing/routes";
 
 export const Workouts = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const { t } = useTranslation();
 
     const [page, setPage] = useState<string>("current");
 
     const showSwitcher = useSelector((state: RootState) => currentSelectors.showSwitcher(state));
+
+    // Sync page state with current route
+    useEffect(() => {
+        if (location.pathname.includes('/history')) {
+            setPage("history");
+        } else if (location.pathname.includes('/current')) {
+            setPage("current");
+        }
+    }, [location.pathname]);
 
     useEffect(() => {
         navigate(page === "current" ? routes.workoutsCurrent : routes.workoutsHistory);
