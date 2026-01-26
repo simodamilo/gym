@@ -36,29 +36,36 @@
     "auth": {
         "login": {
             "title": "Log In",
+            "welcome_text": "Welcome back! Let's get you moving.",
             "email_placeholder": "Email",
             "password_placeholder": "Password",
             "login_button": "Log In",
             "logging_in": "Logging in...",
             "signup_link": "Sign Up",
+            "no_account_text": "Don't have an account?",
             "forgot_password_link": "Forgot your password?"
         },
         "signup": {
             "title": "Sign Up",
+            "welcome_text": "Start your fitness journey today!",
             "email_placeholder": "Email",
             "password_placeholder": "Password",
             "signup_button": "Sign Up",
             "signing_up": "Creating account...",
             "success_message": "Registration complete! Check your email to confirm your account.",
-            "login_link": "Log In"
+            "login_link": "Log In",
+            "have_account_text": "Already have an account?"
         },
         "forgot_password": {
             "title": "Reset Password",
+            "help_text": "We'll help you reset your password",
             "email_placeholder": "Email",
             "success_message": "Check your email to reset your password.",
+            "check_email_text": "Check your email for the reset link",
             "send_button": "Send reset email",
             "sending": "Sending email...",
-            "login_link": "Log In"
+            "login_link": "Log In",
+            "remember_password_text": "Remember your password?"
         },
         "reset_password": {
             "title": "Set New Password",

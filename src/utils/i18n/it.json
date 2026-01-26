@@ -36,29 +36,36 @@
     "auth": {
         "login": {
             "title": "Accedi",
+            "welcome_text": "Bentornato! È ora di rimetterti in movimento.",
             "email_placeholder": "Email",
             "password_placeholder": "Password",
             "login_button": "Accedi",
             "logging_in": "Accesso in corso...",
             "signup_link": "Registrati",
+            "no_account_text": "Non hai un account?",
             "forgot_password_link": "Hai dimenticato la password?"
         },
         "signup": {
             "title": "Registrati",
+            "welcome_text": "Inizia oggi il tuo percorso fitness!",
             "email_placeholder": "Email",
             "password_placeholder": "Password",
             "signup_button": "Registrati",
             "signing_up": "Creazione account...",
             "success_message": "Registrazione completata! Controlla la tua email per confermare l'account.",
-            "login_link": "Accedi"
+            "login_link": "Accedi",
+            "have_account_text": "Hai già un account?"
         },
         "forgot_password": {
             "title": "Reimposta Password",
+            "help_text": "Ti aiuteremo a reimpostare la tua password",
             "email_placeholder": "Email",
             "success_message": "Controlla la tua email per reimpostare la password.",
+            "check_email_text": "Controlla la tua email per trovare il link di reset",
             "send_button": "Invia email di reset",
             "sending": "Invio email...",
-            "login_link": "Accedi"
+            "login_link": "Accedi",
+            "remember_password_text": "Ricordi la tua password?"
         },
         "reset_password": {
             "title": "Imposta Nuova Password",
