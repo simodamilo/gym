@@ -5,6 +5,7 @@ import { routes } from "../../utils/routing/routes";
 import { useNavigate } from "react-router-dom";
 import { PageSEO } from "../../components/seo/PageSEO";
 import { PublicPageSettings } from "../../components/publicPageSettings/PublicPageSettings";
+import logo from "../../assets/logo.png";
 
 export const ForgotPassword = () => {
     const { t } = useTranslation();
@@ -30,42 +31,82 @@ export const ForgotPassword = () => {
     return (
         <>
             <PageSEO titleKey="seo.titles.forgot_password" descriptionKey="seo.descriptions.forgot_password" />
-            <div className="h-dvh flex items-center justify-center px-4 bg-[var(--bg-primary)] relative">
+            <div className="min-h-dvh flex items-center justify-center px-4 bg-gradient-to-br from-teal-50 via-cyan-50 to-teal-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 relative">
                 <PublicPageSettings />
-                <div className="w-full max-w-md bg-[var(--bg-elevated)] shadow-xl rounded-2xl p-8">
-                <h2 className="text-2xl font-bold text-center mb-8 text-[var(--text-primary)]">{t("auth.forgot_password.title")}</h2>
 
-                {success ? (
-                    <p className="text-green-600 text-center">{t("auth.forgot_password.success_message")}</p>
-                ) : (
-                    <form onSubmit={handleReset} className="space-y-4">
-                        <input
-                            type="email"
-                            placeholder={t("auth.forgot_password.email_placeholder")}
-                            className="w-full bg-[var(--bg-primary)] border border-[var(--border-default)] px-4 py-3 rounded-lg text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                        {error && <p className="text-red-500 text-sm">{error}</p>}
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="w-full bg-[var(--brand-primary)] hover:bg-[var(--brand-hover)] disabled:opacity-50 text-white py-3 rounded-lg font-medium transition-colors"
-                        >
-                            {loading ? t("auth.forgot_password.sending") : t("auth.forgot_password.send_button")}
-                        </button>
-                    </form>
-                )}
+                <div className="w-full max-w-md">
+                    {/* Form Container */}
+                    <div className="bg-[var(--bg-elevated)] shadow-xl rounded-2xl p-4 md:p-8">
+                        <div className="flex gap-4 md:gap-8 items-center mb-4">
+                            {/* Logo */}
+                            <div className="w-24 h-24 flex items-center">
+                                <img src={logo} alt={t("accessibility.logo_alt")} />
+                            </div>
 
-                <div className="mt-6 text-center">
-                    <p className="text-sm">
-                        <span className="text-[var(--brand-primary)] hover:underline cursor-pointer font-medium" onClick={() => navigate(routes.login)}>
-                            {t("auth.forgot_password.login_link")}
-                        </span>
-                    </p>
+                            {/* Title and Welcome Text with Gradient */}
+                            <div className="text-left">
+                                <p className="text-lg font-medium bg-gradient-to-r from-teal-500 to-cyan-600 bg-clip-text text-transparent">{t("auth.forgot_password.help_text")}</p>
+                            </div>
+                        </div>
+
+                        {success ? (
+                            <div className="text-center py-8">
+                                <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <svg className="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                                        />
+                                    </svg>
+                                </div>
+                                <p className="text-green-600 dark:text-green-400 font-medium text-lg mb-2">{t("auth.forgot_password.success_message")}</p>
+                                <p className="text-[var(--text-secondary)] text-sm">{t("auth.forgot_password.check_email_text")}</p>
+                            </div>
+                        ) : (
+                            <form onSubmit={handleReset} className="space-y-5">
+                                <div>
+                                    <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Email</label>
+                                    <input
+                                        type="email"
+                                        placeholder={t("auth.forgot_password.email_placeholder")}
+                                        className="w-full bg-[var(--bg-primary)] border border-[var(--border-default)] px-4 py-3.5 rounded-xl text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        required
+                                    />
+                                </div>
+
+                                {error && (
+                                    <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-3">
+                                        <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
+                                    </div>
+                                )}
+
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="w-full bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3.5 rounded-xl font-semibold shadow-lg transition-all transform hover:scale-[1.02] active:scale-[0.98]"
+                                >
+                                    {loading ? t("auth.forgot_password.sending") : t("auth.forgot_password.send_button")}
+                                </button>
+                            </form>
+                        )}
+
+                        <div className="mt-8 pt-6 border-t border-[var(--border-default)] text-center">
+                            <p className="text-sm text-[var(--text-secondary)]">
+                                {t("auth.forgot_password.remember_password_text")}{" "}
+                                <span
+                                    className="text-teal-500 hover:text-teal-600 dark:text-teal-400 dark:hover:text-teal-300 font-semibold cursor-pointer transition-colors"
+                                    onClick={() => navigate(routes.login)}
+                                >
+                                    {t("auth.forgot_password.login_link")}
+                                </span>
+                            </p>
+                        </div>
+                    </div>
                 </div>
-            </div>
             </div>
         </>
     );

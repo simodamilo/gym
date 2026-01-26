@@ -36,29 +36,36 @@
     "auth": {
         "login": {
             "title": "Iniciar Sesión",
+            "welcome_text": "¡Bienvenido de nuevo! Es hora de ponerte en movimiento.",
             "email_placeholder": "Correo electrónico",
             "password_placeholder": "Contraseña",
             "login_button": "Iniciar Sesión",
             "logging_in": "Iniciando sesión...",
             "signup_link": "Registrarse",
+            "no_account_text": "¿No tienes una cuenta?",
             "forgot_password_link": "¿Olvidaste tu contraseña?"
         },
         "signup": {
             "title": "Registrarse",
+            "welcome_text": "¡Comienza tu viaje fitness hoy!",
             "email_placeholder": "Correo electrónico",
             "password_placeholder": "Contraseña",
             "signup_button": "Registrarse",
             "signing_up": "Creando cuenta...",
             "success_message": "¡Registro completo! Revisa tu correo para confirmar tu cuenta.",
-            "login_link": "Iniciar Sesión"
+            "login_link": "Iniciar Sesión",
+            "have_account_text": "¿Ya tienes una cuenta?"
         },
         "forgot_password": {
             "title": "Restablecer Contraseña",
+            "help_text": "Te ayudaremos a restablecer tu contraseña",
             "email_placeholder": "Correo electrónico",
             "success_message": "Revisa tu correo para restablecer tu contraseña.",
+            "check_email_text": "Revisa tu correo para encontrar el enlace de restablecimiento",
             "send_button": "Enviar correo de restablecimiento",
             "sending": "Enviando correo...",
-            "login_link": "Iniciar Sesión"
+            "login_link": "Iniciar Sesión",
+            "remember_password_text": "¿Recuerdas tu contraseña?"
         },
         "reset_password": {
             "title": "Establecer Nueva Contraseña",
