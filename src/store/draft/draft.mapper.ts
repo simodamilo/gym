@@ -8,7 +8,7 @@ const getDraftWorkoutDataMapper = (response: any): Workout => {
         createdAt: response.created_at,
         startDate: response.start_date,
         endDate: response.end_date,
-        days: response.days.map((day: DayResponse) => {
+        days: (response.days ?? []).map((day: DayResponse) => {
             return {
                 id: day.id,
                 name: day.name,
@@ -17,7 +17,7 @@ const getDraftWorkoutDataMapper = (response: any): Workout => {
                 lastWorkout: day.last_workout,
                 createdAt: day.created_at,
                 order: day.order,
-                dayExercises: day.day_exercises.map((day_exercise: DayExerciseResponse) => {
+                dayExercises: (day.day_exercises ?? []).map((day_exercise: DayExerciseResponse) => {
                     return {
                         id: day_exercise.id,
                         orderNumber: day_exercise.order_number,
@@ -27,7 +27,7 @@ const getDraftWorkoutDataMapper = (response: any): Workout => {
                         repsType: day_exercise.reps_type,
                         customType: day_exercise.custom_type,
                         isLinkedToNext: day_exercise.is_linked_to_next,
-                        sets: day_exercise.day_exercise_sets.map((set) => {
+                        sets: (day_exercise.day_exercise_sets ?? []).map((set) => {
                             return {
                                 id: set.id,
                                 setNumber: set.set_number,
@@ -36,13 +36,15 @@ const getDraftWorkoutDataMapper = (response: any): Workout => {
                                 baseWeight: set.base_weight
                             } as Set;
                         }),
-                        exercise: {
-                            id: day_exercise.exercises_catalog.id,
-                            name: day_exercise.exercises_catalog.name,
-                            category: day_exercise.exercises_catalog.category,
-                            created_at: day_exercise.exercises_catalog.created_at,
-                            description: day_exercise.exercises_catalog.description,
-                        } as ExerciseCatalog,
+                        exercise: day_exercise.exercises_catalog
+                            ? ({
+                                  id: day_exercise.exercises_catalog.id,
+                                  name: day_exercise.exercises_catalog.name,
+                                  category: day_exercise.exercises_catalog.category,
+                                  created_at: day_exercise.exercises_catalog.created_at,
+                                  description: day_exercise.exercises_catalog.description,
+                              } as ExerciseCatalog)
+                            : undefined,
                     };
                 }),
             };
