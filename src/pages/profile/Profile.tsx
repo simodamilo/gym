@@ -122,8 +122,11 @@ export const Profile = () => {
     return (
         <>
             <PageSEO titleKey="seo.titles.profile" descriptionKey="seo.descriptions.profile" />
-            {/* pb-40 clears the fixed BottomBar, which occupies 96px (bottom-6 + h-[72px]) */}
-            <div className="w-full md:max-w-[1200px] m-auto flex flex-col gap-4 p-4 pb-40 md:pb-14 overflow-y-auto h-full hide-scrollbar">
+            {/* [&>*]:shrink-0 keeps the children at their natural height. Without it they shrink
+                to fit the viewport, so the container never overflows, never scrolls, and the
+                squeezed content spills under the fixed BottomBar.
+                pb-40 clears that bar, which occupies 96px (bottom-6 + h-[72px]). */}
+            <div className="w-full md:max-w-[1200px] m-auto flex flex-col gap-4 p-4 pb-40 md:pb-14 overflow-y-auto flex-1 min-h-0 [&>*]:shrink-0 hide-scrollbar">
                 {/* Profile Header */}
                 <ProfileHeader email={email} onSettingsClick={() => setOpenSettingsModal(true)} />
 
