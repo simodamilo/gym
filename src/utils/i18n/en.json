@@ -222,9 +222,17 @@
             "start_workout": "Start Workout",
             "reps_type_placeholder": "Select the type of reps",
             "superset": "Superset with next exercise",
-            "confirm_save_base": "Are you sure you want to save actual weights as base?",
             "workout_started": "Workout Started",
-            "initial": "Initial"
+            "progression": "Progression",
+            "col_set": "Set",
+            "col_target": "Target",
+            "col_performed_reps": "Reps",
+            "col_performed_time": "Secs",
+            "aria_performed": "Set {{set}}, performed",
+            "aria_weight": "Set {{set}}, weight in {{unit}}"
+        },
+        "progression": {
+            "empty": "No training logged yet for this exercise."
         }
     },
     "profile": {

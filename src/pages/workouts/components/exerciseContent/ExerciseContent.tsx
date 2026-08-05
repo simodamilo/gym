@@ -4,9 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { exercisesSelectors } from "../../../../store/exercisesCatalog/exercisesCatalog.selector";
 import { exercisesCatalogActions } from "../../../../store/exercisesCatalog/exercisesCatalog.action";
-import { Checkbox, Divider, Input, Select, Tooltip } from "antd";
+import { Checkbox, Divider, Input, Modal, Select, Tooltip } from "antd";
 import type { DayExercise, Set } from "../../../../store/draft/types";
-import { DeleteOutlined, InfoCircleOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined, InfoCircleOutlined, LineChartOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { draftSelectors } from "../../../../store/draft/draft.selectors";
 import TextArea from "antd/es/input/TextArea";
 import { v4 as uuidv4 } from "uuid";
@@ -15,6 +15,9 @@ import { RepsTypes } from "../../../../utils/constants";
 import { ExerciseSelects } from "../../../../components/exerciseSelects/ExerciseSelects";
 import { Button } from "../../../../components/button/Button";
 import { IconButton } from "../../../../components/iconButton/IconButton";
+import { ExerciseProgression } from "./progression/ExerciseProgression";
+import { SetRowHeader } from "./SetRowHeader";
+import { getSetGrid, getSetInputClassName, hasSeparateWeight } from "./setRow.styles";
 
 export interface ExerciseContentProps {
     dayId: string;
@@ -35,6 +38,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
 
     const [dayExercise, setDayExercise] = useState<DayExercise>(props.dayExercise);
     const [isExerciseUpdated, setIsExerciseUpdated] = useState<boolean>(false);
+    const [showProgression, setShowProgression] = useState<boolean>(false);
 
     const exercises: ExerciseCatalog[] = useSelector((state: RootState) => exercisesSelectors.getExercises(state));
     const isLoadingExercises: boolean = useSelector((state: RootState) => draftSelectors.isLoadingExercises(state));
@@ -204,7 +208,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                                 disabled={isLoadingExercises}
                             />
                         </div>
-                        {props.isDraft && dayExercise.repsType !== "custom" && (
+                        {props.isDraft && (
                             <div className="flex justify-end gap-2 ">
                                 <IconButton icon={<MinusOutlined />} onClick={removeSet} disabled={dayExercise.sets.length === 0 || !dayExercise.repsType || isLoadingExercises} />
                                 <IconButton icon={<PlusOutlined />} onClick={addSet} disabled={!dayExercise.repsType || isLoadingExercises} />
@@ -212,44 +216,62 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                         )}
                     </div>
                 )}
+                {/* `custom` can no longer be chosen, but exercises created before it was withdrawn still
+                    carry it. Their free text stays readable so no logged workout loses its content. */}
                 {dayExercise.repsType === "custom" ? (
-                    <TextArea
-                        rows={4}
-                        value={dayExercise.customType}
-                        onChange={(input) => {
-                            setDayExercise((prevState) => {
-                                return {
-                                    ...prevState,
-                                    customType: input.target.value,
-                                };
-                            });
-                            setIsExerciseUpdated(true);
-                        }}
-                        placeholder={t("workouts.exercises.notes_placeholder")}
-                        disabled={isLoadingExercises}
-                        readOnly={props.isCurrent || props.isHistory}
-                    />
+                    <TextArea rows={4} value={dayExercise.customType} readOnly disabled={isLoadingExercises} />
                 ) : (
-                    [...(dayExercise.sets ?? [])]
+                    <div className="flex flex-col gap-2" role="group" aria-label={dayExercise.exercise?.name}>
+                        {(props.isCurrent || props.isHistory) && (dayExercise.sets ?? []).length > 0 && (
+                            <SetRowHeader repsType={dayExercise.repsType} unitLabel={getAddon()} />
+                        )}
+                        {[...(dayExercise.sets ?? [])]
                         .sort((a, b) => a.setNumber - b.setNumber)
                         .map((set: Set) => {
                             if (props.isCurrent || props.isHistory) {
                                 return (
-                                    <div key={set.id} className="flex gap-4 w-full">
-                                        <div className="w-[40%]">
-                                            <Input readOnly addonBefore={set.setNumber} value={set.reps} />
-                                        </div>
-                                        <div className="w-[60%]">
+                                    <div key={set.id} className={`${getSetGrid(dayExercise.repsType)} items-center min-h-[44px]`}>
+                                        {/* Set number: flat badge, deliberately never boxed like an input */}
+                                        <span
+                                            aria-hidden="true"
+                                            className="flex items-center justify-center h-6 w-6 rounded-full bg-[var(--bg-tertiary)] text-[12px] font-semibold text-[var(--text-secondary)] tabular-nums"
+                                        >
+                                            {set.setNumber}
+                                        </span>
+
+                                        {/* Target: read-only, so borderless and quiet. Never --text-tertiary,
+                                            which fails contrast in light mode. */}
+                                        <span id={`target-${set.id}`} className="text-center text-[13px] leading-tight tabular-nums text-[var(--text-secondary)] truncate">
+                                            {set.targetReps || "–"}
+                                        </span>
+
+                                        {/* Only `reps` exercises log reps separately; for time and max the
+                                            single value column below is the performed value. */}
+                                        {hasSeparateWeight(dayExercise.repsType) && (
                                             <Input
-                                                inputMode="decimal"
-                                                key={set.id}
-                                                addonBefore={getAddon()}
-                                                value={set.weight}
-                                                onChange={(input) => updateSet("weight", input.target.value, set.id)}
+                                                inputMode="numeric"
+                                                value={set.reps}
+                                                onChange={(input) => updateSet("reps", input.target.value, set.id)}
                                                 disabled={isLoadingExercises}
                                                 readOnly={props.isHistory}
+                                                aria-label={t("workouts.exercises.aria_performed", { set: set.setNumber })}
+                                                aria-describedby={set.targetReps ? `target-${set.id}` : undefined}
+                                                className={getSetInputClassName(props.isHistory)}
                                             />
-                                        </div>
+                                        )}
+
+                                        <Input
+                                            inputMode="decimal"
+                                            value={set.weight}
+                                            placeholder="–"
+                                            onChange={(input) => updateSet("weight", input.target.value, set.id)}
+                                            disabled={isLoadingExercises}
+                                            readOnly={props.isHistory}
+                                            aria-label={t("workouts.exercises.aria_weight", { set: set.setNumber, unit: getAddon() })}
+                                            aria-describedby={!hasSeparateWeight(dayExercise.repsType) && set.targetReps ? `target-${set.id}` : undefined}
+                                            suffix={<span className="text-[12px] text-[var(--text-secondary)] select-none pointer-events-none">{getAddon()}</span>}
+                                            className={getSetInputClassName(props.isHistory)}
+                                        />
                                     </div>
                                 );
                             }
@@ -264,7 +286,8 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                                     readOnly={dayExercise.repsType === "max"}
                                 />
                             );
-                        })
+                        })}
+                    </div>
                 )}
             </div>
             <Divider />
@@ -272,25 +295,14 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
             {/* Initial Weight and Rest */}
             <div className="flex gap-4">
                 {!props.isDraft && (
-                    <Tooltip
-                        title={
-                            <div>
-                                {[...(dayExercise.sets ?? [])]
-                                    .sort((a, b) => a.setNumber - b.setNumber)
-                                    .map((set: Set) => {
-                                        return (
-                                            <div>
-                                                {set.setNumber} - {set.baseWeight}
-                                            </div>
-                                        );
-                                    })}
-                            </div>
-                        }
+                    <button
+                        type="button"
+                        onClick={() => setShowProgression(true)}
+                        className="flex items-center gap-1 border border-solid border-[var(--border-default)] rounded-md px-2 bg-transparent cursor-pointer text-[var(--text-primary)]"
                     >
-                        <div className="flex items-center border border-[#EDEDED] rounded-md px-2">
-                            <p>{t("workouts.exercises.initial")}</p>
-                        </div>
-                    </Tooltip>
+                        <LineChartOutlined />
+                        <p className="m-0">{t("workouts.exercises.progression")}</p>
+                    </button>
                 )}
                 <Input
                     readOnly={props.isCurrent || props.isHistory}
@@ -339,6 +351,10 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
                     <Button label={t("workouts.exercises.save_btn")} onClick={() => props.saveExercises?.(dayExercise)} disabled={!hasValidFields()} />
                 </div>
             )}
+
+            <Modal open={showProgression} onCancel={() => setShowProgression(false)} footer={null} title={dayExercise.exercise?.name ?? t("workouts.exercises.progression")} destroyOnClose>
+                <ExerciseProgression exerciseId={dayExercise.exercise?.id} />
+            </Modal>
         </div>
     );
 };

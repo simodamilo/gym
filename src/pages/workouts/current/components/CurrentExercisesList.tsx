@@ -1,10 +1,9 @@
-import { ArrowLeftOutlined, PlayCircleOutlined, SaveOutlined, FileTextOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, PlayCircleOutlined, FileTextOutlined } from "@ant-design/icons";
 import { useAppDispatch, type RootState } from "../../../../store";
 import { useEffect, useState } from "react";
 import { Collapse } from "antd";
 import { SortableItem } from "../../../../components/sortableItem/SortableItem";
-import { CustomModal } from "../../../../components/customModal";
-import type { Day, DayExercise } from "../../../../store/draft/types";
+import type { Day, DayExercise, Set } from "../../../../store/draft/types";
 import { useTranslation } from "react-i18next";
 import { currentActions } from "../../../../store/current/current.actions";
 import { useNavigate, useParams } from "react-router-dom";
@@ -15,6 +14,9 @@ import { ExerciseContent } from "../../components/exerciseContent/ExerciseConten
 import { IconButton } from "../../../../components/iconButton/IconButton";
 import { draftActions } from "../../../../store/draft/draft.actions";
 import { EmptyState } from "../../../../components/emptyState/EmptyState";
+import { sessionsActions } from "../../../../store/sessions/sessions.actions";
+import { sessionsSelectors } from "../../../../store/sessions/sessions.selectors";
+import type { SessionSet } from "../../../../store/sessions/types";
 
 export const CurrentExercisesList = () => {
     const { t } = useTranslation();
@@ -26,22 +28,41 @@ export const CurrentExercisesList = () => {
 
     const [activeKey, setActiveKey] = useState<string>();
     const [mutableDayExercises, setMutableDayExercises] = useState<DayExercise[]>([]);
-    const [showConfirmSaveBase, setShowConfirmSaveBase] = useState<boolean>(false);
+
+    const activeSession = useSelector((state: RootState) => sessionsSelectors.getActiveSession(state));
 
     useEffect(() => {
-        const day = workout?.days.find((day) => day.id === dayId);
-        if (day) {
-            const mutable: DayExercise[] = [...day.dayExercises];
-            mutable.sort((a: DayExercise, b: DayExercise) => a.orderNumber - b.orderNumber);
-            setMutableDayExercises(mutable);
-        }
-    }, [workout, dayId]);
-
-    const saveAsBaseWeight = async () => {
         if (dayId) {
-            await dispatch(currentActions.saveBaseWeight({ dayExercises: mutableDayExercises, dayId }));
+            dispatch(sessionsActions.fetchSessionsForDay(dayId));
         }
-    };
+    }, [dispatch, dayId]);
+
+    /**
+     * The plan supplies the structure; the active session supplies what was actually performed.
+     * `reps` is overlaid with the session value so the input the user edits is always the
+     * performed one, while `targetReps` keeps the prescription for the placeholder.
+     */
+    useEffect(() => {
+        const day = workout?.days.find((day) => day.id === dayId);
+        if (!day) return;
+
+        const sessionSets: SessionSet[] = activeSession?.sets ?? [];
+        const mutable: DayExercise[] = day.dayExercises.map((dayExercise: DayExercise) => ({
+            ...dayExercise,
+            sets: (dayExercise.sets ?? []).map((set: Set) => {
+                const performed = sessionSets.find((sessionSet) => sessionSet.dayExerciseId === dayExercise.id && sessionSet.setNumber === set.setNumber);
+                if (!performed) return { ...set, targetReps: set.targetReps ?? set.reps };
+                return {
+                    ...set,
+                    targetReps: performed.targetReps ?? set.targetReps ?? set.reps,
+                    reps: performed.repsRaw ?? "",
+                    weight: performed.weight ?? set.weight,
+                };
+            }),
+        }));
+        mutable.sort((a: DayExercise, b: DayExercise) => a.orderNumber - b.orderNumber);
+        setMutableDayExercises(mutable);
+    }, [workout, dayId, activeSession]);
 
     const isAlreadyStarted = () => {
         const day = workout?.days.find((day) => day.id === dayId);
@@ -53,37 +74,58 @@ export const CurrentExercisesList = () => {
         }
     };
 
-    const handleStartClick = async () => {
+    /**
+     * Opens a session and seeds it from the plan. The `days` update is kept alongside it during
+     * the compatibility window: counter and last_workout are derivable from day_sessions and are
+     * dropped in phase 2 of the migration.
+     */
+    const handleStartClick = async (): Promise<string | undefined> => {
         const now = new Date();
         const newDay: Day | undefined = workout?.days.find((day) => day.id === dayId);
+        if (!newDay || !workout) return undefined;
 
-        if (newDay) {
-            await dispatch(
-                currentActions.updateDayStart({
-                    id: newDay.id,
-                    last_workout: now.getTime(),
-                    workout_id: workout!.id,
-                    name: newDay.name,
-                    counter: newDay.counter ? newDay.counter + 1 : 1,
-                    is_last: true,
-                    order: newDay.order,
-                }),
-            );
-        }
+        const started = await dispatch(
+            sessionsActions.startSession({
+                dayId: newDay.id,
+                workoutId: workout.id,
+                dayExercises: newDay.dayExercises,
+            }),
+        );
+
+        await dispatch(
+            currentActions.updateDayStart({
+                id: newDay.id,
+                last_workout: now.getTime(),
+                workout_id: workout.id,
+                name: newDay.name,
+                counter: newDay.counter ? newDay.counter + 1 : 1,
+                is_last: true,
+                order: newDay.order,
+            }),
+        );
+
+        return sessionsActions.startSession.fulfilled.match(started) ? started.payload : undefined;
     };
 
     const saveExercises = async (exercise: DayExercise) => {
         if (!workout || !dayId) return;
+
+        /* Sessions are never marked complete, so the newest one stays "active" indefinitely.
+           Whether today counts as started therefore has to come from the day itself, otherwise the
+           first edit of a new training would be written into the previous session.
+
+           When today has started, the id comes from the selector; when it has not, it comes back
+           from the thunk, because the selector is stale until startSession's fetch lands. */
+        const sessionId = isAlreadyStarted() ? activeSession?.id : await handleStartClick();
+        if (!sessionId) return;
+
         await dispatch(
-            draftActions.upsertExercises({
-                dayExercises: [exercise],
-                dayId: dayId,
-                workoutId: workout?.id,
+            sessionsActions.saveSessionSets({
+                sessionId,
+                dayId,
+                dayExercise: exercise,
             }),
         );
-        if (!isAlreadyStarted()) {
-            handleStartClick();
-        }
     };
 
     /* only used if isReadOnly is false */
@@ -168,9 +210,6 @@ export const CurrentExercisesList = () => {
                 </button>
 
                 <div className="flex gap-2 items-center">
-                    {mutableDayExercises.length > 0 && mutableDayExercises[0].sets.length > 0 && !mutableDayExercises[0].sets[0].baseWeight && (
-                        <IconButton icon={<SaveOutlined />} onClick={() => setShowConfirmSaveBase(true)} />
-                    )}
                     {isAlreadyStarted() ? (
                         <div className="text-[15px] font-medium text-[var(--text-primary)]">{t("workouts.exercises.workout_started")}</div>
                     ) : (
@@ -202,22 +241,6 @@ export const CurrentExercisesList = () => {
                     <EmptyState icon={<FileTextOutlined />} title={t("pages.current.empty_exercises_title")} description={t("pages.current.empty_exercises_description")} />
                 )}
             </div>
-
-            {/* Confirmation modal */}
-            <CustomModal
-                type="confirm"
-                open={showConfirmSaveBase}
-                onOk={() => {
-                    saveAsBaseWeight();
-                    setShowConfirmSaveBase(false);
-                }}
-                onCancel={() => {
-                    setShowConfirmSaveBase(false);
-                }}
-                okText={t("workouts.exercises.save_btn")}
-            >
-                <p className="text-[var(--text-secondary)] m-0">{t("workouts.exercises.confirm_save_base")}</p>
-            </CustomModal>
         </div>
     );
 };
