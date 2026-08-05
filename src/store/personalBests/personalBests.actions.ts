@@ -1,17 +1,20 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { supabase } from "../supabaseClient";
-import type { PersonalBest, PersonalBestsWorkoutResponse } from "./types";
+import type { PersonalBest } from "./types";
 import { exercisesCatalogActions } from "../exercisesCatalog/exercisesCatalog.action";
 import { fetchTrackedExerciseIds, setExerciseTracked } from "../exercisesCatalog/userExercisePrefs";
 
 /**
- * Process workout data to extract personal bests
- * Groups all weights by exercise and finds the maximum for each
+ * The heaviest weight actually performed per exercise.
  *
- * `trackedExerciseIds` comes from the current user's preferences: the catalog is shared,
- * so tracking can no longer be read off the exercise row or filtered inside the join.
+ * Read from session_sets, not from the plan: day_exercise_sets.weight is the *current* planned
+ * weight, so a deload used to erase the PR. A logged session is immutable, so it cannot.
+ *
+ * `trackedExerciseIds` comes from the current user's preferences: the catalog is shared, so
+ * tracking can no longer be read off the exercise row or filtered inside the join.
  */
-function processPersonalBests(workouts: PersonalBestsWorkoutResponse[], trackedExerciseIds: Set<string>): PersonalBest[] {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function processPersonalBests(sessionSets: any[], trackedExerciseIds: Set<string>): PersonalBest[] {
     const exerciseWeights = new Map<
         string,
         {
@@ -21,44 +24,23 @@ function processPersonalBests(workouts: PersonalBestsWorkoutResponse[], trackedE
         }
     >();
 
-    workouts.forEach((workout) => {
-        if (!workout.days || !Array.isArray(workout.days)) return;
+    (sessionSets ?? []).forEach((row) => {
+        const exercise = row?.day_exercises?.exercises_catalog;
+        if (!exercise) return;
 
-        workout.days.forEach((day) => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const typedDay = day as any;
-            if (!typedDay.day_exercises || !Array.isArray(typedDay.day_exercises)) return;
+        const { id: exerciseId, name: exerciseName, category } = exercise;
+        if (!exerciseId || !exerciseName || !category) return;
+        if (!trackedExerciseIds.has(exerciseId)) return;
+        if (typeof row.weight !== "number") return;
 
-            typedDay.day_exercises.forEach((dayEx: unknown) => {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const typedDayEx = dayEx as any;
-                if (!typedDayEx.exercises_catalog) return;
-
-                const exerciseId = typedDayEx.exercises_catalog.id;
-                const exerciseName = typedDayEx.exercises_catalog.name;
-                const category = typedDayEx.exercises_catalog.category;
-
-                // Only process exercises the user tracks for personal bests
-                if (!trackedExerciseIds.has(exerciseId)) return;
-                if (!exerciseId || !exerciseName || !category) return;
-                if (!typedDayEx.day_exercise_sets || !Array.isArray(typedDayEx.day_exercise_sets)) return;
-
-                typedDayEx.day_exercise_sets.forEach((set: unknown) => {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    const typedSet = set as any;
-                    if (typedSet.weight && typeof typedSet.weight === 'number') {
-                        const current = exerciseWeights.get(exerciseId);
-                        if (!current || typedSet.weight > current.maxWeight) {
-                            exerciseWeights.set(exerciseId, {
-                                name: exerciseName,
-                                category,
-                                maxWeight: typedSet.weight,
-                            });
-                        }
-                    }
-                });
+        const current = exerciseWeights.get(exerciseId);
+        if (!current || row.weight > current.maxWeight) {
+            exerciseWeights.set(exerciseId, {
+                name: exerciseName,
+                category,
+                maxWeight: row.weight,
             });
-        });
+        }
     });
 
     return Array.from(exerciseWeights.entries())
@@ -70,6 +52,17 @@ function processPersonalBests(workouts: PersonalBestsWorkoutResponse[], trackedE
         }))
         .sort((a, b) => b.maxWeight - a.maxWeight); // Sort by weight descending
 }
+
+const SESSION_PR_SELECT = `
+    weight,
+    day_exercises!inner (
+        exercises_catalog!inner (
+            id,
+            name,
+            category
+        )
+    )
+`;
 
 /**
  * Fetch personal bests from archived workouts
@@ -85,25 +78,9 @@ const fetchWorkoutPersonalBests = createAsyncThunk(
             }
 
             const { data, error } = await supabase
-                .from("workouts")
-                .select(
-                    `
-                days (
-                    day_exercises (
-                        exercises_catalog!inner (
-                            id,
-                            name,
-                            category
-                        ),
-                        day_exercise_sets (
-                            weight
-                        )
-                    )
-                )
-            `
-                )
-                .in("status", ["archived", "published"])
-                .in("days.day_exercises.exercises_catalog.id", trackedExerciseIds);
+                .from("session_sets")
+                .select(SESSION_PR_SELECT)
+                .in("day_exercises.exercises_catalog.id", trackedExerciseIds);
 
             if (error) {
                 throw new Error("Error fetching workout personal bests");
@@ -113,7 +90,7 @@ const fetchWorkoutPersonalBests = createAsyncThunk(
                 return [];
             }
 
-            return processPersonalBests(data as PersonalBestsWorkoutResponse[], new Set(trackedExerciseIds));
+            return processPersonalBests(data, new Set(trackedExerciseIds));
         } catch (error: unknown) {
             const errorMessage = error instanceof Error ? error.message : "Unknown error";
             return thunkAPI.rejectWithValue(errorMessage);
@@ -134,26 +111,7 @@ const fetchPersonalBests = createAsyncThunk("personalBests/fetchPersonalBests", 
         }
 
         // Fetch workout-derived PRs
-        const workoutPRsPromise = supabase
-            .from("workouts")
-            .select(
-                `
-                days (
-                    day_exercises (
-                        exercises_catalog!inner (
-                            id,
-                            name,
-                            category
-                        ),
-                        day_exercise_sets (
-                            weight
-                        )
-                    )
-                )
-            `
-            )
-            .in("status", ["archived", "published"])
-            .in("days.day_exercises.exercises_catalog.id", trackedExerciseIds);
+        const workoutPRsPromise = supabase.from("session_sets").select(SESSION_PR_SELECT).in("day_exercises.exercises_catalog.id", trackedExerciseIds);
 
         // Fetch manual PRs (only for tracked exercises)
         const manualPRsPromise = supabase
@@ -195,7 +153,7 @@ const fetchPersonalBests = createAsyncThunk("personalBests/fetchPersonalBests", 
         }
 
         // Process workout PRs
-        const workoutPRs = processPersonalBests((workoutResult.data || []) as PersonalBestsWorkoutResponse[], new Set(trackedExerciseIds));
+        const workoutPRs = processPersonalBests(workoutResult.data || [], new Set(trackedExerciseIds));
 
         // Process manual PRs
         const manualPRs: PersonalBest[] = (manualResult.data || []).map((item) => {

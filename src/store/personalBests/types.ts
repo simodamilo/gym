@@ -14,12 +14,6 @@ export interface PersonalBestsState {
     isError: boolean;
 }
 
-// Response types from Supabase (using 'any' to handle Supabase's nested structure)
-export interface PersonalBestsWorkoutResponse {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    days: any[];
-}
-
 // Manual Personal Best types
 export interface ManualPersonalBestPayload {
     exerciseId: string;

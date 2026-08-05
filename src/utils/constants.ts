@@ -45,9 +45,5 @@ export const RepsTypes = [
     {
         value: 'max',
         label: 'Max'
-    },
-    {
-        value: 'custom',
-        label: 'Custom'
     }
 ]

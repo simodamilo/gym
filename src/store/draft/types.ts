@@ -45,7 +45,13 @@ export interface DayExercise {
 export interface Set {
     id: string;
     setNumber: number;
+    /**
+     * In draft mode this is the target. In current mode it is overlaid with the reps actually
+     * performed in the active session, so the input the user edits is always `reps`.
+     */
     reps?: string;
+    /** The plan's prescription, kept intact while `reps` carries the performed value. */
+    targetReps?: string;
     weight?: number;
     baseWeight?: number;
 }

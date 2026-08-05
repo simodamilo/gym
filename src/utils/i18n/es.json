@@ -222,9 +222,17 @@
             "start_workout": "Iniciar Entrenamiento",
             "reps_type_placeholder": "Selecciona el tipo de repeticiones",
             "superset": "Superserie con el siguiente ejercicio",
-            "confirm_save_base": "¿Estás seguro de que quieres guardar los pesos actuales como base?",
             "workout_started": "Entrenamiento Iniciado",
-            "initial": "Inicial"
+            "progression": "Progresión",
+            "col_set": "Serie",
+            "col_target": "Objetivo",
+            "col_performed_reps": "Reps",
+            "col_performed_time": "Segs",
+            "aria_performed": "Serie {{set}}, realizadas",
+            "aria_weight": "Serie {{set}}, peso en {{unit}}"
+        },
+        "progression": {
+            "empty": "Aún no hay entrenamientos registrados para este ejercicio."
         }
     },
     "profile": {

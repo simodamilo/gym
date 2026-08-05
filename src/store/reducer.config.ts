@@ -5,6 +5,7 @@ import { currentReducer } from "./current/current.reducer";
 import { progressesReducer } from "./progressHistory/progressHistory.reducer";
 import { historyReducer } from "./history/history.reducer";
 import { personalBestsReducer } from "./personalBests/personalBests.reducer";
+import { sessionsReducer } from "./sessions/sessions.reducer";
 
 const appReducer = combineReducers({
     ...exercisesReducer,
@@ -12,7 +13,8 @@ const appReducer = combineReducers({
     ...currentReducer,
     ...progressesReducer,
     ...historyReducer,
-    ...personalBestsReducer
+    ...personalBestsReducer,
+    ...sessionsReducer
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
