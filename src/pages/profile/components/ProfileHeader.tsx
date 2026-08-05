@@ -10,7 +10,7 @@ interface ProfileHeaderProps {
 export const ProfileHeader = ({ email, onSettingsClick }: ProfileHeaderProps) => {
     const { t } = useTranslation();
     return (
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center py-4">
             {/* User Info */}
             <div className="flex items-center gap-4">
                 {/* Avatar */}
