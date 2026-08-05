@@ -2,12 +2,16 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { supabase } from "../supabaseClient";
 import type { PersonalBest, PersonalBestsWorkoutResponse } from "./types";
 import { exercisesCatalogActions } from "../exercisesCatalog/exercisesCatalog.action";
+import { fetchTrackedExerciseIds, setExerciseTracked } from "../exercisesCatalog/userExercisePrefs";
 
 /**
  * Process workout data to extract personal bests
  * Groups all weights by exercise and finds the maximum for each
+ *
+ * `trackedExerciseIds` comes from the current user's preferences: the catalog is shared,
+ * so tracking can no longer be read off the exercise row or filtered inside the join.
  */
-function processPersonalBests(workouts: PersonalBestsWorkoutResponse[]): PersonalBest[] {
+function processPersonalBests(workouts: PersonalBestsWorkoutResponse[], trackedExerciseIds: Set<string>): PersonalBest[] {
     const exerciseWeights = new Map<
         string,
         {
@@ -33,10 +37,9 @@ function processPersonalBests(workouts: PersonalBestsWorkoutResponse[]): Persona
                 const exerciseId = typedDayEx.exercises_catalog.id;
                 const exerciseName = typedDayEx.exercises_catalog.name;
                 const category = typedDayEx.exercises_catalog.category;
-                const showInPersonalBest = typedDayEx.exercises_catalog.show_in_personal_best;
 
-                // Only process exercises marked for personal best tracking
-                if (!showInPersonalBest) return;
+                // Only process exercises the user tracks for personal bests
+                if (!trackedExerciseIds.has(exerciseId)) return;
                 if (!exerciseId || !exerciseName || !category) return;
                 if (!typedDayEx.day_exercise_sets || !Array.isArray(typedDayEx.day_exercise_sets)) return;
 
@@ -76,6 +79,11 @@ const fetchWorkoutPersonalBests = createAsyncThunk(
     "personalBests/fetchWorkoutPersonalBests",
     async (_arg, thunkAPI) => {
         try {
+            const trackedExerciseIds = await fetchTrackedExerciseIds();
+            if (trackedExerciseIds.length === 0) {
+                return [];
+            }
+
             const { data, error } = await supabase
                 .from("workouts")
                 .select(
@@ -85,8 +93,7 @@ const fetchWorkoutPersonalBests = createAsyncThunk(
                         exercises_catalog!inner (
                             id,
                             name,
-                            category,
-                            show_in_personal_best
+                            category
                         ),
                         day_exercise_sets (
                             weight
@@ -96,7 +103,7 @@ const fetchWorkoutPersonalBests = createAsyncThunk(
             `
                 )
                 .in("status", ["archived", "published"])
-                .eq("days.day_exercises.exercises_catalog.show_in_personal_best", true);
+                .in("days.day_exercises.exercises_catalog.id", trackedExerciseIds);
 
             if (error) {
                 throw new Error("Error fetching workout personal bests");
@@ -106,7 +113,7 @@ const fetchWorkoutPersonalBests = createAsyncThunk(
                 return [];
             }
 
-            return processPersonalBests(data as PersonalBestsWorkoutResponse[]);
+            return processPersonalBests(data as PersonalBestsWorkoutResponse[], new Set(trackedExerciseIds));
         } catch (error: unknown) {
             const errorMessage = error instanceof Error ? error.message : "Unknown error";
             return thunkAPI.rejectWithValue(errorMessage);
@@ -120,6 +127,12 @@ const fetchWorkoutPersonalBests = createAsyncThunk(
  */
 const fetchPersonalBests = createAsyncThunk("personalBests/fetchPersonalBests", async (_arg, thunkAPI) => {
     try {
+        // The user's tracked exercises drive all three sources below.
+        const trackedExerciseIds = await fetchTrackedExerciseIds();
+        if (trackedExerciseIds.length === 0) {
+            return [];
+        }
+
         // Fetch workout-derived PRs
         const workoutPRsPromise = supabase
             .from("workouts")
@@ -130,8 +143,7 @@ const fetchPersonalBests = createAsyncThunk("personalBests/fetchPersonalBests", 
                         exercises_catalog!inner (
                             id,
                             name,
-                            category,
-                            show_in_personal_best
+                            category
                         ),
                         day_exercise_sets (
                             weight
@@ -141,9 +153,9 @@ const fetchPersonalBests = createAsyncThunk("personalBests/fetchPersonalBests", 
             `
             )
             .in("status", ["archived", "published"])
-            .eq("days.day_exercises.exercises_catalog.show_in_personal_best", true);
+            .in("days.day_exercises.exercises_catalog.id", trackedExerciseIds);
 
-        // Fetch manual PRs (only for exercises with show_in_personal_best = true)
+        // Fetch manual PRs (only for tracked exercises)
         const manualPRsPromise = supabase
             .from("manual_personal_bests")
             .select(
@@ -155,18 +167,14 @@ const fetchPersonalBests = createAsyncThunk("personalBests/fetchPersonalBests", 
                 exercises_catalog!inner (
                     id,
                     name,
-                    category,
-                    show_in_personal_best
+                    category
                 )
             `
             )
-            .eq("exercises_catalog.show_in_personal_best", true);
+            .in("exercise_id", trackedExerciseIds);
 
-        // Fetch all exercises with show_in_personal_best = true
-        const trackedExercisesPromise = supabase
-            .from("exercises_catalog")
-            .select("id, name, category")
-            .eq("show_in_personal_best", true);
+        // Fetch the tracked exercises themselves, so ones with no PR yet still render
+        const trackedExercisesPromise = supabase.from("exercises_catalog").select("id, name, category").in("id", trackedExerciseIds);
 
         const [workoutResult, manualResult, trackedExercisesResult] = await Promise.all([
             workoutPRsPromise,
@@ -187,7 +195,7 @@ const fetchPersonalBests = createAsyncThunk("personalBests/fetchPersonalBests", 
         }
 
         // Process workout PRs
-        const workoutPRs = processPersonalBests((workoutResult.data || []) as PersonalBestsWorkoutResponse[]);
+        const workoutPRs = processPersonalBests((workoutResult.data || []) as PersonalBestsWorkoutResponse[], new Set(trackedExerciseIds));
 
         // Process manual PRs
         const manualPRs: PersonalBest[] = (manualResult.data || []).map((item) => {
@@ -271,6 +279,11 @@ const fetchManualPersonalBests = createAsyncThunk(
     "personalBests/fetchManualPersonalBests",
     async (_arg, thunkAPI) => {
         try {
+            const trackedExerciseIds = await fetchTrackedExerciseIds();
+            if (trackedExerciseIds.length === 0) {
+                return [];
+            }
+
             const { data, error } = await supabase
                 .from("manual_personal_bests")
                 .select(
@@ -282,12 +295,11 @@ const fetchManualPersonalBests = createAsyncThunk(
                     exercises_catalog!inner (
                         id,
                         name,
-                        category,
-                        show_in_personal_best
+                        category
                     )
                 `
                 )
-                .eq("exercises_catalog.show_in_personal_best", true)
+                .in("exercise_id", trackedExerciseIds)
                 .order("weight", { ascending: false });
 
             if (error) {
@@ -335,15 +347,9 @@ const addManualPersonalBest = createAsyncThunk(
                 throw new Error("User not authenticated");
             }
 
-            // Update the exercise to be tracked in personal bests
-            const { error: updateError } = await supabase
-                .from("exercises_catalog")
-                .update({ show_in_personal_best: true })
-                .eq("id", payload.exerciseId);
-
-            if (updateError) {
-                throw new Error(updateError.message || "Error updating exercise catalog");
-            }
+            // Mark the exercise as tracked for this user. Written to their preferences, not
+            // to the shared catalog row.
+            await setExerciseTracked(payload.exerciseId, true);
 
             const { data, error } = await supabase
                 .from("manual_personal_bests")

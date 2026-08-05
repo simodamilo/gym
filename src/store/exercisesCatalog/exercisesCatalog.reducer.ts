@@ -28,7 +28,8 @@ export const exercisesReducer = {
             })
             .addCase(exercisesCatalogActions.addExercise.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.exercises = [...state.exercises, action.payload[0]];
+                // New exercises have no prefs row yet, so they start untracked.
+                state.exercises = [...state.exercises, { ...action.payload[0], show_in_personal_best: false }];
             })
             .addCase(exercisesCatalogActions.addExercise.rejected, (state) => {
                 state.isLoading = false;
@@ -61,9 +62,11 @@ export const exercisesReducer = {
             })
             .addCase(exercisesCatalogActions.togglePersonalBest.fulfilled, (state, action) => {
                 state.isLoading = false;
-                if (action.payload && action.payload.length > 0) {
-                    state.exercises = [...state.exercises.map((exercise) => (exercise.id === action.payload[0].id ? action.payload[0] : exercise))];
-                }
+                // The preference lives in user_exercise_prefs now, so patch the flag in place
+                // rather than replacing the (shared) catalog row.
+                state.exercises = state.exercises.map((exercise) =>
+                    exercise.id === action.payload.id ? { ...exercise, show_in_personal_best: action.payload.showInPersonalBest } : exercise,
+                );
             })
             .addCase(exercisesCatalogActions.togglePersonalBest.rejected, (state, action) => {
                 state.isLoading = false;
