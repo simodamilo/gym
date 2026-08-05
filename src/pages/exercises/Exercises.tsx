@@ -3,7 +3,7 @@ import { useAppDispatch, type RootState } from "../../store";
 import { exercisesCatalogActions } from "../../store/exercisesCatalog/exercisesCatalog.action";
 import { useSelector } from "react-redux";
 import { exercisesSelectors } from "../../store/exercisesCatalog/exercisesCatalog.selector";
-import type { ExerciseCatalog } from "../../store/exercisesCatalog/types";
+import { isCustomExercise, type ExerciseCatalog } from "../../store/exercisesCatalog/types";
 import { Input, Select, Dropdown } from "antd";
 import type { MenuProps } from "antd";
 import { useTranslation } from "react-i18next";
@@ -117,41 +117,51 @@ export const Exercises = () => {
         return placement;
     };
 
-    // Create dropdown menu for each exercise
-    const getDropdownMenu = (exercise: ExerciseCatalog): MenuProps => ({
-        items: [
-            {
-                key: "personal-best",
-                label: t('pages.exercises.dropdown.track_pb'),
-                icon: exercise.show_in_personal_best ? <CheckOutlined /> : <TrophyOutlined />,
-                onClick: () => {
-                    togglePersonalBest(exercise);
+    // Create dropdown menu for each exercise.
+    // Personal best tracking is per-user and available on every exercise, but editing and
+    // deleting only apply to the user's own exercises - the global catalog is read-only.
+    const getDropdownMenu = (exercise: ExerciseCatalog): MenuProps => {
+        const trackItem = {
+            key: "personal-best",
+            label: t('pages.exercises.dropdown.track_pb'),
+            icon: exercise.show_in_personal_best ? <CheckOutlined /> : <TrophyOutlined />,
+            onClick: () => {
+                togglePersonalBest(exercise);
+            },
+        };
+
+        if (!isCustomExercise(exercise)) {
+            return { items: [trackItem] };
+        }
+
+        return {
+            items: [
+                trackItem,
+                {
+                    type: "divider",
                 },
-            },
-            {
-                type: "divider",
-            },
-            {
-                key: "edit",
-                label: t('pages.exercises.dropdown.edit'),
-                icon: <EditOutlined />,
-                onClick: () => {
-                    setIsEditExerciseModalOpen(true);
-                    setSelectedExercise(exercise);
+                {
+                    key: "edit",
+                    label: t('pages.exercises.dropdown.edit'),
+                    icon: <EditOutlined />,
+                    onClick: () => {
+                        setIsEditExerciseModalOpen(true);
+                        setSelectedExercise(exercise);
+                    },
                 },
-            },
-            {
-                key: "delete",
-                label: t('pages.exercises.dropdown.delete'),
-                icon: <DeleteOutlined />,
-                danger: true,
-                onClick: () => {
-                    setIsDeleteExerciseModalOpen(true);
-                    setSelectedExercise(exercise);
+                {
+                    key: "delete",
+                    label: t('pages.exercises.dropdown.delete'),
+                    icon: <DeleteOutlined />,
+                    danger: true,
+                    onClick: () => {
+                        setIsDeleteExerciseModalOpen(true);
+                        setSelectedExercise(exercise);
+                    },
                 },
-            },
-        ],
-    });
+            ],
+        };
+    };
 
     return (
         <>
@@ -222,8 +232,15 @@ export const Exercises = () => {
                                                     )}
                                                 </div>
 
-                                                {/* Exercise Name */}
-                                                <div className="font-semibold text-[var(--text-primary)]">{exercise.name}</div>
+                                                {/* Exercise Name + Custom badge for the user's own exercises */}
+                                                <div className="flex items-center gap-2">
+                                                    <div className="font-semibold text-[var(--text-primary)]">{exercise.name}</div>
+                                                    {isCustomExercise(exercise) && (
+                                                        <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-[var(--brand-primary-light)] text-[var(--brand-primary)]">
+                                                            {t("pages.exercises.custom_badge")}
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </div>
 
                                             {/* Right side: Three-dot Menu */}

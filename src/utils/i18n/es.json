@@ -152,6 +152,7 @@
         "exercises": {
             "title": "Ejercicios",
             "meta_title": "Ejercicios | GymTracker",
+            "custom_badge": "Personalizado",
             "dropdown": {
                 "track_pb": "Rastrear en Mejores Marcas",
                 "edit": "Editar",
