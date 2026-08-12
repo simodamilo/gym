@@ -35,6 +35,10 @@ nothing to triceps here.
 
 Categories with zero sets are omitted from the list.
 
+`extra`, `abs` and `legs` are excluded outright: their sets count towards
+neither their own row nor the total. A day made up only of those exercises
+shows the empty state.
+
 ## Implementation
 
 ### 1. Calculation — `src/utils/volume.ts` (new)
@@ -111,4 +115,5 @@ existing header the icon slots into.
   scope. If wanted later, the calculation is isolated in one file.
 - **Sets are counted as prescribed, not as performed.** In history this means a
   skipped set still counts, since there is no per-set completion flag.
-- **`extra` category** is listed like any other muscle rather than hidden.
+- **`extra`, `abs` and `legs` are excluded** from the breakdown and from the
+  total, so the total is a partial one by design.
