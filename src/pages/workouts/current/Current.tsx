@@ -9,6 +9,7 @@ import { currentSelectors } from "../../../store/current/current.selectors";
 import { ItemCard } from "../components/itemCard/ItemCard";
 import { useNavigate } from "react-router-dom";
 import { PageSEO } from "../../../components/seo/PageSEO";
+import { MuscleVolumeButton } from "../../../components/muscleVolume/MuscleVolumeButton";
 
 export const Current = () => {
     const dispatch = useAppDispatch();
@@ -53,6 +54,9 @@ export const Current = () => {
         <>
             <PageSEO titleKey="seo.titles.workouts_current" descriptionKey="seo.descriptions.workouts_current" />
             <div className="flex flex-col gap-3 pb-28 hide-scrollbar overflow-auto md:px-2">
+            <div className="flex justify-end">
+                <MuscleVolumeButton days={sortedDays} />
+            </div>
             {sortedDays.map((day) => {
                 const exerciseCount = day.dayExercises?.length || 0;
 

@@ -122,7 +122,8 @@
             "delete": "Elimina",
             "save": "Salva",
             "publish": "Pubblica",
-            "ok": "OK"
+            "ok": "OK",
+            "close": "Chiudi"
         },
         "item_card": {
             "exercise_singular": "Esercizio",
@@ -131,6 +132,24 @@
         },
         "profile_header": {
             "avatar_alt": "Avatar Utente"
+        },
+        "muscle_volume": {
+            "workout_title": "Volume per muscolo",
+            "day_title": "Volume per muscolo",
+            "total": "Totale",
+            "set_singular": "serie",
+            "set_plural": "serie",
+            "empty": "Nessuna serie. Aggiungi esercizi per vedere il volume per muscolo.",
+            "muscles": {
+                "chest": "Petto",
+                "back": "Schiena",
+                "biceps": "Bicipiti",
+                "triceps": "Tricipiti",
+                "shoulders": "Spalle",
+                "legs": "Gambe",
+                "abs": "Addominali",
+                "extra": "Extra"
+            }
         }
     },
     "exercises": {
