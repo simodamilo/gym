@@ -128,7 +128,8 @@
         "item_card": {
             "exercise_singular": "Exercise",
             "exercise_plural": "Exercises",
-            "last_badge": "LAST"
+            "last_badge": "LAST",
+            "extra_badge": "EXTRA"
         },
         "profile_header": {
             "avatar_alt": "User Avatar"
@@ -149,7 +150,8 @@
                 "legs": "Legs",
                 "abs": "Abs",
                 "extra": "Extra"
-            }
+            },
+            "extra_hint": "In parentheses: sets from extra days."
         }
     },
     "exercises": {

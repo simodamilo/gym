@@ -14,6 +14,7 @@ const getDraftWorkoutDataMapper = (response: any): Workout => {
                 name: day.name,
                 counter: day.counter,
                 isLast: day.is_last,
+                isExtra: day.is_extra,
                 lastWorkout: day.last_workout,
                 createdAt: day.created_at,
                 order: day.order,

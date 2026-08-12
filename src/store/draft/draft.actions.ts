@@ -16,7 +16,7 @@ const fetchDraftWorkout = createAsyncThunk("data/fetchDraftWorkout", async (_arg
             .select(
                 `
                     id, status, created_at, start_date, end_date, days (
-                        id, name, counter, is_last, order, created_at, day_exercises (
+                        id, name, counter, is_last, is_extra, order, created_at, day_exercises (
                             id,
                             order_number,
                             rest, 

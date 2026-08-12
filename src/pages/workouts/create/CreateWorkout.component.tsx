@@ -89,6 +89,7 @@ export const CreateWorkout = () => {
                             name: item.name,
                             counter: item.counter,
                             is_last: item.isLast || false,
+                            is_extra: item.isExtra || false,
                             last_workout: item.lastWorkout,
                             order: item.order,
                             workout_id: workout!.id,
@@ -113,6 +114,7 @@ export const CreateWorkout = () => {
                         order: selectedDay!.order,
                         counter: 0,
                         is_last: false,
+                        is_extra: selectedDay!.isExtra || false,
                     },
                 ]),
             );
@@ -122,7 +124,29 @@ export const CreateWorkout = () => {
         setSelectedDay(undefined);
     };
 
-    const handleDayUpdate = (day: Day, type: "DELETE" | "UPDATE") => {
+    /* The upsert sends the whole row, so every field has to be carried over or it is reset. */
+    const toggleExtraDay = (day: Day) => {
+        dispatch(
+            draftActions.upsertDay([
+                {
+                    id: day.id,
+                    name: day.name || "",
+                    workout_id: workout!.id,
+                    order: day.order,
+                    counter: day.counter || 0,
+                    is_last: day.isLast || false,
+                    is_extra: !day.isExtra,
+                },
+            ]),
+        );
+    };
+
+    const handleDayUpdate = (day: Day, type: "DELETE" | "UPDATE" | "TOGGLE_EXTRA") => {
+        if (type === "TOGGLE_EXTRA") {
+            toggleExtraDay(day);
+            return;
+        }
+
         setSelectedDay(day);
         if (type === "DELETE") {
             setIsDeleteModalOpen(true);

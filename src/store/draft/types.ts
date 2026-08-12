@@ -24,6 +24,8 @@ export interface Day {
     createdAt?: number;
     counter?: number;
     isLast?: boolean;
+    /** An optional day: its sets are reported apart from the regular volume, not mixed into it. */
+    isExtra?: boolean;
     lastWorkout?: number;
     order?: number;
     dayExercises: DayExercise[];
@@ -62,6 +64,7 @@ export interface UpsertDayPayload {
     name?: string;
     counter?: number;
     is_last?: boolean;
+    is_extra?: boolean;
     last_workout?: number;
     order?: number;
     workout_id?: string;
@@ -105,6 +108,7 @@ export interface DayResponse {
     created_at?: number;
     counter?: number;
     is_last?: boolean;
+    is_extra?: boolean;
     last_workout?: number;
     order?: number;
     day_exercises: DayExerciseResponse[];

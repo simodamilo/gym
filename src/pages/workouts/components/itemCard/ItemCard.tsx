@@ -1,4 +1,4 @@
-import { DeleteOutlined, EditOutlined, HolderOutlined, RightOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, HolderOutlined, RightOutlined, StarFilled, StarOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import type { Day } from "../../../../store/draft/types";
@@ -15,7 +15,7 @@ interface ItemCardProps {
     // only for creation
     isCreation?: boolean;
     day?: Day;
-    handleDayUpdate?: (day: Day, type: "DELETE" | "UPDATE") => void;
+    handleDayUpdate?: (day: Day, type: "DELETE" | "UPDATE" | "TOGGLE_EXTRA") => void;
     isDraggable?: boolean;
 }
 
@@ -61,6 +61,11 @@ export const ItemCard = (props: ItemCardProps) => {
                                 {t('components.item_card.last_badge')}
                             </span>
                         )}
+                        {day?.isExtra && (
+                            <span className="text-xs font-semibold px-2 py-0.5 rounded bg-[var(--bg-tertiary)] text-[var(--text-secondary)]">
+                                {t('components.item_card.extra_badge')}
+                            </span>
+                        )}
                     </div>
                 </div>
 
@@ -69,6 +74,15 @@ export const ItemCard = (props: ItemCardProps) => {
                     {
                         isCreation && day && (
                             <div className="flex justify-between items-center gap-2">
+                                <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                                    <IconButton
+                                        icon={day.isExtra ? <StarFilled className="text-[var(--brand-primary)]" /> : <StarOutlined className="text-white" />}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleDayUpdate?.(day, "TOGGLE_EXTRA");
+                                        }}
+                                    />
+                                </motion.div>
                                 <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                                     <IconButton
                                         icon={<DeleteOutlined className="text-white" />}
