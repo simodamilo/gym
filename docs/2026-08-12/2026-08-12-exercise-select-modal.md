@@ -31,6 +31,23 @@ This matters because the selects clear the exercise when the category changes:
 without staging, opening the modal, changing category and cancelling would have
 wiped an already-configured exercise from the card.
 
+## Fix: scroll chaining out of the dropdown
+
+Scrolling the options inside the modal moved both the list and the page behind
+it. The dropdown is portalled to the body, so once its list reached either end
+the gesture chained through to whichever ancestor could still scroll — and this
+app scrolls inner `overflow-y-auto` containers, which antd's body-scroll lock
+does not cover.
+
+`src/styles/antd/select.scss` (new, imported from `styles/antd/index.scss`)
+sets `overscroll-behavior: contain` on the dropdown's scrolling holder, reached
+through the `exercise-select-popup` class that `ExerciseSelects` now puts on
+both popups. The same property is set on `.ant-modal-content` for gestures that
+start in the modal body rather than in the list.
+
+This lives in the antd override stylesheet because it targets antd's internal
+DOM (`.rc-virtual-list-holder`), which Tailwind utilities cannot reach.
+
 ## i18n
 
 `workouts.exercises.select_exercise` added to `en.json`, `it.json`, `es.json`.

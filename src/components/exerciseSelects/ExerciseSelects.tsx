@@ -42,6 +42,7 @@ export const ExerciseSelects = (props: ExerciseSelectsProps) => {
                 disabled={props.isReadOnly || isLoadingExercises}
                 size="large"
                 listHeight={180}
+                popupClassName="exercise-select-popup"
             />
             <Select
                 allowClear
@@ -59,6 +60,7 @@ export const ExerciseSelects = (props: ExerciseSelectsProps) => {
                 disabled={props.isReadOnly || !selectedCategory || isLoadingExercises}
                 size="large"
                 listHeight={180}
+                popupClassName="exercise-select-popup"
             />
         </div>
     );
