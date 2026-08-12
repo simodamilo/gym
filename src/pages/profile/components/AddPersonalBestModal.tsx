@@ -88,6 +88,8 @@ export const AddPersonalBestModal = ({
             footer={null}
             closable={false}
             centered
+            /* The bottom bar sits at z-9998, so the default 1000 would leave it floating on top. */
+            zIndex={9999}
             styles={{
                 content: {
                     backgroundColor: "var(--bg-elevated)",
@@ -101,7 +103,7 @@ export const AddPersonalBestModal = ({
                 },
             }}
         >
-            <div className="px-6 pt-8 pb-6 flex flex-col gap-5 max-[480px]:px-5 max-[480px]:pt-6 max-[480px]:pb-5">
+            <div className="px-6 pt-8 pb-6 flex flex-col gap-5 max-h-[80dvh] overflow-y-auto overscroll-contain hide-scrollbar max-[480px]:px-5 max-[480px]:pt-6 max-[480px]:pb-5">
                 {/* Icon Header */}
                 <div className="flex flex-col items-center gap-3">
                     <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-br from-purple-500/20 to-blue-500/20 max-[480px]:w-14 max-[480px]:h-14">

@@ -72,6 +72,17 @@ That left `ExerciseSelects` with no callers, so it is deleted, and with it
 existed only for the dropdowns that component portalled, and no antd dropdown
 is rendered inside a modal any more.
 
+## Fix 4: modals sitting under the bottom bar
+
+Making the picker inline made the personal best modal tall enough to reach the
+bottom bar, which then covered it. The bar is `z-[9998]` while antd modals
+default to `z-index: 1000`, so the bar was painted over both the modal and its
+mask — the overlap was always there, it only became visible once the modal grew.
+
+Both modals now pass `zIndex={9999}`, so the mask covers the bar as it should.
+Their bodies also cap at `80dvh` and scroll internally, so a tall modal can no
+longer run past the viewport.
+
 ## i18n
 
 `workouts.exercises.select_exercise` added to `en.json`, `it.json`, `es.json`.
