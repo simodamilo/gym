@@ -13,6 +13,9 @@ export interface MuscleVolume {
     sets: number;
 }
 
+/** Categories left out of the breakdown entirely: they do not count towards any muscle's volume. */
+const EXCLUDED_CATEGORIES = new Set(["extra", "abs", "legs"]);
+
 /**
  * Every set of an exercise is attributed to that exercise's single category. There is no
  * secondary-muscle attribution in the schema, so a bench press contributes nothing to triceps.
@@ -20,7 +23,7 @@ export interface MuscleVolume {
 const accumulate = (totals: Map<string, number>, dayExercises: DayExercise[]): void => {
     dayExercises.forEach((dayExercise) => {
         const category = dayExercise.exercise?.category;
-        if (!category) return;
+        if (!category || EXCLUDED_CATEGORIES.has(category)) return;
 
         totals.set(category, (totals.get(category) || 0) + dayExercise.sets.length);
     });
