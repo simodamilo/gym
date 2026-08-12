@@ -251,7 +251,8 @@
             "col_performed_time": "Sec",
             "aria_performed": "Serie {{set}}, eseguite",
             "aria_weight": "Serie {{set}}, peso in {{unit}}",
-            "select_exercise": "Seleziona esercizio"
+            "select_exercise": "Seleziona esercizio",
+            "no_exercises": "Nessun esercizio in questa categoria"
         },
         "progression": {
             "empty": "Nessun allenamento registrato per questo esercizio."

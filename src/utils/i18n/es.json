@@ -251,7 +251,8 @@
             "col_performed_time": "Segs",
             "aria_performed": "Serie {{set}}, realizadas",
             "aria_weight": "Serie {{set}}, peso en {{unit}}",
-            "select_exercise": "Seleccionar ejercicio"
+            "select_exercise": "Seleccionar ejercicio",
+            "no_exercises": "No hay ejercicios en esta categoría"
         },
         "progression": {
             "empty": "Aún no hay entrenamientos registrados para este ejercicio."

@@ -251,7 +251,8 @@
             "col_performed_time": "Secs",
             "aria_performed": "Set {{set}}, performed",
             "aria_weight": "Set {{set}}, weight in {{unit}}",
-            "select_exercise": "Select exercise"
+            "select_exercise": "Select exercise",
+            "no_exercises": "No exercises in this category"
         },
         "progression": {
             "empty": "No training logged yet for this exercise."

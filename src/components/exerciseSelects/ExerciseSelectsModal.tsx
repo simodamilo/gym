@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
 import { EditOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
-import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import type { RootState } from "../../store";
 import type { ExerciseCatalog } from "../../store/exercisesCatalog/types";
-import { exercisesSelectors } from "../../store/exercisesCatalog/exercisesCatalog.selector";
 import { CustomModal } from "../customModal";
-import { ExerciseSelects } from "./ExerciseSelects";
+import { ExercisePicker } from "./ExercisePicker";
 
 interface ExerciseSelectsModalProps {
     selectedExercise?: ExerciseCatalog;
@@ -24,8 +21,6 @@ export const ExerciseSelectsModal = ({ selectedExercise, onChange, isReadOnly }:
     const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [stagedExercise, setStagedExercise] = useState<ExerciseCatalog | undefined>(selectedExercise);
-
-    const exercises: ExerciseCatalog[] = useSelector((state: RootState) => exercisesSelectors.getExercises(state));
 
     useEffect(() => {
         setStagedExercise(selectedExercise);
@@ -63,7 +58,7 @@ export const ExerciseSelectsModal = ({ selectedExercise, onChange, isReadOnly }:
             </motion.button>
 
             <CustomModal open={isOpen} type="edit" title={t("workouts.exercises.select_exercise")} onOk={confirm} onCancel={cancel}>
-                <ExerciseSelects selectedExercise={stagedExercise} onChange={(exerciseId) => setStagedExercise(exercises.find((exercise) => exercise.id === exerciseId))} />
+                <ExercisePicker selectedExercise={stagedExercise} onChange={setStagedExercise} />
             </CustomModal>
         </>
     );

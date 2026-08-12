@@ -48,6 +48,23 @@ start in the modal body rather than in the list.
 This lives in the antd override stylesheet because it targets antd's internal
 DOM (`.rc-virtual-list-holder`), which Tailwind utilities cannot reach.
 
+## Fix 2: replacing the selects inside the modal
+
+Containing the overscroll was not enough — the page behind still moved and the
+dropdown itself scrolled poorly on touch. The cause is structural rather than
+stylistic: antd portals the dropdown to the body and scrolls it with a
+virtualised list.
+
+`ExercisePicker` (new) replaces the two selects inside the modal with category
+chips over a plain list of exercises, rendered inline and scrolled natively.
+No portal, no virtual list. Tapping the selected exercise again deselects it,
+which replaces the old `allowClear`; switching category clears a selection that
+belonged to the previous one and resets the list to the top.
+
+`ExerciseSelects` is untouched and still used by `AddPersonalBestModal`. The
+`overscroll-behavior` rules from the first fix are kept, since that component
+still shows antd dropdowns inside a modal there.
+
 ## i18n
 
 `workouts.exercises.select_exercise` added to `en.json`, `it.json`, `es.json`.
