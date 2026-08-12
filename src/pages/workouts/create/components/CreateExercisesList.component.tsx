@@ -17,6 +17,7 @@ import { IconButton } from "../../../../components/iconButton/IconButton";
 import { MoveIcon } from "../../../../components/moveIcon/MoveIcon";
 import { SortableItem } from "../../../../components/sortableItem/SortableItem";
 import { EmptyState } from "../../../../components/emptyState/EmptyState";
+import { MuscleVolumeButton } from "../../../../components/muscleVolume/MuscleVolumeButton";
 
 export const CreateExercisesList = () => {
     const { t } = useTranslation();
@@ -210,6 +211,7 @@ export const CreateExercisesList = () => {
                 </button>
 
                 <div className="flex gap-2 px-1">
+                    {mutableDayExercises && mutableDayExercises.length > 0 && <MuscleVolumeButton dayExercises={mutableDayExercises} />}
                     <IconButton icon={<PlusOutlined />} onClick={handleAddExercise} />
                     {mutableDayExercises && mutableDayExercises.length > 1 && (
                         <IconButton

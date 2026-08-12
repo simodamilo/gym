@@ -122,7 +122,8 @@
             "delete": "Delete",
             "save": "Save",
             "publish": "Publish",
-            "ok": "OK"
+            "ok": "OK",
+            "close": "Close"
         },
         "item_card": {
             "exercise_singular": "Exercise",
@@ -131,6 +132,24 @@
         },
         "profile_header": {
             "avatar_alt": "User Avatar"
+        },
+        "muscle_volume": {
+            "workout_title": "Volume per muscle",
+            "day_title": "Volume per muscle",
+            "total": "Total",
+            "set_singular": "set",
+            "set_plural": "sets",
+            "empty": "No sets yet. Add exercises to see the volume per muscle.",
+            "muscles": {
+                "chest": "Chest",
+                "back": "Back",
+                "biceps": "Biceps",
+                "triceps": "Triceps",
+                "shoulders": "Shoulders",
+                "legs": "Legs",
+                "abs": "Abs",
+                "extra": "Extra"
+            }
         }
     },
     "exercises": {

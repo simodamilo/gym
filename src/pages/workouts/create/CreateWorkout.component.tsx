@@ -20,6 +20,7 @@ import { ItemCard } from "../components/itemCard/ItemCard";
 import { currentActions } from "../../../store/current/current.actions";
 import { EmptyState } from "../../../components/emptyState/EmptyState";
 import { PageSEO } from "../../../components/seo/PageSEO";
+import { MuscleVolumeButton } from "../../../components/muscleVolume/MuscleVolumeButton";
 
 export const CreateWorkout = () => {
     const { t } = useTranslation();
@@ -162,6 +163,7 @@ export const CreateWorkout = () => {
                         <ArrowLeftOutlined />
                     </button>
                     <div className="flex gap-2">
+                        {days && days.length > 0 && <MuscleVolumeButton days={days} />}
                         {days && days.length > 0 && <IconButton icon={<UploadOutlined />} onClick={() => setIsPublishModalOpen(true)} />}
                         <IconButton icon={<PlusOutlined />} onClick={() => setIsEditModalOpen(true)} />
                         {days && days.length > 1 && <IconButton icon={<MoveIcon className="text-xl" />} onClick={() => setIsDragEnable(!isDragEnable)} />}

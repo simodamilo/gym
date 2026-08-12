@@ -12,6 +12,7 @@ import { currentSelectors } from "../../../../store/current/current.selectors";
 import { routes } from "../../../../utils/routing/routes";
 import { ExerciseContent } from "../../components/exerciseContent/ExerciseContent";
 import { IconButton } from "../../../../components/iconButton/IconButton";
+import { MuscleVolumeButton } from "../../../../components/muscleVolume/MuscleVolumeButton";
 import { draftActions } from "../../../../store/draft/draft.actions";
 import { EmptyState } from "../../../../components/emptyState/EmptyState";
 import { sessionsActions } from "../../../../store/sessions/sessions.actions";
@@ -210,6 +211,7 @@ export const CurrentExercisesList = () => {
                 </button>
 
                 <div className="flex gap-2 items-center">
+                    {mutableDayExercises && mutableDayExercises.length > 0 && <MuscleVolumeButton dayExercises={mutableDayExercises} />}
                     {isAlreadyStarted() ? (
                         <div className="text-[15px] font-medium text-[var(--text-primary)]">{t("workouts.exercises.workout_started")}</div>
                     ) : (

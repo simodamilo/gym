@@ -10,6 +10,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { historySelectors } from "../../../../store/history/history.selectors";
 import { routes } from "../../../../utils/routing/routes";
 import { ItemCard } from "../../components/itemCard/ItemCard";
+import { MuscleVolumeButton } from "../../../../components/muscleVolume/MuscleVolumeButton";
 
 export const HistoryWorkout = () => {
     const { t } = useTranslation();
@@ -40,7 +41,7 @@ export const HistoryWorkout = () => {
     return (
         <div className={`w-full h-full max-h-full flex flex-col gap-2 justify-around pt-4`}>
             <div className="flex flex-col gap-4">
-                <div className={`flex w-full justify-start`}>
+                <div className={`flex w-full items-center justify-between gap-4`}>
                     <button
                         onClick={() => {
                             navigate(routes.workoutsHistory);
@@ -51,6 +52,8 @@ export const HistoryWorkout = () => {
                     >
                         <ArrowLeftOutlined />
                     </button>
+
+                    {days && days.length > 0 && <MuscleVolumeButton days={days} />}
                 </div>
                 {days && days.length > 0 && <p className="text-left text-[12px] italic">{t("workouts.workout_page.description")}</p>}
             </div>

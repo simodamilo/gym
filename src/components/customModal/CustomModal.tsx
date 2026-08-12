@@ -1,9 +1,9 @@
 import { Modal } from "antd";
-import { DeleteOutlined, EditOutlined, CheckCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, CheckCircleOutlined, ExclamationCircleOutlined, PieChartOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 
-export type ModalType = "delete" | "edit" | "publish" | "confirm";
+export type ModalType = "delete" | "edit" | "publish" | "confirm" | "info";
 
 interface CustomModalProps {
     open: boolean;
@@ -14,6 +14,8 @@ interface CustomModalProps {
     children?: React.ReactNode;
     okText?: string;
     cancelText?: string;
+    /** For read-only panels, where a cancel button would have nothing to cancel. */
+    hideCancel?: boolean;
 }
 
 export const CustomModal = ({
@@ -25,6 +27,7 @@ export const CustomModal = ({
     children,
     okText,
     cancelText,
+    hideCancel,
 }: CustomModalProps) => {
     const { t } = useTranslation();
     const getIcon = () => {
@@ -37,6 +40,8 @@ export const CustomModal = ({
                 return <CheckCircleOutlined className="text-[32px] text-[#52c41a] max-[480px]:text-[28px]" />;
             case "confirm":
                 return <ExclamationCircleOutlined className="text-[32px] text-[#faad14] max-[480px]:text-[28px]" />;
+            case "info":
+                return <PieChartOutlined className="text-[32px] text-[var(--brand-primary)] max-[480px]:text-[28px]" />;
             default:
                 return null;
         }
@@ -47,6 +52,7 @@ export const CustomModal = ({
             case "delete":
                 return "bg-gradient-to-br from-[#ff4d4f] to-[#ff7875] shadow-[0_4px_12px_rgba(255,77,79,0.3)] hover:shadow-[0_6px_16px_rgba(255,77,79,0.4)]";
             case "edit":
+            case "info":
                 return "bg-gradient-to-br from-[var(--brand-primary)] to-[#3b82f6] shadow-[0_4px_12px_rgba(59,130,246,0.3)] hover:shadow-[0_6px_16px_rgba(59,130,246,0.4)]";
             case "publish":
                 return "bg-gradient-to-br from-[#52c41a] to-[#73d13d] shadow-[0_4px_12px_rgba(82,196,26,0.3)] hover:shadow-[0_6px_16px_rgba(82,196,26,0.4)]";
@@ -67,6 +73,8 @@ export const CustomModal = ({
                 return t('components.modal.publish');
             case "confirm":
                 return t('components.modal.ok');
+            case "info":
+                return t('components.modal.close');
             default:
                 return t('components.modal.ok');
         }
@@ -110,14 +118,14 @@ export const CustomModal = ({
 
                 {/* Buttons */}
                 <div className="flex gap-3 w-full mt-2">
-                    <motion.button
+                    {!hideCancel && <motion.button
                         onClick={onCancel}
                         className="flex-1 h-11 rounded-xl border-none text-[15px] font-semibold cursor-pointer transition-all duration-200 flex items-center justify-center bg-[var(--bg-tertiary)] text-[var(--text-primary)] border border-[var(--border-light)] hover:bg-[var(--bg-elevated)] max-[480px]:h-10 max-[480px]:text-sm"
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                     >
                         {cancelText || getDefaultCancelText()}
-                    </motion.button>
+                    </motion.button>}
                     <motion.button
                         onClick={onOk}
                         className={`flex-1 h-11 rounded-xl border-none text-[15px] font-semibold cursor-pointer transition-all duration-200 flex items-center justify-center text-white relative overflow-hidden max-[480px]:h-10 max-[480px]:text-sm ${getButtonClass()}`}

@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { EmptyState } from "../../../../components/emptyState/EmptyState";
+import { MuscleVolumeButton } from "../../../../components/muscleVolume/MuscleVolumeButton";
 
 export const HistoryExercisesList = () => {
     const { t } = useTranslation();
@@ -107,6 +108,8 @@ export const HistoryExercisesList = () => {
                 >
                     <ArrowLeftOutlined />
                 </button>
+
+                {day?.dayExercises && day.dayExercises.length > 0 && <MuscleVolumeButton dayExercises={day.dayExercises} />}
             </div>
 
             {day?.dayExercises && day?.dayExercises.length > 0 && <p className="text-left text-xs italic mb-4 text-[var(--text-secondary)]">{t("workouts.exercises.description")}</p>}
