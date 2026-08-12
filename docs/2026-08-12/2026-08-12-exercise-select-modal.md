@@ -61,9 +61,16 @@ No portal, no virtual list. Tapping the selected exercise again deselects it,
 which replaces the old `allowClear`; switching category clears a selection that
 belonged to the previous one and resets the list to the top.
 
-`ExerciseSelects` is untouched and still used by `AddPersonalBestModal`. The
-`overscroll-behavior` rules from the first fix are kept, since that component
-still shows antd dropdowns inside a modal there.
+## Fix 3: the same for the personal best modal
+
+`AddPersonalBestModal` had the identical problem, so it now uses
+`ExercisePicker` too. The picker gained an `isReadOnly` prop, which that modal
+sets while a save is in flight — the selects it replaced had one.
+
+That left `ExerciseSelects` with no callers, so it is deleted, and with it
+`styles/antd/select.scss`: the `overscroll-behavior` rules from the first fix
+existed only for the dropdowns that component portalled, and no antd dropdown
+is rendered inside a modal any more.
 
 ## i18n
 

@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import type { RootState } from "../../../store";
 import { exercisesSelectors } from "../../../store/exercisesCatalog/exercisesCatalog.selector";
-import { ExerciseSelects } from "../../../components/exerciseSelects/ExerciseSelects";
+import { ExercisePicker } from "../../../components/exerciseSelects/ExercisePicker";
 import { WeightInput } from "../../../components/weightInput/WeightInput";
 import type { ExerciseCatalog } from "../../../store/exercisesCatalog/types";
 
@@ -114,9 +114,9 @@ export const AddPersonalBestModal = ({
 
                 {/* Exercise Selection */}
                 <div className="w-full">
-                    <ExerciseSelects
+                    <ExercisePicker
                         selectedExercise={selectedExercise}
-                        onChange={handleExerciseChange}
+                        onChange={(exercise) => handleExerciseChange(exercise?.id)}
                         isReadOnly={isLoading}
                     />
                     {errors.exercise && (

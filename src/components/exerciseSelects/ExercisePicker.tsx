@@ -10,6 +10,7 @@ import { Categories } from "../../utils/constants";
 interface ExercisePickerProps {
     selectedExercise?: ExerciseCatalog;
     onChange: (exercise?: ExerciseCatalog) => void;
+    isReadOnly?: boolean;
 }
 
 /**
@@ -19,7 +20,7 @@ interface ExercisePickerProps {
  * the gesture into the page behind and feels wrong on touch. A list rendered inline in the modal
  * scrolls natively and has neither problem.
  */
-export const ExercisePicker = ({ selectedExercise, onChange }: ExercisePickerProps) => {
+export const ExercisePicker = ({ selectedExercise, onChange, isReadOnly }: ExercisePickerProps) => {
     const { t } = useTranslation();
     const listRef = useRef<HTMLDivElement>(null);
     const [selectedCategory, setSelectedCategory] = useState<string | undefined>(selectedExercise?.category);
@@ -51,7 +52,8 @@ export const ExercisePicker = ({ selectedExercise, onChange }: ExercisePickerPro
                         <button
                             key={category.value}
                             onClick={() => selectCategory(category.value)}
-                            className={`px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-colors duration-150 ${
+                            disabled={isReadOnly}
+                            className={`px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-60 ${
                                 isSelected
                                     ? "bg-[var(--brand-primary)] border-[var(--brand-primary)] text-white"
                                     : "bg-[var(--bg-elevated)] border-[var(--border-default)] text-[var(--text-secondary)]"
@@ -77,7 +79,8 @@ export const ExercisePicker = ({ selectedExercise, onChange }: ExercisePickerPro
                                 <button
                                     key={exercise.id}
                                     onClick={() => onChange(isSelected ? undefined : exercise)}
-                                    className={`w-full px-4 py-3 flex items-center justify-between gap-3 text-left text-sm cursor-pointer border-0 border-b border-[var(--border-light)] last:border-b-0 ${
+                                    disabled={isReadOnly}
+                                    className={`w-full px-4 py-3 flex items-center justify-between gap-3 text-left text-sm cursor-pointer border-0 border-b border-[var(--border-light)] last:border-b-0 disabled:cursor-not-allowed disabled:opacity-60 ${
                                         isSelected ? "bg-[var(--bg-tertiary)] text-[var(--text-primary)] font-medium" : "bg-transparent text-[var(--text-secondary)]"
                                     }`}
                                 >
