@@ -12,7 +12,7 @@ import TextArea from "antd/es/input/TextArea";
 import { v4 as uuidv4 } from "uuid";
 import type { ExerciseCatalog } from "../../../../store/exercisesCatalog/types";
 import { RepsTypes } from "../../../../utils/constants";
-import { ExerciseSelects } from "../../../../components/exerciseSelects/ExerciseSelects";
+import { ExerciseSelectsModal } from "../../../../components/exerciseSelects/ExerciseSelectsModal";
 import { Button } from "../../../../components/button/Button";
 import { IconButton } from "../../../../components/iconButton/IconButton";
 import { ExerciseProgression } from "./progression/ExerciseProgression";
@@ -171,7 +171,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
 
             {/* Exercise selection - only draft mode */}
             {props.isDraft && (
-                <ExerciseSelects
+                <ExerciseSelectsModal
                     selectedExercise={dayExercise.exercise}
                     onChange={(value) => {
                         setDayExercise({
