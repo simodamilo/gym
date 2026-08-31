@@ -10,20 +10,22 @@ import { ExerciseProgressionTable } from "./ExerciseProgressionTable";
 
 interface ExerciseProgressionProps {
     exerciseId?: string;
+    /** Progression is scoped to this workout: every day of it, but no other workout. */
+    workoutId?: string;
 }
 
-export const ExerciseProgression = ({ exerciseId }: ExerciseProgressionProps) => {
+export const ExerciseProgression = ({ exerciseId, workoutId }: ExerciseProgressionProps) => {
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
 
-    const entries = useSelector((state: RootState) => sessionsSelectors.getProgressionForExercise(state, exerciseId));
+    const entries = useSelector((state: RootState) => sessionsSelectors.getProgressionForExercise(state, exerciseId, workoutId));
     const isLoading = useSelector((state: RootState) => sessionsSelectors.isLoadingProgression(state));
 
     useEffect(() => {
-        if (exerciseId) {
-            dispatch(sessionsActions.fetchProgressionForExercise(exerciseId));
+        if (exerciseId && workoutId) {
+            dispatch(sessionsActions.fetchProgressionForExercise({ exerciseId, workoutId }));
         }
-    }, [dispatch, exerciseId]);
+    }, [dispatch, exerciseId, workoutId]);
 
     const sessions = useMemo(() => groupBySession(entries), [entries]);
 

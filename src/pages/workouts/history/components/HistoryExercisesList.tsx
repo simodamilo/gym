@@ -62,7 +62,7 @@ export const HistoryExercisesList = () => {
                 </div>
             </div>
         ),
-        children: <ExerciseContent dayId={dayId!} exerciseId={exercise.id} dayExercise={exercise} isHistory />,
+        children: <ExerciseContent dayId={dayId!} workoutId={workoutId} exerciseId={exercise.id} dayExercise={exercise} isHistory />,
     });
 
     const renderSuperset = (group: DayExercise[]) => {
@@ -86,6 +86,7 @@ export const HistoryExercisesList = () => {
                             {index > 0 && <div className="border-t border-[var(--border-color)] my-4" />}
                             <ExerciseContent
                                 dayId={dayId!}
+                                workoutId={workoutId}
                                 exerciseId={exercise.id}
                                 dayExercise={exercise}
                                 isHistory

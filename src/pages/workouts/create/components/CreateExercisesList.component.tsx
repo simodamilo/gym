@@ -151,6 +151,7 @@ export const CreateExercisesList = () => {
             children: (
                 <ExerciseContent
                     dayId={dayId!}
+                    workoutId={workout?.id}
                     exerciseId={exercise.id}
                     dayExercise={exercise}
                     saveExercises={saveExercises}
@@ -184,6 +185,7 @@ export const CreateExercisesList = () => {
                             {index > 0 && <div className="border-t border-[var(--border-color)] my-4" />}
                             <ExerciseContent
                                 dayId={dayId!}
+                                workoutId={workout?.id}
                                 exerciseId={exercise.id}
                                 dayExercise={exercise}
                                 saveExercises={saveExercises}

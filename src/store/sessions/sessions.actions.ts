@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 import { supabase } from "../supabaseClient";
 import type { DayExercise, Set } from "../draft/types";
-import type { DaySessionResponse, SessionSet, UpsertSessionSetPayload } from "./types";
+import type { DaySessionResponse, FetchProgressionPayload, SessionSet, UpsertSessionSetPayload } from "./types";
 import { sessionsMapper } from "./sessions.mapper";
 import { parseReps } from "../../utils/reps";
 import { getNotificationApi } from "../../utils/notificationService";
@@ -210,41 +210,48 @@ const completeSession = createAsyncThunk("sessions/completeSession", async (payl
     }
 });
 
-/** Every performed set of one catalog exercise, across all sessions, oldest first. */
-const fetchProgressionForExercise = createAsyncThunk("sessions/fetchProgressionForExercise", async (exerciseId: string, thunkAPI) => {
-    try {
-        const { data: dayExercises, error: dayExercisesError } = await supabase.from("day_exercises").select("id").eq("exercises_catalog_id", exerciseId);
+/** Every performed set of one catalog exercise within a single workout, oldest first. */
+const fetchProgressionForExercise = createAsyncThunk(
+    "sessions/fetchProgressionForExercise",
+    async (payload: FetchProgressionPayload, thunkAPI) => {
+        try {
+            const { data: dayExercises, error: dayExercisesError } = await supabase.from("day_exercises").select("id").eq("exercises_catalog_id", payload.exerciseId);
 
-        if (dayExercisesError) {
-            throw new Error("Error in fetching progression");
+            if (dayExercisesError) {
+                throw new Error("Error in fetching progression");
+            }
+
+            const dayExerciseIds = (dayExercises ?? []).map((row) => row.id);
+            if (!dayExerciseIds.length) {
+                return { ...payload, entries: [] };
+            }
+
+            /* The workout filter lives on day_sessions rather than on day_exercises: sessions carry
+               their own workout id, so a workout duplicated from another one keeps its history
+               separate. The join covers every day of the workout, which is what the collapse shows. */
+            const { data, error } = await supabase
+                .from("session_sets")
+                .select(
+                    `
+                        id, day_exercise_id, set_number, weight, reps, reps_raw, target_reps, reps_type, day_sessions!inner (
+                            id, session_number, started_at, workout_id
+                        )
+                    `
+                )
+                .in("day_exercise_id", dayExerciseIds)
+                .eq("day_sessions.workout_id", payload.workoutId);
+
+            if (error) {
+                throw new Error("Error in fetching progression");
+            }
+
+            return { ...payload, entries: sessionsMapper.getProgressionMapper(data ?? []) };
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue(error.message);
         }
-
-        const dayExerciseIds = (dayExercises ?? []).map((row) => row.id);
-        if (!dayExerciseIds.length) {
-            return { exerciseId, entries: [] };
-        }
-
-        const { data, error } = await supabase
-            .from("session_sets")
-            .select(
-                `
-                    id, day_exercise_id, set_number, weight, reps, reps_raw, target_reps, reps_type, day_sessions (
-                        id, session_number, started_at
-                    )
-                `
-            )
-            .in("day_exercise_id", dayExerciseIds);
-
-        if (error) {
-            throw new Error("Error in fetching progression");
-        }
-
-        return { exerciseId, entries: sessionsMapper.getProgressionMapper(data ?? []) };
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-        return thunkAPI.rejectWithValue(error.message);
     }
-});
+);
 
 const sessionsActions = {
     fetchSessionsForDay,

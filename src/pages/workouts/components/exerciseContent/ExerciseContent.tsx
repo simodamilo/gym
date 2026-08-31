@@ -21,6 +21,7 @@ import { getSetGrid, getSetInputClassName, hasSeparateWeight } from "./setRow.st
 
 export interface ExerciseContentProps {
     dayId: string;
+    workoutId?: string;
     exerciseId: string;
     dayExercise: DayExercise;
     saveExercises?: (dayExercise: DayExercise) => void;
@@ -353,7 +354,7 @@ export const ExerciseContent = (props: ExerciseContentProps) => {
             )}
 
             <Modal open={showProgression} onCancel={() => setShowProgression(false)} footer={null} title={dayExercise.exercise?.name ?? t("workouts.exercises.progression")} destroyOnClose>
-                <ExerciseProgression exerciseId={dayExercise.exercise?.id} />
+                <ExerciseProgression exerciseId={dayExercise.exercise?.id} workoutId={props.workoutId} />
             </Modal>
         </div>
     );

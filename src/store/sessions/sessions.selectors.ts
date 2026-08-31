@@ -1,5 +1,6 @@
 import type { RootState } from "../reducer.config";
 import type { DaySession, ExerciseProgressionEntry, SessionSet } from "./types";
+import { getProgressionKey } from "./progression.key";
 
 const getSessions = (state: RootState): DaySession[] => {
     return state.sessions.sessions;
@@ -23,9 +24,9 @@ const getActiveSessionSets = (state: RootState): SessionSet[] => {
     return getActiveSession(state)?.sets ?? [];
 };
 
-const getProgressionForExercise = (state: RootState, exerciseId?: string): ExerciseProgressionEntry[] => {
-    if (!exerciseId) return [];
-    return state.sessions.progressionByExercise[exerciseId] ?? [];
+const getProgressionForExercise = (state: RootState, exerciseId?: string, workoutId?: string): ExerciseProgressionEntry[] => {
+    if (!exerciseId || !workoutId) return [];
+    return state.sessions.progressionByExercise[getProgressionKey(exerciseId, workoutId)] ?? [];
 };
 
 const isLoading = (state: RootState): boolean => {

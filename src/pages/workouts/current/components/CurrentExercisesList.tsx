@@ -166,7 +166,17 @@ export const CurrentExercisesList = () => {
                     </div>
                 </div>
             ),
-            children: <ExerciseContent dayId={dayId!} exerciseId={exercise.id} dayExercise={exercise} saveExercises={saveExercises} deleteExercise={deleteExercise} isCurrent />,
+            children: (
+                <ExerciseContent
+                    dayId={dayId!}
+                    workoutId={workout?.id}
+                    exerciseId={exercise.id}
+                    dayExercise={exercise}
+                    saveExercises={saveExercises}
+                    deleteExercise={deleteExercise}
+                    isCurrent
+                />
+            ),
         };
     };
 
@@ -187,7 +197,15 @@ export const CurrentExercisesList = () => {
                     {group.map((exercise, index) => (
                         <div key={exercise.id}>
                             {index > 0 && <div className="border-t border-[var(--border-color)] my-4" />}
-                            <ExerciseContent dayId={dayId!} exerciseId={exercise.id} dayExercise={exercise} saveExercises={saveExercises} deleteExercise={deleteExercise} isCurrent />
+                            <ExerciseContent
+                                dayId={dayId!}
+                                workoutId={workout?.id}
+                                exerciseId={exercise.id}
+                                dayExercise={exercise}
+                                saveExercises={saveExercises}
+                                deleteExercise={deleteExercise}
+                                isCurrent
+                            />
                         </div>
                     ))}
                 </div>

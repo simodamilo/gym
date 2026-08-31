@@ -3,7 +3,7 @@ export type SessionsState = {
     sessions: DaySession[];
     /** The session opened by "start", i.e. the one set edits are written to. */
     activeSessionId?: string;
-    /** Progression rows keyed by exercises_catalog id, filled on demand. */
+    /** Progression rows keyed by `exerciseId:workoutId`, filled on demand. */
     progressionByExercise: Record<string, ExerciseProgressionEntry[]>;
     isLoading: boolean;
     isLoadingProgression: boolean;
@@ -50,6 +50,12 @@ export interface ExerciseProgressionEntry {
     repsRaw?: string;
     targetReps?: string;
     repsType?: string;
+}
+
+/** A progression is always read within the scope of one workout, never across workouts. */
+export interface FetchProgressionPayload {
+    exerciseId: string;
+    workoutId: string;
 }
 
 /* Types used for payload to be sent to be */

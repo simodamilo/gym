@@ -1,6 +1,7 @@
 import { createReducer } from "@reduxjs/toolkit";
 import type { SessionsState } from "./types";
 import { sessionsActions } from "./sessions.actions";
+import { getProgressionKey } from "./progression.key";
 
 const sessionsState: SessionsState = {
     sessions: [],
@@ -52,7 +53,7 @@ export const sessionsReducer = {
             .addCase(sessionsActions.fetchProgressionForExercise.fulfilled, (state, action) => {
                 state.isLoadingProgression = false;
                 if (action.payload) {
-                    state.progressionByExercise[action.payload.exerciseId] = action.payload.entries;
+                    state.progressionByExercise[getProgressionKey(action.payload.exerciseId, action.payload.workoutId)] = action.payload.entries;
                 }
             })
             .addCase(sessionsActions.fetchProgressionForExercise.rejected, (state) => {
