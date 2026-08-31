@@ -2,6 +2,13 @@ import type { ExerciseProgressionEntry } from "../../../../../store/sessions/typ
 
 export interface ProgressionSession {
     sessionId: string;
+    /**
+     * Position in this exercise's progression, oldest = 1. Deliberately not `session_number`:
+     * that one counts the trainings of the whole *day*, so it starts at 2 whenever the day was
+     * trained (or backfilled) before this exercise recorded anything.
+     */
+    ordinal: number;
+    /** The day's training number, as stored. Kept for reference, not displayed. */
     sessionNumber: number;
     startedAt: number;
     sets: ExerciseProgressionEntry[];
@@ -24,6 +31,8 @@ export const groupBySession = (entries: ExerciseProgressionEntry[]): Progression
         }
         bySession.set(entry.sessionId, {
             sessionId: entry.sessionId,
+            /* Overwritten once the sessions are sorted; the map cannot know the order yet. */
+            ordinal: 0,
             sessionNumber: entry.sessionNumber,
             startedAt: entry.startedAt,
             sets: [entry],
@@ -47,7 +56,8 @@ export const groupBySession = (entries: ExerciseProgressionEntry[]): Progression
                 topReps: heaviest?.reps,
             };
         })
-        .sort((a, b) => a.startedAt - b.startedAt);
+        .sort((a, b) => a.startedAt - b.startedAt)
+        .map((session, index) => ({ ...session, ordinal: index + 1 }));
 };
 
 /**

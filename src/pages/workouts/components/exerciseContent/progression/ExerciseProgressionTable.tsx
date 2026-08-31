@@ -19,7 +19,7 @@ export const ExerciseProgressionTable = ({ sessions }: ExerciseProgressionTableP
                 <div key={session.sessionId} className="rounded-lg border border-solid border-[var(--border-default)] px-3 py-2">
                     <div className="flex justify-between items-baseline mb-1">
                         <span className="text-sm font-semibold text-[var(--text-primary)]">{formatSessionDate(session.startedAt)}</span>
-                        <span className="text-xs text-[var(--text-tertiary)]">#{session.sessionNumber}</span>
+                        <span className="text-xs text-[var(--text-tertiary)]">#{session.ordinal}</span>
                     </div>
                     <div className="flex flex-wrap gap-x-4 gap-y-1">
                         {session.sets.map((set) => (

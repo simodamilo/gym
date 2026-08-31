@@ -55,3 +55,20 @@ round trip.
 - Confirmed with the user: the progression covers **all days of the current workout**, not
   only the day being viewed.
 - Verified with `tsc --noEmit` and ESLint on the touched files: both clean.
+
+## Follow-up: the `#N` shown per session
+
+`#N` was `day_sessions.session_number`, allocated per *day* in `startSession`
+(`(previous?.session_number ?? 0) + 1`). It therefore means "the Nth training of this day",
+not "the Nth time this exercise was performed", and starts above 1 whenever:
+
+- the backfill in `migration-training-sessions.sql` created a synthetic session for the day
+  that carried no set for this exercise (no `base_weight`), or
+- the exercise was added to a day that had already been trained.
+
+`ProgressionSession` now carries an `ordinal`, assigned after the oldest-first sort, and the
+table renders that. `sessionNumber` is kept on the type as the stored day-training number but
+is no longer displayed.
+
+Because the ordinal is computed over the sessions actually returned, it stays consistent with
+the workout scoping above: the first entry shown is always `#1`.
