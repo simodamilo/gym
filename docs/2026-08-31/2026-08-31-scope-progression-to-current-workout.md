@@ -72,3 +72,40 @@ is no longer displayed.
 
 Because the ordinal is computed over the sessions actually returned, it stays consistent with
 the workout scoping above: the first entry shown is always `#1`.
+
+## Follow-up: implicit session start, and the progression layout
+
+### Saving before pressing "start workout"
+
+Already worked — `saveExercises` opens a session implicitly on the first edit — but the check
+for "has today started" read `days.last_workout`, a denormalised cache refreshed by a second
+round trip. Two problems followed:
+
+- it was stale exactly when it mattered, right after an implicit start, so two exercises
+  autosaving seconds apart could each open a session and split one training in two;
+- a failed start returned silently and looked like a successful save.
+
+`useTrainingSession` (`src/pages/workouts/current/hooks/useTrainingSession.ts`) now owns this.
+`isStarted` comes from the new `getSessionStartedToday` selector, i.e. from `day_sessions`
+rather than from a column phase 2 will drop. An in-flight start is held in a ref so concurrent
+callers await the same one; it is kept after resolving (the sessions list only catches up on
+the next fetch) and cleared only on failure. A failed start now raises a notification —
+`session_start_failed`, added to en/it/es.
+
+Not fixed: a training crossing midnight still splits in two. Identifying a training by calendar
+date is the root cause, and closing it needs an explicit completion (`completed_at` is never
+written today). Documented in the selector.
+
+### Progression layout
+
+The card list was replaced with an aligned table, so reading *down* a column compares the same
+set across trainings. Chosen by the user over a sparkline and a headline-top-set layout; a
+computed delta (estimated 1RM or volume) was considered and explicitly rejected — only data
+already recorded is shown, nothing derived.
+
+Columns are the union of set numbers across sessions, so a skipped or later-added set still
+lines up and a missing one reads as a gap. The unit sits in the header, falling back to
+per-cell when an exercise changed reps type mid-history. Backfilled sessions have no reps, so
+those cells show the weight alone.
+
+`hasChartableReps` / `hasChartableWeight` remain unused; kept at the user's request.

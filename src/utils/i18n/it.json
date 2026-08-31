@@ -244,6 +244,7 @@
             "reps_type_placeholder": "Seleziona il tipo di ripetizioni",
             "superset": "Superset con il prossimo esercizio",
             "workout_started": "Allenamento Iniziato",
+            "session_start_failed": "Impossibile avviare l'allenamento, le modifiche non sono state salvate",
             "progression": "Progressione",
             "col_set": "Serie",
             "col_target": "Obiettivo",

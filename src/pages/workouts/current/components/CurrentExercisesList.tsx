@@ -3,7 +3,7 @@ import { useAppDispatch, type RootState } from "../../../../store";
 import { useEffect, useState } from "react";
 import { Collapse } from "antd";
 import { SortableItem } from "../../../../components/sortableItem/SortableItem";
-import type { Day, DayExercise, Set } from "../../../../store/draft/types";
+import type { DayExercise, Set } from "../../../../store/draft/types";
 import { useTranslation } from "react-i18next";
 import { currentActions } from "../../../../store/current/current.actions";
 import { useNavigate, useParams } from "react-router-dom";
@@ -18,6 +18,8 @@ import { EmptyState } from "../../../../components/emptyState/EmptyState";
 import { sessionsActions } from "../../../../store/sessions/sessions.actions";
 import { sessionsSelectors } from "../../../../store/sessions/sessions.selectors";
 import type { SessionSet } from "../../../../store/sessions/types";
+import { useTrainingSession } from "../hooks/useTrainingSession";
+import { getNotificationApi } from "../../../../utils/notificationService";
 
 export const CurrentExercisesList = () => {
     const { t } = useTranslation();
@@ -31,6 +33,7 @@ export const CurrentExercisesList = () => {
     const [mutableDayExercises, setMutableDayExercises] = useState<DayExercise[]>([]);
 
     const activeSession = useSelector((state: RootState) => sessionsSelectors.getActiveSession(state));
+    const { isStarted, ensureSession } = useTrainingSession({ workout, dayId });
 
     useEffect(() => {
         if (dayId) {
@@ -65,60 +68,21 @@ export const CurrentExercisesList = () => {
         setMutableDayExercises(mutable);
     }, [workout, dayId, activeSession]);
 
-    const isAlreadyStarted = () => {
-        const day = workout?.days.find((day) => day.id === dayId);
-        if (day?.lastWorkout) {
-            const savedDate = new Date(day.lastWorkout);
-            const today = new Date();
-
-            return savedDate.getFullYear() === today.getFullYear() && savedDate.getMonth() === today.getMonth() && savedDate.getDate() === today.getDate();
-        }
-    };
-
-    /**
-     * Opens a session and seeds it from the plan. The `days` update is kept alongside it during
-     * the compatibility window: counter and last_workout are derivable from day_sessions and are
-     * dropped in phase 2 of the migration.
-     */
-    const handleStartClick = async (): Promise<string | undefined> => {
-        const now = new Date();
-        const newDay: Day | undefined = workout?.days.find((day) => day.id === dayId);
-        if (!newDay || !workout) return undefined;
-
-        const started = await dispatch(
-            sessionsActions.startSession({
-                dayId: newDay.id,
-                workoutId: workout.id,
-                dayExercises: newDay.dayExercises,
-            }),
-        );
-
-        await dispatch(
-            currentActions.updateDayStart({
-                id: newDay.id,
-                last_workout: now.getTime(),
-                workout_id: workout.id,
-                name: newDay.name,
-                counter: newDay.counter ? newDay.counter + 1 : 1,
-                is_last: true,
-                order: newDay.order,
-            }),
-        );
-
-        return sessionsActions.startSession.fulfilled.match(started) ? started.payload : undefined;
-    };
-
+    /* Editing an exercise before pressing start opens the session implicitly, so nothing typed
+       is ever dropped for the want of a button press. */
     const saveExercises = async (exercise: DayExercise) => {
         if (!workout || !dayId) return;
 
-        /* Sessions are never marked complete, so the newest one stays "active" indefinitely.
-           Whether today counts as started therefore has to come from the day itself, otherwise the
-           first edit of a new training would be written into the previous session.
-
-           When today has started, the id comes from the selector; when it has not, it comes back
-           from the thunk, because the selector is stale until startSession's fetch lands. */
-        const sessionId = isAlreadyStarted() ? activeSession?.id : await handleStartClick();
-        if (!sessionId) return;
+        const sessionId = await ensureSession();
+        if (!sessionId) {
+            /* Silently returning here used to look exactly like a successful save. */
+            getNotificationApi().error({
+                message: t("workouts.exercises.session_start_failed"),
+                placement: "bottom",
+                className: "custom-error-notification",
+            });
+            return;
+        }
 
         await dispatch(
             sessionsActions.saveSessionSets({
@@ -230,10 +194,10 @@ export const CurrentExercisesList = () => {
 
                 <div className="flex gap-2 items-center">
                     {mutableDayExercises && mutableDayExercises.length > 0 && <MuscleVolumeButton dayExercises={mutableDayExercises} />}
-                    {isAlreadyStarted() ? (
+                    {isStarted ? (
                         <div className="text-[15px] font-medium text-[var(--text-primary)]">{t("workouts.exercises.workout_started")}</div>
                     ) : (
-                        <IconButton icon={<PlayCircleOutlined />} onClick={() => handleStartClick()} />
+                        <IconButton icon={<PlayCircleOutlined />} onClick={() => ensureSession()} />
                     )}
                 </div>
             </div>

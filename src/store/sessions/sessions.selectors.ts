@@ -20,6 +20,25 @@ const getActiveSession = (state: RootState): DaySession | undefined => {
     return sessions.find((session: DaySession) => !session.completedAt);
 };
 
+const isSameDay = (a: number, b: number): boolean => {
+    const left = new Date(a);
+    const right = new Date(b);
+    return left.getFullYear() === right.getFullYear() && left.getMonth() === right.getMonth() && left.getDate() === right.getDate();
+};
+
+/**
+ * The session opened today for the day being trained, if any. This is what decides whether the
+ * training has already started: sessions are never marked complete, so "the newest open one" is
+ * not enough to tell today's training from last week's.
+ *
+ * A training spanning midnight therefore still splits in two. Closing that properly needs an
+ * explicit completion, which is a separate change.
+ */
+const getSessionStartedToday = (state: RootState): DaySession | undefined => {
+    const now = Date.now();
+    return state.sessions.sessions.find((session: DaySession) => isSameDay(session.startedAt, now));
+};
+
 const getActiveSessionSets = (state: RootState): SessionSet[] => {
     return getActiveSession(state)?.sets ?? [];
 };
@@ -44,6 +63,7 @@ const isError = (state: RootState): boolean => {
 export const sessionsSelectors = {
     getSessions,
     getActiveSession,
+    getSessionStartedToday,
     getActiveSessionSets,
     getProgressionForExercise,
     isLoading,

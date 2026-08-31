@@ -1,4 +1,5 @@
 import type { ExerciseProgressionEntry } from "../../../../../store/sessions/types";
+import { getValueUnitKey } from "../../../../../utils/reps";
 
 export interface ProgressionSession {
     sessionId: string;
@@ -74,4 +75,29 @@ export const hasChartableWeight = (sessions: ProgressionSession[]): boolean => {
 
 export const formatSessionDate = (startedAt: number): string => {
     return new Date(startedAt).toLocaleDateString(undefined, { day: "2-digit", month: "short" });
+};
+
+/**
+ * The set numbers to lay out as columns: the union across sessions, not the count of any single
+ * one. A training where a set was skipped, or where a set was added later, must still line up
+ * with the others — that alignment is the whole point of the grid.
+ */
+export const getSetColumns = (sessions: ProgressionSession[]): number[] => {
+    const numbers = new Set<number>();
+    sessions.forEach((session) => session.sets.forEach((set) => numbers.add(set.setNumber)));
+    return [...numbers].sort((a, b) => a - b);
+};
+
+/**
+ * The distinct units in play. Normally one, so it can be shown once in the header; more than one
+ * means the exercise was switched between reps and time at some point and each cell must say
+ * which it is.
+ */
+export const getUnitKeys = (sessions: ProgressionSession[]): string[] => {
+    const keys = new Set<string>();
+    sessions.forEach((session) => {
+        session.sets.forEach((set) => keys.add(getValueUnitKey(set.repsType)));
+        if (!session.sets.length) keys.add(getValueUnitKey(session.repsType));
+    });
+    return [...keys];
 };
