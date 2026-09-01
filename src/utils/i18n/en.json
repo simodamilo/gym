@@ -245,6 +245,7 @@
             "superset": "Superset with next exercise",
             "workout_started": "Workout Started",
             "session_start_failed": "Unable to start the workout, your changes were not saved",
+            "notes_save_failed": "Unable to save the note, please try again",
             "progression": "Progression",
             "col_set": "Set",
             "col_target": "Target",

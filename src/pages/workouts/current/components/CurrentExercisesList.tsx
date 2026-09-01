@@ -91,6 +91,20 @@ export const CurrentExercisesList = () => {
                 dayExercise: exercise,
             }),
         );
+
+        /* The note lives on the plan, not on the session, so it is written separately and only
+           when it actually changed — the ordinary set save stays a single write. */
+        const plannedNotes = workout.days.find((day) => day.id === dayId)?.dayExercises.find((dayExercise) => dayExercise.id === exercise.id)?.notes;
+        if ((exercise.notes ?? "") !== (plannedNotes ?? "")) {
+            const result = await dispatch(currentActions.updateExerciseNotes({ dayExerciseId: exercise.id, notes: exercise.notes }));
+            if (currentActions.updateExerciseNotes.rejected.match(result)) {
+                getNotificationApi().error({
+                    message: t("workouts.exercises.notes_save_failed"),
+                    placement: "bottom",
+                    className: "custom-error-notification",
+                });
+            }
+        }
     };
 
     /* only used if isReadOnly is false */

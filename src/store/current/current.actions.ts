@@ -57,6 +57,28 @@ const updateDayStart = createAsyncThunk("data/updateDayStart", async (day: Upser
     }
 });
 
+/**
+ * The note of an exercise belongs to the plan, not to a training session: it is the same note
+ * every time that exercise comes round. It therefore lives on `day_exercises` and is written
+ * here, since the session save owns `session_sets` only.
+ */
+const updateExerciseNotes = createAsyncThunk("data/updateExerciseNotes", async (payload: { dayExerciseId: string; notes?: string }, thunkAPI) => {
+    try {
+        /* `.select()` so a row denied by RLS is caught: such an update comes back without an
+           error and simply affects nothing, which is the silent drop this fix exists to remove. */
+        const { data, error } = await supabase.from("day_exercises").update({ notes: payload.notes }).eq("id", payload.dayExerciseId).select("id");
+
+        if (error || !(data ?? []).length) {
+            throw new Error("Error in updating exercise notes");
+        }
+
+        return payload;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+});
+
 const showSwitcher = createAction("data/showSwitcher", (show: boolean) => {
     return {
         payload: show,
@@ -66,6 +88,7 @@ const showSwitcher = createAction("data/showSwitcher", (show: boolean) => {
 const currentActions = {
     fetchCurrentWorkout,
     updateDayStart,
+    updateExerciseNotes,
     showSwitcher
 };
 

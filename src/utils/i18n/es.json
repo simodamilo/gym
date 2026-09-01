@@ -245,6 +245,7 @@
             "superset": "Superserie con el siguiente ejercicio",
             "workout_started": "Entrenamiento Iniciado",
             "session_start_failed": "No se pudo iniciar el entrenamiento, los cambios no se guardaron",
+            "notes_save_failed": "No se pudo guardar la nota, inténtalo de nuevo",
             "progression": "Progresión",
             "col_set": "Serie",
             "col_target": "Objetivo",

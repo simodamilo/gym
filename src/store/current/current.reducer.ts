@@ -40,6 +40,17 @@ export const currentReducer = {
                 state.isLoading = false;
                 state.isError = true;
             })
+            /* Patched in place rather than refetched: a refetch rebuilds every exercise of the day
+               and resets the local state of each open ExerciseContent, which would drop whatever
+               the user is typing in another exercise. */
+            .addCase(currentActions.updateExerciseNotes.fulfilled, (state, action) => {
+                state.workout?.days.forEach((day) => {
+                    const dayExercise = day.dayExercises.find((exercise) => exercise.id === action.payload.dayExerciseId);
+                    if (dayExercise) {
+                        dayExercise.notes = action.payload.notes;
+                    }
+                });
+            })
             .addCase(currentActions.showSwitcher, (state, action) => {
                 state.showSwitcher = action.payload;
             });
