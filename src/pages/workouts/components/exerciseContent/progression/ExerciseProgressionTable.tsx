@@ -7,8 +7,8 @@ interface ExerciseProgressionTableProps {
 }
 
 /**
- * Newest first, which is the opposite of the chart: here the user is reading, not following a
- * trend. Sets are laid out in fixed columns rather than as free-flowing text so that reading
+ * Oldest first, so reading down the table follows the progression forward in time. Sets are
+ * laid out in fixed columns rather than as free-flowing text so that reading
  * *down* a column compares the same set across trainings, which is what makes a progression
  * legible at a glance.
  */
@@ -38,7 +38,7 @@ export const ExerciseProgressionTable = ({ sessions }: ExerciseProgressionTableP
                     </tr>
                 </thead>
                 <tbody>
-                    {[...sessions].reverse().map((session) => {
+                    {sessions.map((session) => {
                         /* Only needed when the exercise changed unit mid-history; otherwise the
                            header carries it and the cells stay clean. */
                         const rowUnit = sharedUnitKey ? undefined : t(getUnitKeys([session])[0]);
